@@ -10,6 +10,7 @@ from . import adapters
 from .db import DB, now
 from .http import BotChallenge, PoliteSession
 from .models import Listing
+from .emailer import Emailer, render_digest
 from .notify import Ntfy
 from .parser import parse
 from .scoring import deal_score, palate_score
@@ -188,32 +189,45 @@ def run(cfg: dict, only: list[str] | None = None, dry_run: bool = False) -> int:
     fresh = [a for a in all_alerts if not db.recently_alerted(a.listing.key, a.kind, a.listing.price, repeat_days)]
     max_individual = int(n.get("max_individual_alerts", 8))
 
-    for al in fresh[:max_individual]:
-        title, body = format_alert(al)
-        prio = 4 if al.palate.get("palate", 0) >= 75 or al.kind == "drop" else 3
-        tags = ["tumbler_glass"] + (["fire"] if al.palate.get("track") == "peat_earth" else ["cherries"])
-        if notifier.send(title, body, click=al.listing.url, priority=prio, tags=tags) and not dry_run:
-            db.record_alert(al.listing.key, al.kind, al.listing.price)
+    sent: set[int] = set()  # indexes into `fresh` delivered by at least one channel
 
-    rest = fresh[max_individual:]
-    if rest:
-        body = "\n".join(
-            f"• {a.listing.title} — ${a.listing.price:.2f} @ {a.listing.shop} (palate {a.palate.get('palate')}, {a.kind})"
-            for a in rest[:25]
-        )
-        if notifier.send(f"{len(rest)} more whisky alerts", body, priority=2, tags=["tumbler_glass"]) and not dry_run:
-            for a in rest[:25]:
-                db.record_alert(a.listing.key, a.kind, a.listing.price)
+    # --- email: one daily digest with everything, tasting notes included ---
+    emailer = Emailer(dry_run=dry_run)
+    if emailer.configured or dry_run:
+        top = db.top(10) if seed_notes else None
+        subject, html_body, text_body = render_digest(fresh, notes_snippet, seed_notes, failures, top)
+        if (fresh or seed_notes or failures or cfg.get("email", {}).get("send_when_empty", True)) and \
+                emailer.send(subject, html_body, text_body):
+            sent.update(range(len(fresh)))
 
-    if seed_notes:
-        top = db.top(5)
-        body = "\n".join(seed_notes) + "\n\nTop matches so far:\n" + "\n".join(
-            f"• {r['title']} — ${r['last_price'] or 0:.2f} @ {r['shop']}" for r in top
-        )
-        notifier.send("Whisky deal finder: baseline recorded", body, priority=2, tags=["white_check_mark"])
+    # --- ntfy: a push per top alert, the rest in one digest ---
+    if notifier.topic or not emailer.configured:
+        for i, al in enumerate(fresh[:max_individual]):
+            title, body = format_alert(al)
+            prio = 4 if al.palate.get("palate", 0) >= 75 or al.kind == "drop" else 3
+            tags = ["tumbler_glass"] + (["fire"] if al.palate.get("track") == "peat_earth" else ["cherries"])
+            if notifier.send(title, body, click=al.listing.url, priority=prio, tags=tags):
+                sent.add(i)
+        rest = fresh[max_individual:]
+        if rest:
+            body = "\n".join(
+                f"• {a.listing.title} — ${a.listing.price:.2f} @ {a.listing.shop} (palate {a.palate.get('palate')}, {a.kind})"
+                for a in rest[:25]
+            )
+            if notifier.send(f"{len(rest)} more whisky alerts", body, priority=2, tags=["tumbler_glass"]):
+                sent.update(range(max_individual, max_individual + min(25, len(rest))))
+        if seed_notes:
+            top5 = db.top(5)
+            body = "\n".join(seed_notes) + "\n\nTop matches so far:\n" + "\n".join(
+                f"• {r['title']} — ${r['last_price'] or 0:.2f} @ {r['shop']}" for r in top5
+            )
+            notifier.send("Whisky deal finder: baseline recorded", body, priority=2, tags=["white_check_mark"])
+        if failures:
+            notifier.send("Whisky deal finder: scrape problems", "\n".join(failures), priority=3, tags=["warning"])
 
-    if failures:
-        notifier.send("Whisky deal finder: scrape problems", "\n".join(failures), priority=3, tags=["warning"])
+    if not dry_run:
+        for i in sorted(sent):
+            db.record_alert(fresh[i].listing.key, fresh[i].kind, fresh[i].listing.price)
 
     db.close()
     log.info("done: %d alerts sent/queued, %d failures", len(fresh), len(failures))

@@ -1,8 +1,9 @@
 name: daily whisky deals
 
 on:
-  schedule:
-    - cron: "17 14 * * *"   # ~8am Calgary (MDT); 7am in winter
+  # Paused until email secrets are set up. To enable, uncomment these two lines:
+  # schedule:
+  #   - cron: "17 14 * * *"   # ~8am Calgary (MDT); 7am in winter
   workflow_dispatch:
     inputs:
       dry_run:
@@ -35,7 +36,10 @@ jobs:
 
       - name: Run
         env:
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}   # optional: phone push alerts too
           NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
         run: python -m dealfinder run ${{ inputs.dry_run && '--dry-run' || '' }}
 

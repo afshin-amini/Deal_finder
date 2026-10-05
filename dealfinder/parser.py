@@ -146,7 +146,7 @@ BOTTLERS: dict[str, list[str]] = {
     "Whisky Sponge": ["whisky sponge", "whiskysponge", "sponge"],
     "Single Malts of Scotland": ["single malts of scotland", "smos"],
     "Thompson Bros": ["thompson bros", "thompson brothers", "dornoch distillery"],
-    "Berry Bros & Rudd": ["berry bros", "berry brothers", "bbr", "berrys'", "berrys own"],
+    "Berry Bros & Rudd": ["berry bros", "berry brothers", "bbr", "berrys'", "berry's", "berrys own"],
     "Signatory": ["signatory", "un-chillfiltered collection", "cask strength collection"],
     "Cadenhead": ["cadenhead", "cadenhead's", "wm cadenhead"],
     "Hunter Laing": ["hunter laing", "old malt cask", "old & rare", "first editions"],
