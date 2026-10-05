@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import html
 import logging
+import os
 import re
 from datetime import date
 from pathlib import Path
@@ -132,11 +133,44 @@ def run_report(cfg: dict, query: str, shops: list[str] | None, out_path: str, dr
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(f"<!doctype html><meta charset='utf-8'><title>{_e(subject)}</title>{html_body}")
     print(text_body)
+    write_github_summary(subject, rows)
     emailer = Emailer(dry_run=dry_run)
-    if emailer.configured and not dry_run:
+    if dry_run:
+        return 0
+    if emailer.configured:
         ok = emailer.send(subject, html_body, text_body)
         # Actions logs are public on a public repo: never print the address.
         print("Email sent." if ok else "EMAIL FAILED - check the SMTP_USER / SMTP_PASSWORD secrets")
         return 0 if ok else 1
-    print("Email not configured (EMAIL_TO / SMTP_USER / SMTP_PASSWORD); report saved to " + out_path)
+    missing = [n for n in ("EMAIL_TO", "SMTP_USER", "SMTP_PASSWORD") if not os.environ.get(n, "").strip()]
+    print(f"Email not sent: missing secret(s) {', '.join(missing)}. Report saved to {out_path}")
+    if os.environ.get("GITHUB_ACTIONS"):
+        print(f"::error::Email not sent - add repository secret(s): {', '.join(missing)} "
+              "(Settings > Secrets and variables > Actions > Repository secrets)")
+        return 1
     return 0
+
+
+def write_github_summary(subject: str, rows: list[dict]) -> None:
+    """Show the report on the Actions run page itself (GITHUB_STEP_SUMMARY), readable on a phone."""
+    path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not path:
+        return
+    lines = [f"## {subject}", ""]
+    for r in rows:
+        l, p, sc = r["listing"], r["parsed"], r["score"]
+        facts = " · ".join(x for x in [f"{p.age} yr" if p.age else "", f"{p.abv}%" if p.abv else "",
+                                       ", ".join(t for t in l.tags if t.startswith("vintage"))] if x)
+        price = f"${l.price:,.2f}" if l.price is not None else "?"
+        lines.append(f"### [{l.title}]({l.url}) — {price}")
+        lines.append(f"{facts} · peaty/earthy {sc.peat_earth} · fruit/red fruit {sc.fruit_earth}  ")
+        if l.description:
+            lines.append(f"{l.description[:400]}  ")
+        if r["notes"]:
+            notes = re.sub(r"\s*\|\s*", "\n\n", r["notes"])
+            notes = re.sub(r"\b(Nose|Palate|Finish|Comment)\s*:", r"**\1:**", notes)
+            lines.append("")
+            lines.append("> " + notes.replace("\n", "\n> "))
+        lines.append("")
+    with open(path, "a", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
