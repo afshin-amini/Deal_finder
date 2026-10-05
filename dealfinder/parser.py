@@ -142,7 +142,7 @@ UNPEATED_MARKERS = ["unpeated", "un-peated", "non-peated", "non peated", "not pe
 BOTTLERS: dict[str, list[str]] = {
     "Gordon & MacPhail": ["gordon & macphail", "gordon and macphail", "gordon & mcphail", "g&m", "g & m",
                           "connoisseurs choice", "connoisseur's choice", "discovery range"],
-    "Decadent Drinks": ["decadent drinks", "decadent dreams", "decadent"],
+    "Decadent Drinks": ["decadent drinks", "decadent dreams", "decadent drams", "decadent"],
     "Whisky Sponge": ["whisky sponge", "whiskysponge", "sponge"],
     "Single Malts of Scotland": ["single malts of scotland", "smos"],
     "Thompson Bros": ["thompson bros", "thompson brothers", "dornoch distillery"],
@@ -247,7 +247,7 @@ def _find_bottlers(text: str) -> list[str]:
                 hit = re.search(rf"(?<![\w&]){re.escape(a)}(?![\w&])", text)
                 if a == "sponge" and hit and "whisky" not in text:
                     hit = None
-                if a == "decadent" and hit and not re.search(r"decadent\s+(drinks|dreams)", text):
+                if a == "decadent" and hit and not re.search(r"decadent\s+(drinks|dreams|drams)", text):
                     # A bare "decadent" is usually tasting-note prose.
                     hit = None
             else:

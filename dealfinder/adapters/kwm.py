@@ -61,21 +61,48 @@ def parse_listing_page(shop_name: str, base: str, html_text: str) -> list[Listin
     return out
 
 
-_NOTES_RE = re.compile(r"(Andrew.s Tasting Note|Evan.s Tasting Note|Tasting Notes?)\s*(.*)", re.S)
-_NOTES_END = re.compile(r"\b(Adapted from the article|Related Products|You may also like|Follow Us|Newsletter)\b")
+_NOSE_RE = re.compile(r"(?:\b([A-Z][\w’']*|Producer|Distillery|Our)\s+Tasting Note\s+)?\bNose\s*:")
+_FINISH_RE = re.compile(r"\bFinish\s*:")
+_COMMENT_RE = re.compile(r"^\s*(Comment|Overall)\s*:")
+
+
+def _sentence_end(text: str, start: int, limit: int) -> int:
+    # A lone . ! or ? followed by space ends a sentence; "..." and "…" are pauses, not ends.
+    m = re.search(r"(?<!\.)[.!?](?!\.)(\s|$)", text[start:start + limit])
+    return start + m.end() if m else min(len(text), start + limit)
 
 
 def parse_notes(html_text: str) -> str:
+    """Extract each taster's Nose/Palate/Finish(/Comment) block; drop the surrounding articles."""
     body = re.sub(r"(?is)<(script|style|nav|header|footer)[^>]*>.*?</\1>", " ", html_text)
     text = html_to_text(body)
-    m = _NOTES_RE.search(text)
-    if not m:
-        return ""
-    notes = text[m.start():]
-    end = _NOTES_END.search(notes, 30)
-    notes = notes[: end.start()] if end else notes
-    notes = re.sub(r"^(Tasting Notes\s+Distillery\s+)", "", notes)
-    return notes[:4000].strip()
+    blocks = []
+    starts = list(_NOSE_RE.finditer(text))
+    for i, m in enumerate(starts):
+        stop = starts[i + 1].start() if i + 1 < len(starts) else len(text)
+        seg_end = min(stop, m.start() + 2500)
+        fin = _FINISH_RE.search(text, m.end(), seg_end)
+        if not fin:
+            end = _sentence_end(text, m.end(), 600)
+        else:
+            end = _sentence_end(text, fin.end(), 500)
+            if _COMMENT_RE.match(text[end:seg_end]):
+                end = _sentence_end(text, end + 10, 600)
+                # Comments run a few sentences; keep going while they look like tasting prose.
+                while end < seg_end and len(text[m.start():end]) < 1800:
+                    nxt = _sentence_end(text, end, 300)
+                    if nxt - end < 15 or nxt >= seg_end:
+                        break
+                    if re.search(r"\b(written by|blog|article|magazine|distillery was|founded)\b", text[end:nxt], re.I):
+                        break
+                    end = nxt
+        end = min(end, stop)
+        block = text[m.start():end].strip()
+        if not m.group(1):
+            block = "Tasting Note " + block
+        if block not in blocks:  # KWM renders each note twice (desktop + mobile layouts)
+            blocks.append(block)
+    return " | ".join(blocks)[:3000]
 
 
 class KwmAdapter:

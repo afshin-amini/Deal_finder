@@ -34,7 +34,7 @@ cask_strength_multiplier = 1.15
 [watchlist]
 "Ardmore" = []
 "Gordon & MacPhail" = ["G&M", "Gordon and MacPhail", "Connoisseurs Choice"]
-"Decadent Drinks" = ["Decadent Dreams"]
+"Decadent Drinks" = ["Decadent Dreams", "Decadent Drams"]
 "Whisky Sponge" = []
 "Single Malts of Scotland" = ["SMOS"]
 "Thompson Bros" = ["Thompson Brothers"]
