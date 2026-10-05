@@ -4,13 +4,14 @@ import logging
 
 from ..http import PoliteSession
 from .htmlsite import HtmlSiteAdapter
+from .kwm import KwmAdapter
 from .shopify import ShopifyAdapter
 from .woocommerce import WooCommerceAdapter
 
 log = logging.getLogger(__name__)
 
-ADAPTERS = {a.name: a for a in (ShopifyAdapter(), WooCommerceAdapter(), HtmlSiteAdapter())}
-DETECT_ORDER = ["shopify", "woocommerce", "html"]
+ADAPTERS = {a.name: a for a in (KwmAdapter(), ShopifyAdapter(), WooCommerceAdapter(), HtmlSiteAdapter())}
+DETECT_ORDER = ["kwm", "shopify", "woocommerce", "html"]
 
 
 def resolve(http: PoliteSession, shop: dict):

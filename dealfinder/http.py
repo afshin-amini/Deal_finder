@@ -19,6 +19,10 @@ class RobotsDisallowed(Exception):
     pass
 
 
+class BotChallenge(Exception):
+    pass
+
+
 class PoliteSession:
     def __init__(
         self,
@@ -53,7 +57,9 @@ class PoliteSession:
             if resp.status_code in (401, 403):
                 # Per the robots spec, an auth-blocked robots.txt means "disallow all".
                 rp.disallow_all = True
-            elif resp.status_code >= 400:
+            elif resp.status_code >= 400 or is_bot_challenge(resp):
+                # No robots.txt (or a bot-check page instead of one): nothing is disallowed.
+                # A bot-check page will still stop the actual requests below.
                 rp.allow_all = True
             else:
                 rp.parse(resp.text.splitlines())
@@ -82,7 +88,19 @@ class PoliteSession:
 
     # ---- fetch ------------------------------------------------------------
 
+    def set_host_delay(self, url: str, seconds: float) -> None:
+        """Per-shop minimum delay (robots.txt Crawl-delay still wins if it is larger)."""
+        host = urlsplit(url).netloc
+        self._host_delay[host] = max(seconds, self._host_delay.get(host, self.min_delay))
+
     def get(self, url: str, *, params: dict | None = None, accept: str | None = None) -> requests.Response:
+        return self._request("GET", url, params=params, accept=accept)
+
+    def post(self, url: str, *, data: dict | None = None) -> requests.Response:
+        return self._request("POST", url, data=data)
+
+    def _request(self, method: str, url: str, *, params: dict | None = None, data: dict | None = None,
+                 accept: str | None = None) -> requests.Response:
         full = requests.Request("GET", url, params=params).prepare().url or url
         if not self.allowed(full):
             raise RobotsDisallowed(full)
@@ -92,7 +110,7 @@ class PoliteSession:
         for attempt in range(self.max_retries):
             self._wait(host)
             try:
-                resp = self.session.get(full, headers=headers, timeout=self.timeout)
+                resp = self.session.request(method, full, data=data, headers=headers, timeout=self.timeout)
             except requests.RequestException as exc:
                 last_exc = exc
                 self._last_hit[host] = time.monotonic()
@@ -108,5 +126,17 @@ class PoliteSession:
                 time.sleep(wait)
                 last_exc = requests.HTTPError(f"{resp.status_code} for {full}")
                 continue
+            if is_bot_challenge(resp):
+                raise BotChallenge(f"{full} answered with a bot-check page ({resp.status_code})")
             return resp
         raise last_exc or RuntimeError(f"failed to fetch {full}")
+
+
+def is_bot_challenge(resp: requests.Response) -> bool:
+    """Cloudflare / Shopify bot checks: we stop rather than try to get past them."""
+    if resp.headers.get("cf-mitigated") == "challenge":
+        return True
+    if "text/html" in resp.headers.get("Content-Type", "") and resp.status_code in (200, 403, 503):
+        head = resp.text[:2000]
+        return "<title>Just a moment...</title>" in head or "<title>Verifying your connection" in head
+    return False

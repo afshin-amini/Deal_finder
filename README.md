@@ -10,7 +10,7 @@ Shops: BSW, Kensington Wine Market (KWM), The Crown Cellars, Craft Cellars.
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements-dev.txt
 
-# 1. See how each shop serves its catalog (Shopify / WooCommerce / plain HTML)
+# 1. Check each shop is reachable and see sample products
 python -m dealfinder probe
 
 # 2. Try the scorer on any bottle name
@@ -29,15 +29,28 @@ python -m dealfinder run --dry-run
 
 ## How each shop is read
 
-`platform = "auto"` tries these in order:
+These were checked against the live sites in October 2026.
 
-1. **Shopify** `/products.json`: the full catalog as JSON, 250 products per request. Set `collections = ["scotch"]` to scan only whisky collections.
-2. **WooCommerce Store API** `/wp-json/wc/store/v1/products`.
-3. **HTML fallback:** finds product URLs from `listing_urls` (category pages, with a `{page}` placeholder) or from `sitemap.xml`, filtered to whisky-looking slugs. It then reads the schema.org JSON-LD or `og:price` meta tags on each product page. `has_tasting_notes = true` (set for KWM) also pulls the "Tasting notes / Nose / Palate" text from the page body.
+| Shop | How it's read | Data you get | Pace |
+|---|---|---|---|
+| **BSW** (bswliquor.com) | Shopify `/collections/{scotch-whisky,scotch-deals,whisky-deals}/products.json` | Title, price, stock. No descriptions. | 8 s between requests; faster requests trigger a "Verifying your connection" check |
+| **KWM** | Custom site. `/products/scotch?page=N` with a session set to 100 bottles per page and in-stock only, which covers everything in about 10 pages. | Price, region, vintage, description. **Tasting notes** (Andrew's and Evan's Nose/Palate/Finish) come from each product page, fetched once per bottle. | 20 s, per KWM's robots.txt `Crawl-delay` |
+| **Craft Cellars** | Shopify `/collections/{scotch,daily-deal-whisky,new-arrivals-whisky}/products.json` | Title, price, stock, tags (such as "New Arrival"), description | 5 s |
+| **Crown Cellars** | **Disabled.** It sits behind a Cloudflare browser challenge that blocks anything that isn't a real browser. | | |
 
-After `probe`, pin each shop's `platform` in `config.toml`. If a shop comes back with "no products found", open one of its whisky category pages and add it as a `listing_urls` entry. For example: `listing_urls = ["/collections/scotch?page={page}"]`.
+KWM tasting notes: when a new bottle appears, its notes are fetched right away so the alert can include them. Bottles already listed are backfilled 30 per day, best palate matches first, until all of them have notes.
 
-**Being polite:** robots.txt is fetched and obeyed for every URL, including any `Crawl-delay`. There are at least 4 seconds between requests to the same host. A 429 or 5xx response backs off and slows that host for the rest of the run. The User-Agent identifies the bot and links to this repo.
+A bottle that drops off a shop's list is marked out of stock, so a "back in stock" alert fires when it returns. BSW shows an inflated "was" price on nearly every product, so its compare-at prices are ignored (`trust_compare_at = false`) and BSW deals come from the price history.
+
+**Being polite:** robots.txt is fetched and obeyed for every URL, including any `Crawl-delay`. Each shop has its own minimum delay. A 429 or 5xx response backs off and slows that host for the rest of the run. If a shop answers with a bot-check page (Cloudflare "Just a moment...", Shopify "Verifying your connection"), the run stops for that shop and reports it. It does **not** try to get past the check. The User-Agent identifies the bot and links to this repo.
+
+### Crown Cellars
+
+Crown has chosen to put a browser challenge in front of its site, so scraping it would mean working around that choice. Options:
+- Ask them. Small shops are often happy to share a product feed or to allowlist a personal price tracker.
+- Check whether they're on Shopify. If you open `https://thecrowncellars.com/products.json` in your phone's browser and see JSON, the code only needs `enabled = true` once they allow it.
+
+The generic adapters (`platform = "auto"`, `listing_urls`, sitemap + schema.org) remain available for adding other shops.
 
 ## Scoring
 

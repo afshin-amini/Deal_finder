@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+import re
+from dataclasses import dataclass
 
 from . import adapters
-from .db import DB
-from .http import PoliteSession
+from .db import DB, now
+from .http import BotChallenge, PoliteSession
 from .models import Listing
 from .notify import Ntfy
 from .parser import parse
@@ -25,14 +26,18 @@ class Alert:
     palate: dict
     deal: dict
     priority: float
-    lines: list[str] = field(default_factory=list)
+    notes: str = ""
 
 
-def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool) -> tuple[dict, dict, dict, list[Alert]]:
-    parsed = parse(listing.title, f"{listing.vendor} {listing.product_type} {' '.join(listing.tags)} {listing.description}")
+def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool,
+             notes: str = "") -> tuple[dict, dict, dict, list[Alert]]:
+    if not shop_cfg.get("trust_compare_at", True):
+        listing.compare_at_price = None  # shop shows a permanent "was" price; history is the real signal
+    parsed = parse(listing.title, f"{listing.vendor} {listing.product_type} {' '.join(listing.tags)} {listing.description} {notes}")
     if not parsed.is_whisky:
         return parsed.to_dict(), {}, {}, []
-    score = palate_score(parsed, listing.text_blob(), cfg["watchlist"], has_notes=shop_cfg.get("has_tasting_notes", False))
+    text = f"{listing.text_blob()} {notes}"
+    score = palate_score(parsed, text, cfg["watchlist"], has_notes=bool(notes) or shop_cfg.get("has_tasting_notes", False))
     prev = db.get(listing.key)
     history = db.price_history(listing.key)
     deal = deal_score(listing.price, history, prev["last_price"] if prev else None,
@@ -43,12 +48,14 @@ def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool) 
     palate = score.palate
     watched = bool(score.watchlist)
     in_stock = listing.in_stock is not False
+    is_mini = (parsed.volume_ml is not None and parsed.volume_ml < 300) or bool(
+        re.search(r"\b(mini|miniature|sample|gift set|tasting set)\b", listing.title, re.I))
 
     def add(kind: str, extra: float = 0) -> None:
         pr = palate + deal.score + (10 if watched else 0) + extra
-        alerts.append(Alert(kind, listing, score.to_dict(), deal.to_dict(), pr))
+        alerts.append(Alert(kind, listing, score.to_dict(), deal.to_dict(), pr, notes=notes))
 
-    if seeded and in_stock and listing.price:
+    if seeded and in_stock and listing.price and not is_mini:
         if prev is None:
             if palate >= a.get("new_min_palate", 55) or (watched and palate >= a.get("watch_min_palate", 35)):
                 add("new", 5)
@@ -60,6 +67,16 @@ def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool) 
         if not alerts and deal.score >= a.get("deal_min_score", 20) and palate >= a.get("deal_min_palate", 45):
             add("deal")
     return parsed.to_dict(), score.to_dict(), deal.to_dict(), alerts
+
+
+def _try_notes(fetch_notes, http: PoliteSession, url: str) -> str:
+    try:
+        return fetch_notes(http, url)
+    except BotChallenge:
+        raise
+    except Exception as exc:  # noqa: BLE001
+        log.warning("notes fetch failed for %s: %s", url, exc)
+        return ""
 
 
 def format_alert(al: Alert) -> tuple[str, str]:
@@ -77,7 +94,16 @@ def format_alert(al: Alert) -> tuple[str, str]:
     why = al.palate.get("reasons", {}).get(track, [])
     if why:
         lines.append("Why: " + "; ".join(why[:4]))
+    if al.notes:
+        lines.append("Notes: " + notes_snippet(al.notes))
     return title, "\n".join(lines)
+
+
+def notes_snippet(notes: str, limit: int = 350) -> str:
+    """Nose + palate is what matters on a phone screen."""
+    m = re.search(r"Nose:.*?(?=Finish:|Comment:|$)", notes, re.S)
+    s = (m.group(0) if m else notes).strip()
+    return s if len(s) <= limit else s[:limit].rsplit(" ", 1)[0] + "…"
 
 
 def run(cfg: dict, only: list[str] | None = None, dry_run: bool = False) -> int:
@@ -98,16 +124,29 @@ def run(cfg: dict, only: list[str] | None = None, dry_run: bool = False) -> int:
     for shop in cfg["shops"]:
         if only and shop["name"] not in only:
             continue
+        if not shop.get("enabled", True) and not only:
+            continue
         run_id = db.start_run(shop["name"])
+        run_started = now()
         seeded = db.shop_has_history(shop["name"])
         adapter, base = None, None
         count = whisky = 0
         try:
             adapter, base = adapters.resolve(http, shop)
+            if shop.get("min_delay_seconds"):
+                http.set_host_delay(base, float(shop["min_delay_seconds"]))
             shop_cfg = {**shop, "base_url": base}
+            fetch_notes = getattr(adapter, "fetch_notes", None)
+            new_notes_budget = int(shop.get("notes_new_per_run", 25))
             for listing in adapter.fetch(http, shop_cfg):
                 count += 1
-                parsed, score, deal, alerts = evaluate(listing, shop_cfg, cfg, db, seeded)
+                notes = db.get_notes(listing.key) or ""
+                if fetch_notes and seeded and new_notes_budget > 0 and db.get(listing.key) is None:
+                    # New bottle: grab its tasting notes now so the alert can include them.
+                    new_notes_budget -= 1
+                    notes = _try_notes(fetch_notes, http, listing.url)
+                    db.set_notes(listing.key, notes)
+                parsed, score, deal, alerts = evaluate(listing, shop_cfg, cfg, db, seeded, notes)
                 if not score:
                     continue  # not whisky; don't store
                 whisky += 1
@@ -116,12 +155,27 @@ def run(cfg: dict, only: list[str] | None = None, dry_run: bool = False) -> int:
                 if whisky % 50 == 0:
                     db.commit()
             db.commit()
+            if whisky:
+                gone = db.mark_missing_out_of_stock(shop["name"], run_started)
+                if gone:
+                    log.info("%s: %d listings no longer listed -> out of stock", shop["name"], gone)
+            if fetch_notes and whisky:
+                backfill = db.missing_notes(shop["name"], int(shop.get("notes_backfill_per_run", 30)))
+                for row in backfill:
+                    db.set_notes(row["key"], _try_notes(fetch_notes, http, row["url"]))
+                if backfill:
+                    log.info("%s: fetched tasting notes for %d bottles", shop["name"], len(backfill))
             db.finish_run(run_id, adapter.name, base, whisky)
             log.info("%s: %d listings, %d whisky via %s", shop["name"], count, whisky, adapter.name)
             if whisky == 0:
                 failures.append(f"{shop['name']}: 0 whiskies found via {adapter.name} at {base}")
             elif not seeded:
                 seed_notes.append(f"{shop['name']}: first run, recorded {whisky} whiskies via {adapter.name}")
+        except BotChallenge as exc:
+            db.commit()
+            log.warning("%s: %s", shop["name"], exc)
+            db.finish_run(run_id, adapter.name if adapter else None, base, whisky, f"bot check: {exc}")
+            failures.append(f"{shop['name']}: site showed a bot check; skipped ({whisky} recorded before it)")
         except Exception as exc:  # noqa: BLE001 - one shop failing shouldn't stop the others
             db.commit()
             log.exception("%s failed", shop["name"])

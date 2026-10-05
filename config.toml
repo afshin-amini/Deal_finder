@@ -57,26 +57,39 @@ cask_strength_multiplier = 1.15
 # ---------------------------------------------------------------------------
 
 [[shops]]
+# Shopify. Shows a "Verifying your connection" bot check if hit quickly, so go slow.
+# Every product carries an inflated compare-at ("was") price, so ignore it.
 name = "bsw"
-base_url = ["https://www.bsw.com", "https://www.bswliquor.com"]
-platform = "auto"
-max_products = 500
+base_url = "https://www.bswliquor.com"
+platform = "shopify"
+collections = ["scotch-whisky", "scotch-deals", "whisky-deals"]
+min_delay_seconds = 8
+trust_compare_at = false
 
 [[shops]]
+# Custom site. Category pages carry price/region/vintage/description; Andrew's and
+# Evan's tasting notes are on each product page, fetched once per bottle.
+# robots.txt asks for Crawl-delay: 20 (honoured automatically).
 name = "kwm"
-base_url = ["https://kensingtonwinemarket.com", "https://www.kensingtonwinemarket.com"]
-platform = "auto"
+base_url = "https://kensingtonwinemarket.com"
+platform = "kwm"
+categories = ["scotch"]
 has_tasting_notes = true
-max_products = 600
+notes_new_per_run = 25        # new bottles: fetch notes immediately so alerts include them
+notes_backfill_per_run = 30   # existing bottles: ~10 min/day until all have notes
 
 [[shops]]
-name = "crown"
-base_url = ["https://thecrowncellars.com", "https://www.thecrowncellars.com"]
-platform = "auto"
-max_products = 400
-
-[[shops]]
+# Shopify. Tags include "New Arrival", "Scotch Whisky"; descriptions present.
 name = "craft"
-base_url = ["https://craftcellars.ca", "https://www.craftcellars.ca"]
+base_url = "https://craftcellars.ca"
+platform = "shopify"
+collections = ["scotch", "daily-deal-whisky", "new-arrivals-whisky"]
+min_delay_seconds = 5
+
+[[shops]]
+# Behind a Cloudflare browser challenge ("Just a moment...") for non-browser
+# clients. Disabled until there's a sanctioned way in (see README).
+name = "crown"
+base_url = "https://thecrowncellars.com"
 platform = "auto"
-max_products = 400
+enabled = false

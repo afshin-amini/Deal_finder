@@ -228,6 +228,7 @@ class Parsed:
 
 _AGE_RE = re.compile(
     r"\b(\d{1,2})\s*(?:-|\s)?(?:years?[\s-]*old|year|yrs?|yo|y\.o\.?|y/o|ans)\b|\baged\s+(\d{1,2})\b", re.I)
+_MATURED_RE = re.compile(r"\b(?:matured|aged|spent)\s+(?:for\s+)?(\d{1,2})\s+years\b()", re.I)
 _YEAR_RANGE_RE = re.compile(r"\b(19[5-9]\d|20[0-3]\d)\s*[-/–]\s*(19[5-9]\d|20[0-3]\d)\b")
 _VINTAGE_RE = re.compile(r"\b(?:distilled|vintage|dist\.?)\s*(?:in\s*)?(19[5-9]\d|20[0-3]\d)\b|\b(19[5-9]\d|20[0-2]\d)\s+vintage\b", re.I)
 _BOTTLED_RE = re.compile(r"\b(?:bottled|btl\.?)\s*(?:in\s*)?(19[5-9]\d|20[0-3]\d)\b", re.I)
@@ -274,7 +275,7 @@ def parse(title: str, extra_text: str = "") -> Parsed:
     full = normalize(f"{title} {extra_text}")
     p = Parsed()
 
-    m = _AGE_RE.search(t) or _AGE_RE.search(full)
+    m = _AGE_RE.search(t) or _AGE_RE.search(full) or _MATURED_RE.search(full)
     if m:
         age = int(m.group(1) or m.group(2))
         if 3 <= age <= 70:

@@ -68,3 +68,39 @@ def test_tasting_notes_extracted_from_body():
                                "Palate: earthy, cherries.</div></body>")
     l = parse_product_page("kwm", "https://k.com/x", page, want_notes=True)
     assert "leather" in l.description and "Menu" not in l.description
+
+
+KWM_CARD = """<div class="product-content"><h6>{name}</h6><div class="product-price">${price}</div></div>
+<a href="/product/{sku}/{slug}" class="product-link"></a></div></div>
+<!-- Item --><div class="modal fade" id="product-{pk}" tabindex="-1" role="dialog">
+<h3>{name}</h3><p class="h4">${price}</p><div class="product-meta"><span class="h6 mr-2">Region:</span>Scotland &gt; Speyside<br><span class="h6 mr-2">Vintage:</span>2005</div>
+<p class="d-none d-lg-block"><p>Matured 18 years in a First Fill Sherry Hogshead before bottling at 58.5%.</p></p>
+<!-- Add to Cart --><form>{cart}</form></div>
+"""
+
+
+def test_kwm_listing_page():
+    from dealfinder.adapters.kwm import parse_listing_page
+
+    page = "<html>" + KWM_CARD.format(
+        name="Benromach 2005 KWM Cask 335", price="284.99", sku="118530", slug="benromach-2005-kwm-cask-335",
+        pk="1", cart='<a class="addtocart" data-id="118530" data-price="284.99">Add</a>',
+    ) + KWM_CARD.format(
+        name="G&amp;M Glentauchers 25ml Sample", price="10.99", sku="35750", slug="gm-sample", pk="2", cart="",
+    ) + "</html>"
+    a, b = parse_listing_page("kwm", "https://k.com", page)
+    assert (a.product_id, a.price, a.in_stock) == ("118530", 284.99, True)
+    assert a.url == "https://k.com/product/118530/benromach-2005-kwm-cask-335"
+    assert a.product_type == "Scotland > Speyside" and a.tags == ["vintage 2005"]
+    assert "58.5%" in a.description
+    assert (b.product_id, b.price, b.in_stock, b.title) == ("35750", 10.99, False, "G&M Glentauchers 25ml Sample")
+
+
+def test_kwm_notes():
+    from dealfinder.adapters.kwm import parse_notes
+
+    page = ("<html><nav>Products Wine Scotch</nav><div>Tasting Notes Distillery Andrew's Tasting Note "
+            "Nose: soft new leather, tobacco. Palate: earthy peat. Finish: long.</div>"
+            "<div>Adapted from the article written by Andrew</div><footer>Follow Us</footer></html>")
+    n = parse_notes(page)
+    assert n.startswith("Andrew's Tasting Note Nose: soft new leather") and "Adapted" not in n

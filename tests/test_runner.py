@@ -70,6 +70,7 @@ def test_robots_disallow(monkeypatch):
     class R:
         status_code = 200
         text = "User-agent: *\nDisallow: /cart\n"
+        headers = {"Content-Type": "text/plain"}
 
     monkeypatch.setattr(http.session, "get", lambda *a, **k: R())
     assert http.allowed("https://shop.test/products/x")

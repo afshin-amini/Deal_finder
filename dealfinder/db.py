@@ -37,6 +37,11 @@ CREATE TABLE IF NOT EXISTS alerts (
     sent_at  TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS alerts_key ON alerts(key, kind, sent_at);
+CREATE TABLE IF NOT EXISTS notes (
+    key         TEXT PRIMARY KEY,
+    notes       TEXT NOT NULL,
+    fetched_at  TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS runs (
     shop         TEXT NOT NULL,
     started_at   TEXT NOT NULL,
@@ -116,6 +121,35 @@ class DB:
 
     def commit(self) -> None:
         self.conn.commit()
+
+    def mark_missing_out_of_stock(self, shop: str, run_started: str) -> int:
+        """Listings not seen in a complete run of this shop are gone from its catalog."""
+        cur = self.conn.execute(
+            "UPDATE listings SET last_in_stock=0 WHERE shop=? AND last_seen<? AND last_in_stock IS NOT 0",
+            (shop, run_started),
+        )
+        self.conn.commit()
+        return cur.rowcount
+
+    # ---- tasting notes ----------------------------------------------------
+
+    def get_notes(self, key: str) -> str | None:
+        row = self.conn.execute("SELECT notes FROM notes WHERE key=?", (key,)).fetchone()
+        return row["notes"] if row else None
+
+    def set_notes(self, key: str, notes: str) -> None:
+        # Store "" too, so pages without notes aren't fetched again.
+        self.conn.execute("INSERT OR REPLACE INTO notes(key, notes, fetched_at) VALUES (?,?,?)", (key, notes, now()))
+        self.conn.commit()
+
+    def missing_notes(self, shop: str, limit: int) -> list[sqlite3.Row]:
+        """Best-scoring in-stock bottles first, so the backfill reaches the interesting ones early."""
+        return self.conn.execute(
+            """SELECT l.key, l.url FROM listings l LEFT JOIN notes n ON n.key=l.key
+               WHERE l.shop=? AND n.key IS NULL AND l.last_in_stock IS NOT 0
+               ORDER BY json_extract(l.score_json, '$.palate') DESC LIMIT ?""",
+            (shop, limit),
+        ).fetchall()
 
     # ---- alerts -----------------------------------------------------------
 

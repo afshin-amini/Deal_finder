@@ -93,3 +93,7 @@ def test_deal_score_drop_and_median():
 def test_deal_score_no_history():
     d = deal_score(100.0, [], None, None, parse("NAS whisky"), {})
     assert d.score == 0 and d.reasons == []
+
+
+def test_matured_years_age():
+    assert parse("Benromach 2005 KWM Cask 335", "matured 18 years in a First Fill Sherry Hogshead").age == 18
