@@ -122,3 +122,26 @@ def test_kwm_comment_stops_at_next_note():
     page = ("<div>Andrew's Tasting Note Nose: mango. Palate: creamy. Finish: fruity. Comment: a dangerously drinkable "
             "malt. Producer Tasting Note \"Sweet lemon aromas combine with sherbet.\"</div>")
     assert "Producer" not in parse_notes(page)
+
+
+def test_kwm_search_paginates():
+    from dealfinder.adapters.kwm import KwmAdapter
+
+    def card(sku):
+        return KWM_CARD.format(name=f"Ardmore {sku}", price="99.99", sku=sku, slug=f"ardmore-{sku}", pk=sku,
+                               cart=f'<a class="addtocart" data-id="{sku}" data-price="99.99">Add</a>')
+
+    pages = {1: card("1") + card("2") + 'href="/products?gsearch=ardmore&page=2#results"', 2: card("3"), 3: ""}
+    calls = []
+
+    class Http:
+        def get(self, url, params=None, **kw):
+            calls.append(params["page"])
+
+            class R:
+                status_code = 200
+                text = pages[params["page"]]
+            return R()
+
+    found = list(KwmAdapter().search(Http(), {"name": "kwm", "base_url": "https://k.com"}, "ardmore"))
+    assert [l.product_id for l in found] == ["1", "2", "3"] and calls == [1, 2]

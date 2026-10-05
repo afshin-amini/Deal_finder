@@ -143,6 +143,23 @@ class KwmAdapter:
                 if page >= last:
                     break
 
+    def search(self, http: PoliteSession, shop: dict, query: str) -> Iterator[Listing]:
+        """KWM's site search: one quick request per 9 results instead of crawling a category."""
+        base = shop["base_url"]
+        seen: set[str] = set()
+        for page in range(1, MAX_PAGES + 1):
+            resp = http.get(f"{base}/products", params={"gsearch": query, "page": page})
+            if resp.status_code != 200:
+                break
+            new = [l for l in parse_listing_page(shop["name"], base, resp.text) if l.key not in seen]
+            if not new:
+                break
+            for l in new:
+                seen.add(l.key)
+                yield l
+            if f"page={page + 1}" not in resp.text:
+                break
+
     def fetch_notes(self, http: PoliteSession, url: str) -> str:
         resp = http.get(url)
         return parse_notes(resp.text) if resp.status_code == 200 else ""

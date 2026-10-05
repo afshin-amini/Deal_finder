@@ -4,6 +4,7 @@
   python -m dealfinder probe [--shop bsw]                  which platform does each shop use?
   python -m dealfinder top [--track peat_earth|fruit_earth] [-n 20]
   python -m dealfinder history "ardmore"                   price history for matching bottles
+  python -m dealfinder report "Ardmore" --shop kwm         email every match with tasting notes
   python -m dealfinder score "Ardmore 12 Year Old Port Wood Finish 46%"   test the scorer
 """
 
@@ -96,6 +97,11 @@ def main(argv: list[str] | None = None) -> int:
     t.add_argument("-n", type=int, default=25)
     hi = sub.add_parser("history")
     hi.add_argument("query")
+    rp = sub.add_parser("report", help="email every bottle matching a search, with tasting notes")
+    rp.add_argument("query")
+    rp.add_argument("--shop", action="append")
+    rp.add_argument("--out", default="data/report.html")
+    rp.add_argument("--dry-run", action="store_true")
     sc = sub.add_parser("score")
     sc.add_argument("title")
     sc.add_argument("--notes", default="")
@@ -108,6 +114,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.cmd == "run":
         from .runner import run
         return run(cfg, args.shop, args.dry_run)
+    if args.cmd == "report":
+        from .report import run_report
+        return run_report(cfg, args.query, args.shop, args.out, args.dry_run)
     if args.cmd == "probe":
         cmd_probe(cfg, args.shop)
     elif args.cmd == "top":
