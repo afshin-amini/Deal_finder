@@ -114,3 +114,11 @@ def test_kwm_notes_dedup_and_ellipsis():
     page = f"<html><div>{note}</div><div>{note}</div><p>Originally written by Evan for a blog post.</p></html>"
     n = parse_notes(page)
     assert n.count("Nose:") == 1 and n.endswith("superb stuff!")
+
+
+def test_kwm_comment_stops_at_next_note():
+    from dealfinder.adapters.kwm import parse_notes
+
+    page = ("<div>Andrew's Tasting Note Nose: mango. Palate: creamy. Finish: fruity. Comment: a dangerously drinkable "
+            "malt. Producer Tasting Note \"Sweet lemon aromas combine with sherbet.\"</div>")
+    assert "Producer" not in parse_notes(page)

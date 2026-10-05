@@ -20,12 +20,22 @@ python -m dealfinder score "G&M Connoisseurs Choice Ardmore 2009 Refill Sherry H
 python -m dealfinder run --dry-run
 ```
 
-**ntfy:** install the ntfy app and subscribe to a hard-to-guess topic, such as `whisky-deals-7f3k2q`. Then either `export NTFY_TOPIC=whisky-deals-7f3k2q` or set `topic` in `config.toml`. Anyone who knows a public ntfy.sh topic name can read it, so pick a topic name nobody would guess.
+## Daily email (GitHub Actions)
 
-## Running daily
+The workflow in `.github/workflows/daily.yml` sends one email per day. It covers price drops, new arrivals, bottles back in stock and deals, with KWM tasting notes included. If a shop has scrape problems, the email says so.
 
-- **GitHub Actions:** `.github/workflows/daily.yml` runs every morning. Add the repo secret `NTFY_TOPIC`, plus `NTFY_TOKEN` if you use a protected topic. Price history is kept in the Actions cache. If the cache is ever evicted, the next run records a fresh baseline and you miss one day of alerts. Some shops block cloud/datacenter IPs. If `probe` works from your laptop but the Action reports "scrape problems", run it locally instead.
-- **Local cron:** `17 8 * * * cd ~/deal_finder && .venv/bin/python -m dealfinder run >> data/run.log 2>&1`
+1. **Create a Gmail App Password.** Go to Google Account → Security and turn on 2-Step Verification if it's off. Then go to **App passwords**, create one called "whisky", and copy the 16-character code.
+2. **Add repository secrets.** In GitHub, open the repo → Settings → Secrets and variables → Actions → **New repository secret**, and add:
+   - `EMAIL_TO`: the address to send to
+   - `SMTP_USER`: the Gmail address that sends the email (it can be the same one)
+   - `SMTP_PASSWORD`: the App Password from step 1
+   - `NTFY_TOPIC` (optional): also sends phone push alerts via the ntfy app
+3. **Test it.** Go to the Actions tab → "daily whisky deals" → **Run workflow**. The first run records a price baseline and emails you a summary. After that, emails only contain changes.
+4. **Turn on the daily schedule.** Uncomment the two `schedule:` lines at the top of `daily.yml`. The schedule only runs on the repo's default branch.
+
+For a mail provider other than Gmail, also set `SMTP_HOST` and `SMTP_PORT`. Port 465 uses SSL; port 587 uses STARTTLS.
+
+Price history is kept between runs in the Actions cache. If GitHub ever evicts it, the next run records a fresh baseline and you miss one day of alerts.
 
 ## How each shop is read
 

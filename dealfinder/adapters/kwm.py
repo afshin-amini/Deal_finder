@@ -93,7 +93,8 @@ def parse_notes(html_text: str) -> str:
                     nxt = _sentence_end(text, end, 300)
                     if nxt - end < 15 or nxt >= seg_end:
                         break
-                    if re.search(r"\b(written by|blog|article|magazine|distillery was|founded)\b", text[end:nxt], re.I):
+                    if re.search(r"\b(written by|blog|article|magazine|distillery was|founded)\b|Tasting Note",
+                                 text[end:nxt], re.I):
                         break
                     end = nxt
         end = min(end, stop)
