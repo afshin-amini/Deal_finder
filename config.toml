@@ -5,7 +5,7 @@ db_path = "data/prices.db"
 
 [http]
 min_delay_seconds = 4.0      # between requests to the same host (robots.txt Crawl-delay wins if larger)
-timeout_seconds = 30
+timeout_seconds = 90           # KWM's 100-bottle pages can take a while
 user_agent = "WhiskyDealFinder/0.1 (personal price tracker; +https://github.com/afshin-amini/deal_finder)"
 
 [ntfy]

@@ -165,8 +165,16 @@ def palate_score(parsed: Parsed, text: str, watchlist: dict[str, list[str]], has
         if watch_bonus:
             b += watch_bonus; rB.append(f"watchlist +{watch_bonus}")
 
-    s.peat_earth = min(100, a)
-    s.fruit_earth = min(100, b)
+    # Enthusiast bias: 40-43% standard bottlings (Glenlivet 12, Laphroaig 10) fit the profile on paper
+    # but shouldn't outrank the single casks and higher-strength releases. Old or watched bottles exempt.
+    if parsed.abv and parsed.abv < 45 and not s.watchlist and not (parsed.age and parsed.age >= 20):
+        if a:
+            a -= 12; rA.append("standard strength <45% -12")
+        if b:
+            b -= 12; rB.append("standard strength <45% -12")
+
+    s.peat_earth = max(0, min(100, a))
+    s.fruit_earth = max(0, min(100, b))
     return s
 
 

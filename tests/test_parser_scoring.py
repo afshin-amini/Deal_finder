@@ -97,3 +97,9 @@ def test_deal_score_no_history():
 
 def test_matured_years_age():
     assert parse("Benromach 2005 KWM Cask 335", "matured 18 years in a First Fill Sherry Hogshead").age == 18
+
+
+def test_standard_strength_ranks_below_cask_strength():
+    _, std = score("Glenlivet 12 Year Old 40% Bourbon cask")
+    _, cs = score("Glen Elgin 12 Year Old 1st Fill Bourbon Barrel 56.2%")
+    assert cs.fruit_earth > std.fruit_earth + 10
