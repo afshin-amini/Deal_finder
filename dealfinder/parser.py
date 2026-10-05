@@ -171,8 +171,8 @@ CASK_PATTERNS: list[tuple[str, str]] = [
     ("bourbon", r"\b(ex[\s-]*)?bourbon\s*(cask|barrel|hogshead|hhd|wood|matured)?|\bamerican oak\b|\bbarrel\b"),
     ("hogshead", r"\bhogshead|\bhhd\b|\bhogs?\b"),
     ("refill", r"\brefill\b"),
-    ("first_fill_sherry", r"(first|1st)[\s-]*fill\s+(oloroso|sherry|px|pedro)"),
-    ("refill_sherry", r"refill\s+(oloroso|sherry|px|pedro|butt)|(2nd|second)[\s-]*fill\s+(oloroso|sherry)"),
+    ("first_fill_sherry", r"(first|1st)[\s-]*fill\s+(ex[\s-]*)?(oloroso|sherry|px|pedro)"),
+    ("refill_sherry", r"refill\s+(ex[\s-]*)?(oloroso|sherry|px|pedro|butt)|(2nd|second)[\s-]*fill\s+(ex[\s-]*)?(oloroso|sherry)"),
     ("sherry_hogshead", r"(sherry|oloroso)\s+(hogshead|hhd)"),
     ("sherry_butt", r"(sherry|oloroso|px)\s+butt"),
     ("px", r"\bp\.?x\.?\b|pedro xim[eé]nez"),
@@ -183,7 +183,7 @@ CASK_PATTERNS: list[tuple[str, str]] = [
     ("red_wine", r"red wine|\bbordeaux\b|\bburgundy\b|\bpinot noir\b|\bcabernet\b|\bbarolo\b|\bmadeira\b|\bmarsala\b|\brioja\b|\bsauternes\b|\bwine cask"),
     ("rum", r"\brum\s*(cask|barrel|finish)"),
     ("virgin_oak", r"virgin oak|new oak|\bstr\b"),
-    ("finish", r"\bfinish(ed)?\b|\bdouble matured\b|\bacd\b|\bmatured in .* then\b"),
+    ("finish", r"\bfinish(ed)?\b(?!\s*:)|\bdouble matured\b|\bacd\b|\bmatured in .* then\b"),
     ("butt", r"\bbutts?\b"),
 ]
 _CASK_RES = [(name, re.compile(rx, re.I)) for name, rx in CASK_PATTERNS]
@@ -228,7 +228,8 @@ class Parsed:
 
 _AGE_RE = re.compile(
     r"\b(\d{1,2})\s*(?:-|\s)?(?:years?[\s-]*old|year|yrs?|yo|y\.o\.?|y/o|ans)\b|\baged\s+(\d{1,2})\b", re.I)
-_MATURED_RE = re.compile(r"\b(?:matured|aged|spent)\s+(?:for\s+)?(\d{1,2})\s+years\b()", re.I)
+_MATURED_RE = re.compile(
+    r"\b(?:matured|aged|spent|maturing)\b[^.]{0,80}?\b(?:for\s+)?(\d{1,2})\s+years\b()", re.I)
 _YEAR_RANGE_RE = re.compile(r"\b(19[5-9]\d|20[0-3]\d)\s*[-/–]\s*(19[5-9]\d|20[0-3]\d)\b")
 _VINTAGE_RE = re.compile(r"\b(?:distilled|vintage|dist\.?)\s*(?:in\s*)?(19[5-9]\d|20[0-3]\d)\b|\b(19[5-9]\d|20[0-2]\d)\s+vintage\b", re.I)
 _BOTTLED_RE = re.compile(r"\b(?:bottled|btl\.?)\s*(?:in\s*)?(19[5-9]\d|20[0-3]\d)\b", re.I)

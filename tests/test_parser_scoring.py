@@ -103,3 +103,16 @@ def test_standard_strength_ranks_below_cask_strength():
     _, std = score("Glenlivet 12 Year Old 40% Bourbon cask")
     _, cs = score("Glen Elgin 12 Year Old 1st Fill Bourbon Barrel 56.2%")
     assert cs.fruit_earth > std.fruit_earth + 10
+
+
+def test_finish_heading_is_not_a_cask():
+    assert "finish" not in parse("Inchgower 2009", "Finish: long and dry").casks
+    assert "finish" in parse("Ardmore 12 Port Wood Finish").casks
+
+
+def test_matured_for_n_years():
+    assert parse("Berry's Inchgower 2009", "matured in an ex-Oloroso sherry cask for 13 years").age == 13
+
+
+def test_first_fill_ex_sherry_is_heavy():
+    assert parse("G&M Miltonduff 2007", "matured in a first fill ex-Sherry hogshead").sherry_level == "heavy"

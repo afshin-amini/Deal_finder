@@ -34,7 +34,9 @@ def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool,
              notes: str = "") -> tuple[dict, dict, dict, list[Alert]]:
     if not shop_cfg.get("trust_compare_at", True):
         listing.compare_at_price = None  # shop shows a permanent "was" price; history is the real signal
-    parsed = parse(listing.title, f"{listing.vendor} {listing.product_type} {' '.join(listing.tags)} {listing.description} {notes}")
+    # Facts (cask, age, ABV) come from the listing; tasting notes only feed the flavour words below,
+    # since notes prose ("Finish: ...", "like a PX bomb") would fake cask detections.
+    parsed = parse(listing.title, f"{listing.vendor} {listing.product_type} {' '.join(listing.tags)} {listing.description}")
     if not parsed.is_whisky:
         return parsed.to_dict(), {}, {}, []
     text = f"{listing.text_blob()} {notes}"
