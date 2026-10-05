@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dram Ledger</title>
+<meta name="description" content="Whisky deals from Calgary shops, matched to your own tasting journal.">
+<meta name="theme-color" content="#2c5a4c" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131715" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dram Ledger">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: phone-first single column, sticky top bar, bottom tab bar, bottle details in a bottom sheet */
+:root {
+  --bg: #f3f4f1; --surface: #ffffff; --raised: #fbfbf9; --fg: #1c221f; --muted: #5d6762; --line: #d9ddd8;
+  --accent: #2c5a4c; --accent-fg: #ffffff; --accent-soft: #e2ece7;
+  --peat: #4f5d6b; --peat-soft: #e3e7ec; --fruit: #9b3446; --fruit-soft: #f3e3e6;
+  --amber: #8a5a12; --amber-soft: #f6eedf; --good: #2e7d4f; --warn: #a3520f;
+  --font-display: "Bitter", Georgia, serif;
+  --font-body: "Source Sans 3", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --tabbar: 58px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131715; --surface: #1b201d; --raised: #20261f; --fg: #e6ebe7; --muted: #9aa59f; --line: #2c3430;
+    --accent: #7fc0a8; --accent-fg: #0f1412; --accent-soft: #1f3029; --peat: #a7b6c6; --peat-soft: #232a31;
+    --fruit: #e48a9a; --fruit-soft: #33222a; --amber: #d9a64e; --amber-soft: #2b2416; --good: #79c99a; --warn: #e3a35f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131715; --surface: #1b201d; --raised: #20261f; --fg: #e6ebe7; --muted: #9aa59f; --line: #2c3430;
+  --accent: #7fc0a8; --accent-fg: #0f1412; --accent-soft: #1f3029; --peat: #a7b6c6; --peat-soft: #232a31;
+  --fruit: #e48a9a; --fruit-soft: #33222a; --amber: #d9a64e; --amber-soft: #2b2416; --good: #79c99a; --warn: #e3a35f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.45 var(--font-body); -webkit-text-size-adjust: 100%;
+  padding-bottom: calc(var(--tabbar) + env(safe-area-inset-bottom, 0px) + 16px); }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.topbar { position: sticky; top: 0; z-index: 10; background: var(--bg); padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 8px;
+  border-bottom: 1px solid var(--line); display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.topbar h1 { font: 700 1.25rem/1.2 var(--font-display); margin: 0; }
+.topbar .sub { font: 0.75rem var(--font-data); color: var(--muted); text-align: right; }
+main { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 12px 0; }
+
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line);
+  display: grid; grid-template-columns: repeat(4, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: var(--tabbar);
+  text-decoration: none; color: var(--muted); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em; }
+.tabbar a svg { width: 22px; height: 22px; }
+.tabbar a[aria-current="page"] { color: var(--accent); }
+
+h2.section { font: 700 1.05rem var(--font-display); margin: 18px 0 6px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+h2.section small { font: 400 0.8rem var(--font-body); color: var(--muted); }
+.hint { color: var(--muted); font-size: 0.92rem; margin: 4px 0 10px; max-width: 65ch; }
+.banner { background: var(--amber-soft); color: var(--fg); border-left: 3px solid var(--amber); padding: 10px 12px; border-radius: 0 8px 8px 0; font-size: 0.92rem; margin: 10px 0; }
+.banner a, .banner button.link { color: var(--amber); font-weight: 600; }
+
+.controls { display: grid; gap: 8px; margin: 8px 0 6px; }
+.chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-weight: 600; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+input[type="search"], input[type="text"], input[type="number"], input[type="date"], input[type="password"], select, textarea {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; min-width: 0; font-size: 1rem; }
+input[type="search"] { flex: 1 1 180px; }
+textarea { width: 100%; min-height: 64px; resize: vertical; }
+
+.list { display: grid; }
+.item { display: grid; gap: 4px; padding: 12px 0; border-bottom: 1px solid var(--line); cursor: pointer; min-width: 0; background: none; border-left: 0; border-right: 0; border-top: 0; text-align: left; width: 100%; }
+.item .top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.item .name { font: 500 1.02rem/1.25 var(--font-display); min-width: 0; }
+.item .price { font: 500 0.98rem var(--font-data); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.meta { font: 0.78rem var(--font-data); color: var(--muted); display: flex; flex-wrap: wrap; gap: 2px 10px; }
+.meta b { color: var(--fg); font-weight: 500; }
+.tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.tag { font-size: 0.72rem; padding: 1px 7px; border-radius: 4px; font-weight: 600; letter-spacing: 0.02em; background: var(--accent-soft); color: var(--accent); }
+.tag.drop, .tag.deal { background: #e3f1e8; color: var(--good); }
+.tag.new { background: var(--amber-soft); color: var(--amber); }
+.tag.restock { background: var(--peat-soft); color: var(--peat); }
+.tag.shop { background: transparent; border: 1px solid var(--line); color: var(--muted); text-transform: uppercase; }
+.tag.cask { background: transparent; border: 1px solid var(--line); color: var(--muted); font-weight: 400; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tag.drop, :root:not([data-theme="light"]) .tag.deal { background: #1d3226; } }
+:root[data-theme="dark"] .tag.drop, :root[data-theme="dark"] .tag.deal { background: #1d3226; }
+.fit { font: 600 0.78rem var(--font-body); }
+.fit.peat { color: var(--peat); } .fit.fruit { color: var(--fruit); }
+.reason { font-size: 0.82rem; color: var(--good); }
+.empty { padding: 32px 0; text-align: center; color: var(--muted); }
+.more { margin: 14px auto; display: block; }
+
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.btn.danger { color: var(--fruit); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 10px 0; }
+.card h3 { margin: 0 0 6px; font: 700 0.95rem var(--font-display); }
+.pill-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { font-size: 0.8rem; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.pill.neg { background: var(--fruit-soft); color: var(--fruit); }
+
+.score-badge { font: 700 1rem var(--font-data); min-width: 44px; text-align: center; padding: 2px 6px; border-radius: 6px; background: var(--amber-soft); color: var(--amber); }
+
+/* bottom sheet */
+.scrim { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 30; }
+.sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 31; max-height: 92vh; overflow-y: auto; background: var(--bg);
+  border-radius: 14px 14px 0 0; padding: 8px 16px calc(24px + env(safe-area-inset-bottom, 0px)); max-width: 760px; margin: 0 auto;
+  box-shadow: 0 -6px 24px rgba(0,0,0,0.18); }
+.grab { width: 40px; height: 4px; border-radius: 2px; background: var(--line); margin: 4px auto 10px; }
+.sheet h2 { font: 700 1.25rem/1.25 var(--font-display); margin: 0 0 6px; text-wrap: balance; }
+.sheet .close { position: absolute; right: 12px; top: 10px; border: 0; background: none; font-size: 1.6rem; line-height: 1; color: var(--muted); cursor: pointer; padding: 4px 8px; }
+.bigprice { font: 500 1.4rem var(--font-data); }
+.meters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 10px 0; }
+.meter { font-size: 0.75rem; color: var(--muted); display: grid; gap: 3px; }
+.meter .bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.meter .fill { height: 100%; border-radius: 3px; }
+.meter.peat .fill { background: var(--peat); } .meter.fruit .fill { background: var(--fruit); }
+.meter .lbl { display: flex; justify-content: space-between; font-variant-numeric: tabular-nums; }
+.notes { border-left: 3px solid var(--amber); background: var(--surface); padding: 8px 12px; border-radius: 0 8px 8px 0; display: grid; gap: 10px; font-size: 0.93rem; }
+.notes .who { font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.notes p { margin: 0 0 3px; } .notes em { font-style: normal; font-weight: 600; }
+.chart { width: 100%; height: 90px; display: block; }
+.chart text { font: 10px var(--font-data); fill: var(--muted); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+form.journal { display: grid; gap: 10px; }
+form.journal label { display: grid; gap: 4px; font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+.scorerow { display: grid; grid-template-columns: 1fr 78px; gap: 10px; align-items: center; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.status { font-size: 0.88rem; min-height: 1.2em; }
+.status.err { color: var(--fruit); } .status.ok { color: var(--good); }
+@media (prefers-reduced-motion: no-preference) { .sheet { animation: up 0.18s ease-out; } @keyframes up { from { transform: translateY(24px); opacity: 0.6; } } }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1 id="view-title">Deals</h1>
+  <div class="sub" id="updated"></div>
+</header>
+
+<main id="main"><p class="empty">Loading…</p></main>
+
+<nav class="tabbar" aria-label="Sections">
+  <a href="#deals" data-tab="deals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>Deals</a>
+  <a href="#foryou" data-tab="foryou"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l-1 6a5 5 0 0 1-6 0Z"/><path d="M12 13v7"/><path d="M8 21h8"/></svg>For you</a>
+  <a href="#search" data-tab="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search</a>
+  <a href="#journal" data-tab="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4Z"/><path d="M8 9h8M8 13h6"/></svg>Journal</a>
+</nav>
+
+<div id="sheet-root"></div>
+
+<script>
+"use strict";
+/* ---------------- config & storage ---------------- */
+const SHOP_NAME = { bsw: "BSW", kwm: "KWM", craft: "Craft Cellars", crown: "Crown Cellars" };
+const KIND = { drop: "Price drop", new: "New", restock: "Back in stock", deal: "Deal" };
+const CASK = { first_fill_bourbon: "1st-fill bourbon", refill_bourbon: "refill bourbon", bourbon: "bourbon", hogshead: "hogshead",
+  first_fill_sherry: "1st-fill sherry", refill_sherry: "refill sherry", sherry_hogshead: "sherry hogshead", sherry_butt: "sherry butt",
+  px: "PX", oloroso: "oloroso", fino: "fino", sherry: "sherry", port: "port", red_wine: "wine", rum: "rum", virgin_oak: "virgin oak" };
+const PAGE = 40;
+
+function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+function guessRepo() {
+  const host = location.hostname.match(/^([^.]+)\.github\.io$/);
+  const path = location.pathname.split("/").filter(Boolean)[0];
+  return { owner: host ? host[1] : "", repo: host && path ? path : "" };
+}
+const cfg = {
+  get token() { return store("dl-token") || ""; },
+  get owner() { return store("dl-owner") || guessRepo().owner || "afshin-amini"; },
+  get repo() { return store("dl-repo") || guessRepo().repo || "Deal_finder"; },
+};
+const JOURNAL_PATH = "docs/data/journal.json";
+
+/* ---------------- data ---------------- */
+const state = { catalog: [], byKey: new Map(), deals: [], meta: {}, journal: [], journalSha: null, history: null, notes: null,
+  filters: { shop: "all", style: "all", max: 0, q: "", jq: "", jsort: "date" }, shown: PAGE };
+
+async function getJSON(url) {
+  const r = await fetch(url + (url.includes("?") ? "&" : "?") + "v=" + Date.now().toString(36).slice(0, -3), { cache: "no-cache" });
+  if (!r.ok) throw new Error(url + " → HTTP " + r.status);
+  return r.json();
+}
+async function loadCore() {
+  const [catalog, deals, meta] = await Promise.all([getJSON("data/catalog.json"), getJSON("data/deals.json"), getJSON("data/meta.json")]);
+  state.catalog = catalog; state.deals = deals; state.meta = meta;
+  state.byKey = new Map(catalog.map(c => [c.k, c]));
+  el("updated").textContent = meta.generated ? "Updated " + relTime(meta.generated) : "";
+}
+async function loadLazy(name) {
+  if (state[name] === null) { try { state[name] = await getJSON("data/" + name + ".json"); } catch (e) { state[name] = {}; } }
+  return state[name];
+}
+
+/* GitHub contents API for the journal (needs a token to write) */
+function b64decode(s) { const bin = atob(s.replace(/\n/g, "")); return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))); }
+function b64encode(str) { const bytes = new TextEncoder().encode(str); let bin = ""; bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin); }
+async function gh(path, opts = {}) {
+  const r = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/${path}`, { ...opts,
+    headers: { "Accept": "application/vnd.github+json", "Authorization": "Bearer " + cfg.token, ...(opts.headers || {}) } });
+  if (!r.ok) { const t = await r.text(); const err = new Error(`GitHub ${r.status}: ${t.slice(0, 160)}`); err.status = r.status; throw err; }
+  return r.json();
+}
+async function loadJournal() {
+  if (cfg.token) {
+    try {
+      const f = await gh("contents/" + JOURNAL_PATH);
+      state.journalSha = f.sha; state.journal = JSON.parse(b64decode(f.content)).entries || []; return;
+    } catch (e) { state.journalError = e.message; }
+  }
+  try { state.journal = (await getJSON("data/journal.json")).entries || []; } catch (e) { state.journal = []; }
+}
+async function saveJournal(mutate, message) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const f = await gh("contents/" + JOURNAL_PATH);
+    const doc = JSON.parse(b64decode(f.content)); doc.entries = doc.entries || [];
+    mutate(doc.entries);
+    doc.entries.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    try {
+      const res = await gh("contents/" + JOURNAL_PATH, { method: "PUT", body: JSON.stringify({ message, sha: f.sha,
+        content: b64encode(JSON.stringify(doc, null, 1) + "\n") }) });
+      state.journal = doc.entries; state.journalSha = res.content.sha; return;
+    } catch (e) { if (e.status !== 409 || attempt) throw e; }  // someone else wrote; re-read and retry once
+  }
+}
+
+/* ---------------- helpers ---------------- */
+const el = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const money = v => v == null ? "" : "$" + Number(v).toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function relTime(iso) {
+  const d = (Date.now() - new Date(iso).getTime()) / 36e5;
+  if (d < 1) return "just now"; if (d < 24) return Math.round(d) + "h ago";
+  return new Date(iso).toLocaleDateString("en-CA", { month: "short", day: "numeric" });
+}
+const today = () => new Date().toISOString().slice(0, 10);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const fitScore = c => c.me != null ? c.me : c.pal;  // personal prediction when the profile is on
+const profileOn = () => !!(state.meta.profile && state.meta.profile.active);
+
+function facts(c) {
+  return [c.a ? `<span><b>${c.a}</b> yr</span>` : "", c.v ? `<span><b>${c.v}%</b></span>` : "",
+    c.ml && c.ml !== 700 && c.ml !== 750 ? `<span>${c.ml} ml</span>` : "", c.sc ? "<span>single cask</span>" : "",
+    c.pk && c.pk !== "none" && c.pk !== "unknown" ? `<span>peat: ${esc(c.pk)}</span>` : "",
+    c.sh && c.sh !== "none" ? `<span>sherry: ${esc(c.sh)}</span>` : ""].join("");
+}
+function fitLabel(c) {
+  if (c.me != null) return `<span class="fit ${c.tr === "peat_earth" ? "peat" : "fruit"}">You: ~${Math.round(c.me)}</span>`;
+  const t = c.tr === "peat_earth" ? ["peat", "Peaty"] : ["fruit", "Fruit"];
+  return `<span class="fit ${t[0]}">${t[1]} ${Math.max(c.pe || 0, c.fe || 0)}</span>`;
+}
+function itemHtml(c, extraTags = "") {
+  const sim = c.sim ? `<div class="reason">Like your ${esc(c.sim.name)} (${c.sim.score})</div>` : "";
+  const deal = c.dr && c.dr.length ? `<div class="reason">${esc(c.dr[0])}</div>` : "";
+  return `<button class="item" data-key="${esc(c.k)}">
+    <div class="top"><span class="name">${esc(c.t)}</span><span class="price">${money(c.p)}</span></div>
+    <div class="meta">${fitLabel(c)}${facts(c)}</div>
+    <div class="tags"><span class="tag shop">${esc(SHOP_NAME[c.s] || c.s)}</span>${extraTags}${(c.w || []).map(w => `<span class="tag">${esc(w)}</span>`).join("")}</div>
+    ${sim || deal}</button>`;
+}
+function bindItems(root) { root.querySelectorAll(".item[data-key]").forEach(b => b.onclick = () => openBottle(b.dataset.key)); }
+
+function shopChips() {
+  const shops = Object.keys(state.meta.shops || {});
+  return `<div class="chips" id="shops">${["all", ...shops].map(s =>
+    `<button class="chip" data-v="${s}" aria-pressed="${state.filters.shop === s}">${s === "all" ? "All shops" : esc(SHOP_NAME[s] || s)}</button>`).join("")}</div>`;
+}
+function bindChips(id, key, rerender) {
+  const root = el(id); if (!root) return;
+  root.onclick = e => { const c = e.target.closest(".chip"); if (!c) return; state.filters[key] = c.dataset.v; state.shown = PAGE; rerender(); };
+}
+function applyFilters(rows) {
+  const f = state.filters;
+  return rows.filter(c => (f.shop === "all" || c.s === f.shop) && (!f.max || c.p <= f.max) &&
+    (f.style === "all" || (f.style === "peat" ? c.pe >= 40 : c.fe >= 40)));
+}
+function listWithMore(rows, render) {
+  const shown = rows.slice(0, state.shown);
+  return `<div class="list">${shown.map(render).join("")}</div>` +
+    (rows.length > state.shown ? `<button class="btn more" id="more">Show more (${rows.length - state.shown})</button>` : "");
+}
+function bindMore(rerender) { const m = el("more"); if (m) m.onclick = () => { state.shown += PAGE; rerender(); }; }
+
+/* ---------------- views ---------------- */
+function viewDeals() {
+  const m = el("main");
+  const fresh = state.deals.filter(d => (Date.now() - new Date(d.at)) / 864e5 <= 14);
+  const below = applyFilters(state.catalog.filter(c => (c.ds || 0) >= 12 && fitScore(c) >= 45))
+    .sort((a, b) => (b.ds + fitScore(b) / 4) - (a.ds + fitScore(a) / 4));
+  const gen = state.meta.generated ? new Date(state.meta.generated) : new Date();
+  const newest = applyFilters(state.catalog.filter(c => (gen - new Date(c.fs)) / 864e5 <= 7 && fitScore(c) >= 50))
+    .sort((a, b) => fitScore(b) - fitScore(a));
+  const firstWeek = !state.deals.length && !newest.length;
+  m.innerHTML = `
+    ${shopChips()}
+    <h2 class="section">Latest alerts <small>last 14 days</small></h2>
+    ${fresh.length ? `<div class="list">${fresh.slice(0, 30).map(d => {
+        const c = state.byKey.get(d.k) || { k: d.k, t: d.t, s: d.s, p: d.p, u: d.u, pal: 0 };
+        return itemHtml({ ...c, p: d.p ?? c.p }, `<span class="tag ${d.kind}">${KIND[d.kind] || d.kind} · ${esc(d.at.slice(5))}</span>`);
+      }).join("")}</div>`
+      : `<p class="hint">${firstWeek ? "Alerts start after the second daily run, once there are earlier prices to compare against." : "No new alerts in the last two weeks."}</p>`}
+    <h2 class="section">New this week <small>${newest.length}</small></h2>
+    ${newest.length ? `<div class="list">${newest.slice(0, 12).map(c => itemHtml(c, '<span class="tag new">New</span>')).join("")}</div>` : `<p class="hint">Nothing new that fits your palate this week.</p>`}
+    <h2 class="section">Good value right now <small>${below.length}</small></h2>
+    ${below.length ? listWithMore(below, c => itemHtml(c, '<span class="tag deal">Value</span>')) : `<p class="hint">No standout prices today.</p>`}`;
+  bindChips("shops", "shop", viewDeals); bindItems(m); bindMore(viewDeals);
+}
+
+function profileCard() {
+  const p = state.meta.profile;
+  const n = state.journal.length;
+  if (!p || !p.active) {
+    return `<div class="banner">Your picks are using general palate rules for now. Add ${Math.max(0, 8 - n)} more tastings to your <a href="#journal">journal</a> and the next daily run will start learning your taste.</div>`;
+  }
+  return `<div class="card"><h3>What your scores say you like</h3>
+    <div class="pill-list">${p.likes.map(x => `<span class="pill">+ ${esc(x.f)}</span>`).join("")}${p.flavours.slice(0, 5).map(x => `<span class="pill">${esc(x.f)}</span>`).join("")}</div>
+    ${p.dislikes.length ? `<div class="pill-list" style="margin-top:6px">${p.dislikes.map(x => `<span class="pill neg">− ${esc(x.f)}</span>`).join("")}</div>` : ""}
+    <p class="hint" style="margin-bottom:0">From ${p.entries} tastings, average score ${p.mean}.</p></div>`;
+}
+function viewForYou() {
+  const m = el("main");
+  const rows = applyFilters(state.catalog.filter(c => !/\b(mini|sample|gift set)\b/i.test(c.t) && !(c.ml && c.ml < 300)))
+    .sort((a, b) => fitScore(b) - fitScore(a) || a.p - b.p);
+  const f = state.filters;
+  m.innerHTML = `${profileCard()}
+    <div class="controls">${shopChips()}
+      <div class="row"><div class="chips" id="style">${[["all", "All styles"], ["peat", "Peaty / earthy"], ["fruit", "Fruit / red fruit"]].map(([v, l]) =>
+        `<button class="chip" data-v="${v}" aria-pressed="${f.style === v}">${l}</button>`).join("")}</div>
+      <select id="max" aria-label="Maximum price">${[[0, "Any price"], [100, "≤ $100"], [150, "≤ $150"], [250, "≤ $250"], [400, "≤ $400"]].map(([v, l]) =>
+        `<option value="${v}" ${f.max == v ? "selected" : ""}>${l}</option>`).join("")}</select></div></div>
+    <h2 class="section">${profileOn() ? "Best matches for your palate" : "Best matches for your styles"} <small>${rows.length}</small></h2>
+    ${listWithMore(rows, c => itemHtml(c))}`;
+  bindChips("shops", "shop", viewForYou); bindChips("style", "style", viewForYou);
+  el("max").onchange = e => { f.max = Number(e.target.value); state.shown = PAGE; viewForYou(); };
+  bindItems(m); bindMore(viewForYou);
+}
+
+function viewSearch() {
+  const m = el("main");
+  if (!el("q")) {
+    m.innerHTML = `<div class="controls"><input type="search" id="q" placeholder="Distillery, bottler, cask, age…" aria-label="Search bottles" value="${esc(state.filters.q)}" autocomplete="off">${shopChips()}</div><div id="results"></div>`;
+    el("q").addEventListener("input", e => { state.filters.q = e.target.value; state.shown = PAGE; renderResults(); });
+    bindChips("shops", "shop", () => { m.querySelectorAll("#shops .chip").forEach(c => c.setAttribute("aria-pressed", c.dataset.v === state.filters.shop)); renderResults(); });
+  }
+  renderResults();
+  function renderResults() {
+    const terms = state.filters.q.toLowerCase().split(/\s+/).filter(Boolean);
+    const out = el("results");
+    if (!terms.length) { out.innerHTML = `<p class="hint">Search all ${state.catalog.length.toLocaleString()} in-stock whiskies across ${Object.keys(state.meta.shops || {}).length} shops. Try “Ardmore”, “Ledaig 2007”, “sherry hogshead” or “cask strength”.</p>`; return; }
+    const rows = applyFilters(state.catalog.filter(c => {
+      const hay = (c.t + " " + (c.d || "") + " " + (c.b || []).join(" ") + " " + (c.c || []).join(" ") + " " + (c.cs ? "cask strength" : "") + " " + (c.sc ? "single cask" : "")).toLowerCase().replace(/_/g, " ");
+      return terms.every(t => hay.includes(t));
+    })).sort((a, b) => fitScore(b) - fitScore(a));
+    out.innerHTML = `<h2 class="section">Results <small>${rows.length}</small></h2>` + (rows.length ? listWithMore(rows, c => itemHtml(c)) : `<p class="empty">No in-stock bottles match.</p>`);
+    bindItems(out); bindMore(renderResults);
+  }
+}
+
+function viewJournal() {
+  const m = el("main");
+  const f = state.filters;
+  const terms = f.jq.toLowerCase().split(/\s+/).filter(Boolean);
+  const rows = state.journal.filter(j => !terms.length || terms.every(t => (j.name + " " + (j.nose || "") + " " + (j.palate || "") + " " + (j.finish || "") + " " + (j.notes || "")).toLowerCase().includes(t)))
+    .sort((a, b) => f.jsort === "score" ? b.score - a.score : (b.date || "").localeCompare(a.date || ""));
+  const canWrite = !!cfg.token;
+  m.innerHTML = `
+    ${canWrite ? "" : `<div class="banner">Journal is read-only on this device. <a href="#settings">Connect to GitHub</a> to add tastings.</div>`}
+    ${state.journalError ? `<div class="banner">Couldn't read the journal from GitHub: ${esc(state.journalError)}. <a href="#settings">Check settings</a>.</div>` : ""}
+    <div class="row" style="margin:8px 0"><button class="btn primary" id="add" ${canWrite ? "" : "disabled"}>+ Add tasting</button>
+      <input type="search" id="jq" placeholder="Search your notes" aria-label="Search journal" value="${esc(f.jq)}">
+      <select id="jsort" aria-label="Sort journal"><option value="date" ${f.jsort === "date" ? "selected" : ""}>Newest</option><option value="score" ${f.jsort === "score" ? "selected" : ""}>Highest score</option></select></div>
+    <h2 class="section">Your tastings <small>${state.journal.length}${state.journal.length && state.journal.length < 8 ? " · " + (8 - state.journal.length) + " more to personalise" : ""}</small></h2>
+    ${rows.length ? `<div class="list">${rows.map(j => `<button class="item" data-jid="${esc(j.id)}">
+        <div class="top"><span class="name">${esc(j.name)}</span><span class="score-badge">${esc(j.score)}</span></div>
+        <div class="meta">${j.date ? `<span>${esc(j.date)}</span>` : ""}${j.where ? `<span>${esc(j.where)}</span>` : ""}${j.price ? `<span>${money(j.price)}</span>` : ""}</div>
+        ${j.palate || j.nose || j.notes ? `<div class="hint" style="margin:0">${esc((j.palate || j.nose || j.notes).slice(0, 140))}</div>` : ""}</button>`).join("")}</div>`
+      : `<p class="empty">${state.journal.length ? "No tastings match." : "No tastings yet. Add whiskies you've tried with a score out of 100. Your existing notes file can be imported in one go."}</p>`}
+    <p style="text-align:center;margin-top:20px"><a href="#settings">Settings</a></p>`;
+  el("jq").oninput = e => { f.jq = e.target.value; viewJournal(); el("jq").focus(); el("jq").setSelectionRange(f.jq.length, f.jq.length); };
+  el("jsort").onchange = e => { f.jsort = e.target.value; viewJournal(); };
+  el("add").onclick = () => openJournalForm({});
+  m.querySelectorAll("[data-jid]").forEach(b => b.onclick = () => openJournalForm(state.journal.find(j => j.id === b.dataset.jid)));
+}
+
+function viewSettings() {
+  const m = el("main");
+  m.innerHTML = `
+    <h2 class="section">Connect to GitHub</h2>
+    <p class="hint">Saving tastings writes to <code>${esc(JOURNAL_PATH)}</code> in your repository. That needs a personal access token, stored only on this device.</p>
+    <ol class="hint">
+      <li>On GitHub: Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token.</li>
+      <li>Repository access: <b>Only select repositories</b> → ${esc(cfg.repo)}.</li>
+      <li>Permissions → Repository permissions → <b>Contents: Read and write</b>. Nothing else.</li>
+      <li>Generate, copy, and paste it below.</li>
+    </ol>
+    <form id="settings" class="journal">
+      <label>Token<input type="password" id="s-token" value="${esc(cfg.token)}" autocomplete="off" placeholder="github_pat_…"></label>
+      <div class="two"><label>Owner<input type="text" id="s-owner" value="${esc(cfg.owner)}"></label><label>Repository<input type="text" id="s-repo" value="${esc(cfg.repo)}"></label></div>
+      <div class="row"><button class="btn primary" type="submit">Save and test</button><button class="btn danger" type="button" id="s-clear">Remove token</button></div>
+      <div class="status" id="s-status"></div>
+    </form>
+    <h2 class="section">About</h2>
+    <p class="hint">Prices come from the daily deal-finder run (${state.meta.generated ? "last " + esc(relTime(state.meta.generated)) : "not yet run"}). In stock: ${Object.entries(state.meta.shops || {}).map(([s, n]) => `${esc(SHOP_NAME[s] || s)} ${n.toLocaleString()}`).join(" · ")}.
+    Tasting notes cached for ${state.meta.notes || 0} KWM bottles.</p>`;
+  el("settings").onsubmit = async e => {
+    e.preventDefault();
+    store("dl-token", el("s-token").value.trim() || null); store("dl-owner", el("s-owner").value.trim() || null); store("dl-repo", el("s-repo").value.trim() || null);
+    const st = el("s-status"); st.className = "status"; st.textContent = "Testing…";
+    try { await gh("contents/" + JOURNAL_PATH); state.journalError = null; await loadJournal(); st.className = "status ok"; st.textContent = "Connected. You can add tastings now."; }
+    catch (err) { st.className = "status err"; st.textContent = err.status === 401 ? "GitHub rejected the token. Check it was copied fully." : err.status === 404 ? "Token can't see the repository or journal file. Check the repository access and Contents permission." : err.message; }
+  };
+  el("s-clear").onclick = () => { store("dl-token", null); el("s-token").value = ""; el("s-status").textContent = "Token removed from this device."; };
+}
+
+/* ---------------- bottle sheet ---------------- */
+function closeSheet() { el("sheet-root").innerHTML = ""; document.body.style.overflow = ""; }
+function openSheet(html) {
+  el("sheet-root").innerHTML = `<div class="scrim" id="scrim"></div><section class="sheet" role="dialog" aria-modal="true"><div class="grab"></div><button class="close" aria-label="Close" id="sheet-close">×</button>${html}</section>`;
+  document.body.style.overflow = "hidden";
+  el("scrim").onclick = closeSheet; el("sheet-close").onclick = closeSheet;
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+
+function chart(points) {
+  if (!points || points.length < 2) return "";
+  const W = 320, H = 90, P = { l: 4, r: 4, t: 14, b: 16 };
+  const xs = points.map(p => new Date(p[0]).getTime()), ys = points.map(p => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs) || x0 + 1, y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const X = t => P.l + (W - P.l - P.r) * ((t - x0) / ((x1 - x0) || 1));
+  const Y = v => P.t + (H - P.t - P.b) * (1 - (v - y0) / ((y1 - y0) || 1));
+  let d = ""; points.forEach((p, i) => { const x = X(xs[i]), y = Y(p[1]); d += i ? ` H${x.toFixed(1)} V${y.toFixed(1)}` : `M${x.toFixed(1)} ${y.toFixed(1)}`; });
+  const last = points[points.length - 1];
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Price history">
+    <path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke"/>
+    <circle cx="${X(new Date(last[0]).getTime())}" cy="${Y(last[1])}" r="3" fill="var(--accent)"/>
+    <text x="${P.l}" y="10">${money(y1)} high</text><text x="${W - P.r}" y="10" text-anchor="end">${money(y0)} low</text>
+    <text x="${P.l}" y="${H - 3}">${esc(points[0][0])}</text><text x="${W - P.r}" y="${H - 3}" text-anchor="end">${esc(last[0])}</text></svg>`;
+}
+function notesHtml(notes) {
+  return notes.split(" | ").map(block => {
+    const m = block.match(/^(.*?Tasting Note)\s+/); const who = m ? m[1] : "Tasting note";
+    const body = m ? block.slice(m[0].length) : block;
+    return `<div><div class="who">${esc(who)}</div>${body.split(/\s*(?=\b(?:Nose|Palate|Finish|Comment)\s*:)/).filter(Boolean).map(p => {
+      const mm = p.match(/^(Nose|Palate|Finish|Comment)\s*:\s*/); return mm ? `<p><em>${mm[1]}:</em> ${esc(p.slice(mm[0].length))}</p>` : `<p>${esc(p)}</p>`; }).join("")}</div>`;
+  }).join("");
+}
+async function openBottle(key) {
+  const c = state.byKey.get(key) || state.deals.find(d => d.k === key);
+  if (!c) return;
+  const tasted = state.journal.filter(j => j.key === key || j.name.toLowerCase() === c.t.toLowerCase());
+  openSheet(`<h2>${esc(c.t)}</h2>
+    <div class="row" style="justify-content:space-between"><span class="bigprice">${money(c.p)}</span><span class="tag shop">${esc(SHOP_NAME[c.s] || c.s)}</span></div>
+    <div class="meta" style="margin-top:6px">${facts(c)}${c.d ? `<span>${esc(c.d)}</span>` : ""}</div>
+    <div class="tags" style="margin-top:6px">${(c.w || []).map(w => `<span class="tag">${esc(w)}</span>`).join("")}${(c.c || []).filter(x => CASK[x]).map(x => `<span class="tag cask">${esc(CASK[x])}</span>`).join("")}</div>
+    ${c.me != null ? `<div class="card"><h3>You'd likely score it ~${Math.round(c.me)}</h3>${(c.mr || []).map(r => `<div class="hint" style="margin:2px 0">${esc(r)}</div>`).join("")}
+      ${c.sim ? `<div class="reason" style="margin-top:4px">Closest to your ${esc(c.sim.name)} (${c.sim.score})${c.sim.shared && c.sim.shared.length ? ": " + esc(c.sim.shared.join(", ")) : ""}</div>` : ""}</div>` : ""}
+    ${tasted.length ? `<div class="banner">You've tasted this: ${tasted.map(t => `${esc(t.score)} on ${esc(t.date || "?")}`).join(", ")}</div>` : ""}
+    <div class="meters">
+      <div class="meter peat"><div class="lbl"><span>Peaty / earthy</span><span>${c.pe || 0}</span></div><div class="bar"><div class="fill" style="width:${c.pe || 0}%"></div></div></div>
+      <div class="meter fruit"><div class="lbl"><span>Fruit / red fruit</span><span>${c.fe || 0}</span></div><div class="bar"><div class="fill" style="width:${c.fe || 0}%"></div></div></div>
+    </div>
+    ${c.dr && c.dr.length ? `<div class="reason">${c.dr.map(esc).join(" · ")}</div>` : ""}
+    ${c.why && c.why.length ? `<p class="hint" style="font-size:0.8rem">${c.why.map(esc).join(" · ")}</p>` : ""}
+    <div id="b-history"></div><div id="b-notes"></div>
+    <div class="actions"><a class="btn primary" href="${esc(c.u)}" target="_blank" rel="noopener">Open at ${esc(SHOP_NAME[c.s] || c.s)}</a>
+      <button class="btn" id="b-taste" ${cfg.token ? "" : "disabled"}>I've tasted this</button></div>`);
+  el("b-taste").onclick = () => openJournalForm({ name: c.t, key: c.k, where: SHOP_NAME[c.s] || c.s, price: c.p, url: c.u });
+  const [hist, notes] = await Promise.all([loadLazy("history"), loadLazy("notes")]);
+  if (!el("b-history")) return;
+  if (hist[key]) el("b-history").innerHTML = `<h2 class="section" style="font-size:0.95rem">Price history</h2>${chart(hist[key])}`;
+  if (notes[key]) el("b-notes").innerHTML = `<h2 class="section" style="font-size:0.95rem">KWM tasting notes</h2><div class="notes">${notesHtml(notes[key])}</div>`;
+}
+
+/* ---------------- journal form ---------------- */
+function openJournalForm(j) {
+  const isNew = !j.id;
+  const titles = state.catalog.slice(0, 4000).map(c => `<option value="${esc(c.t)}">`).join("");
+  openSheet(`<h2>${isNew ? "Add tasting" : "Edit tasting"}</h2>
+    <form class="journal" id="jform">
+      <label>Whisky<input type="text" id="j-name" list="j-titles" required value="${esc(j.name || "")}" placeholder="e.g. Tri Carragh Ardmore 2009 12 Year" autocomplete="off"><datalist id="j-titles">${titles}</datalist></label>
+      <label>Score (out of 100)<div class="scorerow"><input type="range" id="j-range" min="50" max="100" step="1" value="${esc(j.score || 85)}"><input type="number" id="j-score" min="0" max="100" step="0.5" required value="${esc(j.score || 85)}" inputmode="decimal"></div></label>
+      <div class="two"><label>Date<input type="date" id="j-date" value="${esc(j.date || today())}"></label><label>Where / bought at<input type="text" id="j-where" value="${esc(j.where || "")}" placeholder="KWM, a sample, a bar…"></label></div>
+      <label>Nose<textarea id="j-nose" rows="2">${esc(j.nose || "")}</textarea></label>
+      <label>Palate<textarea id="j-palate" rows="2">${esc(j.palate || "")}</textarea></label>
+      <label>Finish<textarea id="j-finish" rows="2">${esc(j.finish || "")}</textarea></label>
+      <label>Comments<textarea id="j-notes" rows="2">${esc(j.notes || "")}</textarea></label>
+      <div class="two"><label>Price paid<input type="number" id="j-price" step="0.01" inputmode="decimal" value="${esc(j.price || "")}"></label><label>Bottle or sample<select id="j-format"><option value="bottle">Bottle</option><option value="sample" ${j.format === "sample" ? "selected" : ""}>Sample / dram</option></select></label></div>
+      <div class="row"><button class="btn primary" type="submit" id="j-save">Save</button>${isNew ? "" : `<button class="btn danger" type="button" id="j-del">Delete</button>`}<button class="btn" type="button" id="j-cancel">Cancel</button></div>
+      <div class="status" id="j-status"></div>
+    </form>`);
+  el("j-range").oninput = e => el("j-score").value = e.target.value;
+  el("j-score").oninput = e => el("j-range").value = e.target.value;
+  el("j-cancel").onclick = closeSheet;
+  const status = (msg, cls = "") => { const s = el("j-status"); s.className = "status " + cls; s.textContent = msg; };
+  el("jform").onsubmit = async e => {
+    e.preventDefault();
+    const entry = { id: j.id || uid(), name: el("j-name").value.trim(), score: Number(el("j-score").value), date: el("j-date").value,
+      where: el("j-where").value.trim(), nose: el("j-nose").value.trim(), palate: el("j-palate").value.trim(), finish: el("j-finish").value.trim(),
+      notes: el("j-notes").value.trim(), price: el("j-price").value ? Number(el("j-price").value) : null, format: el("j-format").value,
+      key: j.key || null, url: j.url || null };
+    Object.keys(entry).forEach(k => (entry[k] === "" || entry[k] === null) && delete entry[k]);
+    if (!entry.name || isNaN(entry.score)) { status("Add a name and a score.", "err"); return; }
+    el("j-save").disabled = true; status("Saving to GitHub…");
+    try {
+      await saveJournal(list => { const i = list.findIndex(x => x.id === entry.id); if (i >= 0) list[i] = entry; else list.push(entry); },
+        `${isNew ? "Add" : "Update"} tasting: ${entry.name} (${entry.score})`);
+      closeSheet(); route();
+    } catch (err) { el("j-save").disabled = false; status("Couldn't save: " + err.message, "err"); }
+  };
+  if (!isNew) {
+    let armed = false;
+    el("j-del").onclick = async () => {
+      if (!armed) { armed = true; el("j-del").textContent = "Tap again to delete"; return; }
+      status("Deleting…");
+      try { await saveJournal(list => { const i = list.findIndex(x => x.id === j.id); if (i >= 0) list.splice(i, 1); }, `Delete tasting: ${j.name}`); closeSheet(); route(); }
+      catch (err) { status("Couldn't delete: " + err.message, "err"); }
+    };
+  }
+}
+
+/* ---------------- routing ---------------- */
+const VIEWS = { deals: ["Deals", viewDeals], foryou: ["For you", viewForYou], search: ["Search", viewSearch], journal: ["Journal", viewJournal], settings: ["Settings", viewSettings] };
+let current = null;
+function route() {
+  const name = (location.hash || "#deals").slice(1);
+  const [title, fn] = VIEWS[name] || VIEWS.deals;
+  if (current !== name) { state.shown = PAGE; window.scrollTo(0, 0); el("main").innerHTML = ""; }
+  current = name;
+  el("view-title").textContent = title;
+  document.querySelectorAll(".tabbar a").forEach(a => a.setAttribute("aria-current", a.dataset.tab === name ? "page" : "false"));
+  fn();
+}
+window.addEventListener("hashchange", () => { closeSheet(); route(); });
+
+(async () => {
+  try { await Promise.all([loadCore(), loadJournal()]); route(); }
+  catch (e) { el("main").innerHTML = `<p class="empty">Couldn't load the deal data (${esc(e.message)}). It appears after the first daily run publishes it.</p>`; }
+})();
+if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});
+</script>
+</body>
+</html>

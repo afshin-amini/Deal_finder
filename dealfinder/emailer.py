@@ -110,6 +110,11 @@ def render_digest(alerts: list, notes_snippet, seed_notes: list[str], failures: 
                      + (f" &middot; watchlist: {_e(watch)}" if watch else "") + "</div>")
             if why:
                 h.append(f'<div style="font-size:12px;color:#777">{_e(why)}</div>')
+            personal = a.palate.get("personal") or {}
+            if personal.get("predicted") is not None:
+                sim = personal.get("similar")
+                like = f" &middot; like your {_e(sim['name'])} ({_e(sim['score'])})" if sim else ""
+                h.append(f'<div style="font-size:13px;color:#2e7d4f">You\'d likely score it ~{round(personal["predicted"])}{like}</div>')
             if l.description and not notes:
                 h.append(f'<div style="font-size:13px;margin-top:4px">{_e(l.description[:400])}</div>')
             if notes:

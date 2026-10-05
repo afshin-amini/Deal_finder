@@ -2,6 +2,8 @@
 # Secrets (ntfy topic/token) are better set via env vars NTFY_TOPIC / NTFY_TOKEN.
 
 db_path = "data/prices.db"
+journal_path = "docs/data/journal.json"   # your tasting journal (written by the app)
+export_dir = "docs/data"                  # deals/catalog/history JSON published for the app
 
 [http]
 min_delay_seconds = 4.0      # between requests to the same host (robots.txt Crawl-delay wins if larger)

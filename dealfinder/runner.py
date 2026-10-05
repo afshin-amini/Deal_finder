@@ -14,6 +14,7 @@ from .emailer import Emailer, render_digest
 from .notify import Ntfy
 from .parser import parse
 from .scoring import deal_score, palate_score
+from .taste import TasteProfile, blend, load_profile
 
 log = logging.getLogger(__name__)
 
@@ -31,7 +32,7 @@ class Alert:
 
 
 def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool,
-             notes: str = "") -> tuple[dict, dict, dict, list[Alert]]:
+             notes: str = "", profile: TasteProfile | None = None) -> tuple[dict, dict, dict, list[Alert]]:
     if not shop_cfg.get("trust_compare_at", True):
         listing.compare_at_price = None  # shop shows a permanent "was" price; history is the real signal
     # Facts (cask, age, ABV) come from the listing; tasting notes only feed the flavour words below,
@@ -46,9 +47,16 @@ def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool,
     deal = deal_score(listing.price, history, prev["last_price"] if prev else None,
                       listing.compare_at_price, parsed, cfg["value"])
 
+    sd = score.to_dict()
+    if profile is not None and profile.active:
+        pred = profile.predict(parsed, text)
+        sd["rule_palate"] = score.palate
+        sd["personal"] = pred.to_dict()
+        sd["palate"] = blend(score.palate, pred, profile)
+
     a = cfg["alerts"]
     alerts: list[Alert] = []
-    palate = score.palate
+    palate = sd["palate"]
     watched = bool(score.watchlist)
     in_stock = listing.in_stock is not False
     is_mini = (parsed.volume_ml is not None and parsed.volume_ml < 300) or bool(
@@ -56,7 +64,7 @@ def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool,
 
     def add(kind: str, extra: float = 0) -> None:
         pr = palate + deal.score + (10 if watched else 0) + extra
-        alerts.append(Alert(kind, listing, score.to_dict(), deal.to_dict(), pr, notes=notes))
+        alerts.append(Alert(kind, listing, sd, deal.to_dict(), pr, notes=notes))
 
     if seeded and in_stock and listing.price and not is_mini:
         if prev is None:
@@ -69,7 +77,7 @@ def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool,
                 add("restock")
         if not alerts and deal.score >= a.get("deal_min_score", 20) and palate >= a.get("deal_min_palate", 45):
             add("deal")
-    return parsed.to_dict(), score.to_dict(), deal.to_dict(), alerts
+    return parsed.to_dict(), sd, deal.to_dict(), alerts
 
 
 def _try_notes(fetch_notes, http: PoliteSession, url: str) -> str:
@@ -117,6 +125,10 @@ def run(cfg: dict, only: list[str] | None = None, dry_run: bool = False) -> int:
         timeout=float(h.get("timeout_seconds", 30)),
     )
     db = DB(cfg["db_path"])
+    profile = load_profile(cfg.get("journal_path", "docs/data/journal.json"))
+    if profile is not None:
+        log.info("taste profile: %d journal entries (%s)", len(profile.entries),
+                 "active" if profile.active else f"needs {8 - len(profile.entries)} more to switch on")
     n = cfg["ntfy"]
     notifier = Ntfy(n.get("topic"), n.get("server", "https://ntfy.sh"), n.get("token"), dry_run=dry_run)
 
@@ -149,7 +161,7 @@ def run(cfg: dict, only: list[str] | None = None, dry_run: bool = False) -> int:
                     new_notes_budget -= 1
                     notes = _try_notes(fetch_notes, http, listing.url)
                     db.set_notes(listing.key, notes)
-                parsed, score, deal, alerts = evaluate(listing, shop_cfg, cfg, db, seeded, notes)
+                parsed, score, deal, alerts = evaluate(listing, shop_cfg, cfg, db, seeded, notes, profile)
                 if not score:
                     continue  # not whisky; don't store
                 whisky += 1
@@ -230,6 +242,10 @@ def run(cfg: dict, only: list[str] | None = None, dry_run: bool = False) -> int:
     if not dry_run:
         for i in sorted(sent):
             db.record_alert(fresh[i].listing.key, fresh[i].kind, fresh[i].listing.price)
+
+    if cfg.get("export_dir"):
+        from .export import export_app_data
+        export_app_data(db, cfg["export_dir"], profile)
 
     db.close()
     log.info("done: %d alerts sent/queued, %d failures", len(fresh), len(failures))

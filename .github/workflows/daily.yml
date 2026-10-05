@@ -16,6 +16,8 @@ jobs:
   run:
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    permissions:
+      contents: write   # to commit the app's data files
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -42,6 +44,20 @@ jobs:
           NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
         run: python -m dealfinder run ${{ inputs.dry_run && '--dry-run' || '' }}
 
+      - name: Publish data for the app
+        if: success()
+        run: |
+          git config user.name "whisky-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/catalog.json docs/data/deals.json docs/data/history.json docs/data/notes.json docs/data/meta.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -q -m "Update app data"
+          # The app may have saved a journal entry meanwhile; it only touches journal.json, so rebase is clean.
+          for i in 1 2 3; do
+            git pull -q --rebase origin "$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME" && break
+            sleep 5
+          done
+
       - name: Save price history
         if: always()
         uses: actions/cache/save@v4
@@ -56,3 +72,11 @@ jobs:
           name: prices-db
           path: data/prices.db
           retention-days: 30
+
+  publish:
+    needs: run
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml

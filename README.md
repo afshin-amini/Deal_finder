@@ -20,6 +20,31 @@ python -m dealfinder score "G&M Connoisseurs Choice Ardmore 2009 Refill Sherry H
 python -m dealfinder run --dry-run
 ```
 
+## Dram Ledger (the app)
+
+A phone-friendly web app in `docs/`, hosted free on GitHub Pages:
+
+- **Deals:** the latest alerts, new arrivals this week, and bottles that are good value today.
+- **For you:** every in-stock bottle ranked by how well it fits your palate.
+- **Search:** all in-stock whiskies across the shops.
+- **Journal:** your tastings with scores out of 100. Add or edit them from your phone.
+
+Tapping a bottle shows its price history, KWM tasting notes, why it was suggested, and an "I've tasted this" button.
+
+Once the journal has **8 or more tastings**, each daily run learns your taste from it (`dealfinder/taste.py`):
+- **Feature weights:** how far above or below your average you score each distillery, bottler, peat level, sherry level, cask, region, and strength and age band.
+- **Flavour weights:** the same for the flavour words in your notes.
+
+Every bottle then gets a "you'd likely score it ~88" prediction, and is matched to your closest favourite ("like your Tri Carragh Ardmore 2009 (91)"). These feed into the rankings, the alerts and the email. The more tastings you add, the more weight the profile gets compared with the general rules.
+
+**Setup (once):**
+1. Go to repo **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. Go to **Actions → publish app → Run workflow**. The app's address is then shown on the run page and under Settings → Pages: `https://<you>.github.io/Deal_finder/`.
+3. On your phone, open that address, then use Share → **Add to Home Screen**.
+4. To add tastings, create a **fine-grained personal access token**: only this repository, **Contents: Read and write**. Paste it into the app's Journal → Settings. The token stays on that device only.
+
+Data flow: the daily run commits `docs/data/*.json` and republishes the app. The journal is saved to `docs/data/journal.json`, which is a public file in a public repo.
+
 ## Daily email (GitHub Actions)
 
 The workflow in `.github/workflows/daily.yml` sends one email per day. It covers price drops, new arrivals, bottles back in stock and deals, with KWM tasting notes included. If a shop has scrape problems, the email says so.
