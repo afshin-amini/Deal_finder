@@ -1,9 +1,8 @@
 name: daily whisky deals
 
 on:
-  # Paused until email secrets are set up. To enable, uncomment these two lines:
-  # schedule:
-  #   - cron: "17 14 * * *"   # ~8am Calgary (MDT); 7am in winter
+  schedule:
+    - cron: "17 14 * * *"   # ~8:17am Calgary in summer (MDT), 7:17am in winter (MST)
   workflow_dispatch:
     inputs:
       dry_run:
