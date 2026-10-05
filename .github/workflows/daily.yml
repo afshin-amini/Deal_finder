@@ -1,0 +1,55 @@
+name: daily whisky deals
+
+on:
+  schedule:
+    - cron: "17 14 * * *"   # ~8am Calgary (MDT); 7am in winter
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Print alerts instead of sending"
+        type: boolean
+        default: false
+
+concurrency: dealfinder
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+
+      # Price history lives in an Actions cache. If it's ever evicted the next run
+      # just re-seeds (one day without alerts), nothing breaks.
+      - name: Restore price history
+        uses: actions/cache/restore@v4
+        with:
+          path: data/prices.db
+          key: prices-db-${{ github.run_id }}
+          restore-keys: prices-db-
+
+      - name: Run
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+        run: python -m dealfinder run ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Save price history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/prices.db
+          key: prices-db-${{ github.run_id }}
+
+      - name: Upload DB snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prices-db
+          path: data/prices.db
+          retention-days: 30

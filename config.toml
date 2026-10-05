@@ -1,0 +1,82 @@
+# Whisky deal finder configuration.
+# Secrets (ntfy topic/token) are better set via env vars NTFY_TOPIC / NTFY_TOKEN.
+
+db_path = "data/prices.db"
+
+[http]
+min_delay_seconds = 4.0      # between requests to the same host (robots.txt Crawl-delay wins if larger)
+timeout_seconds = 30
+user_agent = "WhiskyDealFinder/0.1 (personal price tracker; +https://github.com/afshin-amini/deal_finder)"
+
+[ntfy]
+server = "https://ntfy.sh"
+topic = ""                   # pick something unguessable, e.g. "whisky-deals-7f3k2q"; or set NTFY_TOPIC
+max_individual_alerts = 8    # beyond this, remaining alerts go into one digest message
+
+[alerts]
+new_min_palate = 55          # new bottle appears and scores at least this on either track
+watch_min_palate = 35        # ...or is on the watchlist and scores at least this
+drop_min_pct = 8             # price drop of at least this % ...
+drop_min_palate = 40         # ...on a bottle scoring at least this
+restock_min_palate = 60
+deal_min_score = 20          # sale / below-usual-price score
+deal_min_palate = 45
+repeat_after_days = 14       # don't repeat the same alert unless price falls further
+
+[value]                      # rough "typical" CAD price for a 750ml, used for a small value bonus
+base = 45.0
+per_year = 6.0
+per_year_over_20 = 15.0
+cask_strength_multiplier = 1.15
+
+# Brands / distilleries you want boosted. Key = display name, value = extra spellings.
+# Matched case-insensitively against title, vendor and description.
+[watchlist]
+"Ardmore" = []
+"Gordon & MacPhail" = ["G&M", "Gordon and MacPhail", "Connoisseurs Choice"]
+"Decadent Drinks" = ["Decadent Dreams"]
+"Whisky Sponge" = []
+"Single Malts of Scotland" = ["SMOS"]
+"Thompson Bros" = ["Thompson Brothers"]
+"Berry Bros & Rudd" = ["Berry Bros", "Berry Brothers", "BBR"]
+
+# ---------------------------------------------------------------------------
+# Shops. platform = "auto" probes Shopify (/products.json), then WooCommerce
+# Store API, then falls back to reading schema.org data from product pages.
+# Run `python -m dealfinder probe` once and pin `platform` to what it finds.
+#
+# Options:
+#   collections   (shopify)  collection handles to scan instead of the whole catalog
+#   categories    (woocommerce) category ids/slugs
+#   listing_urls  (html)     category pages; "{page}" is replaced with 1, 2, 3...
+#   product_url_pattern (html) regex identifying product URLs
+#   use_sitemap   (html)     also/instead walk sitemap.xml (default: when no listing_urls)
+#   sitemap_keywords (html)  "auto" (whisky words + known distilleries/bottlers) or a list
+#   max_products  (html)     cap on product pages fetched per run
+#   has_tasting_notes        description text is real tasting notes -> weighted more
+# ---------------------------------------------------------------------------
+
+[[shops]]
+name = "bsw"
+base_url = ["https://www.bsw.com", "https://www.bswliquor.com"]
+platform = "auto"
+max_products = 500
+
+[[shops]]
+name = "kwm"
+base_url = ["https://kensingtonwinemarket.com", "https://www.kensingtonwinemarket.com"]
+platform = "auto"
+has_tasting_notes = true
+max_products = 600
+
+[[shops]]
+name = "crown"
+base_url = ["https://thecrowncellars.com", "https://www.thecrowncellars.com"]
+platform = "auto"
+max_products = 400
+
+[[shops]]
+name = "craft"
+base_url = ["https://craftcellars.ca", "https://www.craftcellars.ca"]
+platform = "auto"
+max_products = 400
