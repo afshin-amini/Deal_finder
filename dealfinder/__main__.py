@@ -102,6 +102,7 @@ def main(argv: list[str] | None = None) -> int:
     rp.add_argument("--shop", action="append")
     rp.add_argument("--out", default="data/report.html")
     rp.add_argument("--dry-run", action="store_true")
+    rp.add_argument("--include-out-of-stock", action="store_true")
     sc = sub.add_parser("score")
     sc.add_argument("title")
     sc.add_argument("--notes", default="")
@@ -116,7 +117,7 @@ def main(argv: list[str] | None = None) -> int:
         return run(cfg, args.shop, args.dry_run)
     if args.cmd == "report":
         from .report import run_report
-        return run_report(cfg, args.query, args.shop, args.out, args.dry_run)
+        return run_report(cfg, args.query, args.shop, args.out, args.dry_run, args.include_out_of_stock)
     if args.cmd == "probe":
         cmd_probe(cfg, args.shop)
     elif args.cmd == "top":

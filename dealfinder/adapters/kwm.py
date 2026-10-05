@@ -44,6 +44,12 @@ def parse_listing_page(shop_name: str, base: str, html_text: str) -> list[Listin
         if not (links and name_m):
             continue
         sku, slug = links[-1]
+        # The product card sits just before its modal; it carries stock and style badges.
+        w = before.rfind('class="product-wrap"')
+        card = before[w:] if w != -1 else before
+        tags = []
+        if "badge-peated" in card:
+            tags.append("peated")
         price_m = _PRICE_RE.search(block) or _H4_PRICE_RE.search(block)
         meta = {k.strip().lower(): html_to_text(v) for k, v in _META_RE.findall(block)}
         desc_m = _DESC_RE.search(block)
@@ -53,9 +59,11 @@ def parse_listing_page(shop_name: str, base: str, html_text: str) -> list[Listin
             title=html_to_text(name_m.group(1)),
             url=f"{base}/product/{sku}/{slug}",
             price=to_price(price_m.group(1)) if price_m else None,
-            in_stock="addtocart" in block,  # samples/sold-out items have no cart button
+            # Out-of-stock bottles keep their cart button ("we'll try to order it") but get an
+            # "inventory-out" label; samples have no cart button at all.
+            in_stock="addtocart" in block and "inventory-out" not in card,
             product_type=meta.get("region", ""),
-            tags=[f"vintage {meta['vintage']}"] if meta.get("vintage") else [],
+            tags=tags + ([f"vintage {meta['vintage']}"] if meta.get("vintage") else []),
             description=html_to_text(desc_m.group(1)) if desc_m else "",
         ))
     return out

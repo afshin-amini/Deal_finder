@@ -28,7 +28,8 @@ def _matches(listing: Listing, query: str) -> bool:
     return query.lower() in f"{listing.title} {listing.vendor} {listing.description}".lower()
 
 
-def collect(cfg: dict, query: str, shops: list[str] | None, with_notes: bool = True) -> list[dict]:
+def collect(cfg: dict, query: str, shops: list[str] | None, with_notes: bool = True,
+            include_out_of_stock: bool = False) -> list[dict]:
     h = cfg["http"]
     http = PoliteSession(user_agent=h.get("user_agent") or PoliteSession().user_agent,
                          min_delay=float(h.get("min_delay_seconds", 4.0)),
@@ -46,6 +47,10 @@ def collect(cfg: dict, query: str, shops: list[str] | None, with_notes: bool = T
         search = getattr(adapter, "search", None)
         found = list(search(http, shop_cfg, query)) if search else \
             [l for l in adapter.fetch(http, shop_cfg) if _matches(l, query)]
+        if not include_out_of_stock:
+            skipped = sum(1 for l in found if l.in_stock is False)
+            found = [l for l in found if l.in_stock is not False]
+            log.info("%s: skipping %d out-of-stock bottles", shop["name"], skipped)
         log.info("%s: %d bottles match %r", shop["name"], len(found), query)
         fetch_notes = getattr(adapter, "fetch_notes", None)
         for l in found:
@@ -85,7 +90,7 @@ def _notes_html(notes: str) -> str:
 def render(query: str, rows: list[dict]) -> tuple[str, str, str]:
     today = date.today().strftime("%-d %b %Y")
     shops = sorted({r["listing"].shop.upper() for r in rows})
-    subject = f"{query} at {', '.join(shops) or 'your shops'}: {len(rows)} bottles"
+    subject = f"{query} at {', '.join(shops) or 'your shops'}: {len(rows)} bottles in stock"
     h = ['<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:680px;color:#222">',
          f'<h1 style="font-size:20px;margin:0 0 4px">{_e(query)}: {len(rows)} bottles</h1>',
          f'<div style="color:#666;font-size:13px;margin-bottom:12px">{_e(", ".join(shops))} &middot; {today} &middot; best palate match first</div>']
@@ -120,8 +125,9 @@ def render(query: str, rows: list[dict]) -> tuple[str, str, str]:
     return subject, "".join(h), "\n".join(t)
 
 
-def run_report(cfg: dict, query: str, shops: list[str] | None, out_path: str, dry_run: bool = False) -> int:
-    rows = collect(cfg, query, shops)
+def run_report(cfg: dict, query: str, shops: list[str] | None, out_path: str, dry_run: bool = False,
+               include_out_of_stock: bool = False) -> int:
+    rows = collect(cfg, query, shops, include_out_of_stock=include_out_of_stock)
     subject, html_body, text_body = render(query, rows)
     Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     Path(out_path).write_text(f"<!doctype html><meta charset='utf-8'><title>{_e(subject)}</title>{html_body}")
@@ -129,7 +135,8 @@ def run_report(cfg: dict, query: str, shops: list[str] | None, out_path: str, dr
     emailer = Emailer(dry_run=dry_run)
     if emailer.configured and not dry_run:
         ok = emailer.send(subject, html_body, text_body)
-        print("Email sent to " + emailer.to if ok else "EMAIL FAILED - check SMTP_USER / SMTP_PASSWORD secrets")
+        # Actions logs are public on a public repo: never print the address.
+        print("Email sent." if ok else "EMAIL FAILED - check the SMTP_USER / SMTP_PASSWORD secrets")
         return 0 if ok else 1
     print("Email not configured (EMAIL_TO / SMTP_USER / SMTP_PASSWORD); report saved to " + out_path)
     return 0

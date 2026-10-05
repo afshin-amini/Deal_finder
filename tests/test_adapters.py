@@ -145,3 +145,19 @@ def test_kwm_search_paginates():
 
     found = list(KwmAdapter().search(Http(), {"name": "kwm", "base_url": "https://k.com"}, "ardmore"))
     assert [l.product_id for l in found] == ["1", "2", "3"] and calls == [1, 2]
+
+
+def test_kwm_out_of_stock_and_peated_badges():
+    from dealfinder.adapters.kwm import parse_listing_page
+
+    cart = '<a class="addtocart btn-cart" data-id="{0}" data-price="99.99">Add to cart</a>'
+    oos = ('<div class="product-wrap"><button class="badge-icon badge-peated"></button>'
+           + cart.format("870958") + '<span class="inventory-out">Out of Stock</span>')
+    ok = '<div class="product-wrap">' + cart.format("886044")
+    page = (oos + KWM_CARD.format(name="G&M Ardmore 2000", price="177.99", sku="870958", slug="a", pk="1",
+                                  cart=cart.format("870958"))
+            + ok + KWM_CARD.format(name="Whisky Sponge Ardmore 1997", price="469.99", sku="886044", slug="b",
+                                   pk="2", cart=cart.format("886044")))
+    a, b = parse_listing_page("kwm", "https://k.com", page)
+    assert a.in_stock is False and "peated" in a.tags
+    assert b.in_stock is True and "peated" not in b.tags
