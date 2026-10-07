@@ -233,11 +233,36 @@ _MATURED_RE = re.compile(
 _YEAR_RANGE_RE = re.compile(r"\b(19[5-9]\d|20[0-3]\d)\s*[-/–]\s*(19[5-9]\d|20[0-3]\d)\b")
 _VINTAGE_RE = re.compile(r"\b(?:distilled|vintage|dist\.?)\s*(?:in\s*)?(19[5-9]\d|20[0-3]\d)\b|\b(19[5-9]\d|20[0-2]\d)\s+vintage\b", re.I)
 _BOTTLED_RE = re.compile(r"\b(?:bottled|btl\.?)\s*(?:in\s*)?(19[5-9]\d|20[0-3]\d)\b", re.I)
-_ABV_RE = re.compile(r"(\d{2}(?:[.,]\d{1,2})?)\s*%(?:\s*(?:abv|alc|vol))?", re.I)
+# A percentage not glued to other digits ("0.63%" is not 63%).
+_ABV_RE = re.compile(r"(?<![\d.,])(\d{2}(?:[.,]\d{1,2})?)\s*%(?:\s*(?:abv|alc|vol))?", re.I)
+# Context that says a percentage is the bottling strength...
+_ABV_CTX_BEFORE = re.compile(r"(bottled at|bottling at|bottling strength|strength of|proof,?|at a whopping|at cask strength of|abv of|at)\s*$", re.I)
+_ABV_CTX_AFTER = re.compile(r"^\s*(abv|alc|vol)", re.I)
+# ...and context that says it's a share of something ("50% of the batch", "70% sherry casks").
+_PCT_SHARE_AFTER = re.compile(r"^\s*(of\b|sherry|bourbon|oloroso|px|first|refill|wine|port|rum|virgin|new|malt|grain|peated|unpeated|matured|aged|casks?|barrels?|chance)", re.I)
 _PROOF_RE = re.compile(r"(\d{2,3}(?:\.\d)?)\s*proof", re.I)
 _ML_RE = re.compile(r"\b(\d{2,4})\s*ml\b", re.I)
 _L_RE = re.compile(r"\b(\d(?:\.\d{1,2})?)\s*(?:l|litre|liter)\b", re.I)
 _CL_RE = re.compile(r"\b(\d{2,3})\s*cl\b", re.I)
+
+
+def _find_abv(src: str, title: bool = False) -> float | None:
+    """Best bottling-strength percentage in a text: explicit context first, then plain values."""
+    plain = None
+    for am in _ABV_RE.finditer(src):
+        v = float(am.group(1).replace(",", "."))
+        if not 37.0 <= v <= 75.0:
+            continue
+        before, after = src[max(0, am.start() - 40):am.start()], src[am.end():am.end() + 25]
+        if _ABV_CTX_AFTER.match(am.group(0)[len(am.group(1)):].lstrip(" %")) or _ABV_CTX_BEFORE.search(before) \
+                or re.search(r"(abv|alc|vol)\s*$", am.group(0), re.I):
+            return v
+        # In a title a bare % is the strength ("40% Bourbon cask"); only "X% of" is a share there.
+        if (re.match(r"^\s*(of\b|chance)", after, re.I) if title else _PCT_SHARE_AFTER.match(after)):
+            continue
+        if plain is None and v <= 66.0:  # higher only with explicit "bottled at"/"abv" context
+            plain = v
+    return plain
 
 
 def _find_bottlers(text: str) -> list[str]:
@@ -298,14 +323,7 @@ def parse(title: str, extra_text: str = "") -> Parsed:
     if p.age is None and p.vintage and p.bottled and p.bottled > p.vintage:
         p.age = p.bottled - p.vintage
 
-    for src in (t, full):
-        for am in _ABV_RE.finditer(src):
-            v = float(am.group(1).replace(",", "."))
-            if 37.0 <= v <= 75.0:
-                p.abv = v
-                break
-        if p.abv:
-            break
+    p.abv = _find_abv(t, title=True) or _find_abv(full)
     if p.abv is None:
         pm = _PROOF_RE.search(full)
         if pm and 74 <= float(pm.group(1)) <= 150:

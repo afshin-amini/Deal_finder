@@ -52,3 +52,8 @@ def test_blend_trusts_profile_more_as_it_grows(tmp_path):
 def test_missing_or_bad_journal(tmp_path):
     assert load_profile(tmp_path / "nope.json") is None
     assert _journal(tmp_path, [{"name": "", "score": 90}, {"name": "x", "score": "bad"}]).entries == []
+
+
+def test_abv_field_used_when_name_has_none(tmp_path):
+    prof = _journal(tmp_path, ENTRIES + [{"name": "Mystery Speyside", "abv": 58.2, "score": 88}])
+    assert any(f == "abv:55+" for f in prof.entries[-1].feats)

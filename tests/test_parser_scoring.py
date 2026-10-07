@@ -116,3 +116,11 @@ def test_matured_for_n_years():
 
 def test_first_fill_ex_sherry_is_heavy():
     assert parse("G&M Miltonduff 2007", "matured in a first fill ex-Sherry hogshead").sherry_level == "heavy"
+
+
+def test_abv_ignores_shares_and_glued_numbers():
+    assert parse("Craigellachie 13", "50% of the batch is finished in Armagnac casks. Bottled at 46%.").abv == 46.0
+    assert parse("Mystery Malt", "a Dornoch 5 Year (0.63% chance) or a Miltonduff, all at 48.5%").abv == 48.5
+    assert parse("Kilkerran 12", "70% bourbon and 30% sherry casks").abv is None
+    assert parse("Ardnahoe CS", "bottled at 60.9%, has landed in Canada").abv == 60.9
+    assert parse("Benromach 15 43% abv").abv == 43.0

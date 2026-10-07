@@ -493,7 +493,7 @@ async function openBottle(key) {
     <div id="b-history"></div><div id="b-notes"></div>
     <div class="actions"><a class="btn primary" href="${esc(c.u)}" target="_blank" rel="noopener">Open at ${esc(SHOP_NAME[c.s] || c.s)}</a>
       <button class="btn" id="b-taste" ${cfg.token ? "" : "disabled"}>I've tasted this</button></div>`);
-  el("b-taste").onclick = () => openJournalForm({ name: c.t, key: c.k, where: SHOP_NAME[c.s] || c.s, price: c.p, url: c.u });
+  el("b-taste").onclick = () => openJournalForm({ name: c.t, key: c.k, where: SHOP_NAME[c.s] || c.s, price: c.p, url: c.u, abv: c.v });
   const [hist, notes] = await Promise.all([loadLazy("history"), loadLazy("notes")]);
   if (!el("b-history")) return;
   if (hist[key]) el("b-history").innerHTML = `<h2 class="section" style="font-size:0.95rem">Price history</h2>${chart(hist[key])}`;
@@ -507,6 +507,7 @@ function openJournalForm(j) {
   openSheet(`<h2>${isNew ? "Add tasting" : "Edit tasting"}</h2>
     <form class="journal" id="jform">
       <label>Whisky<input type="text" id="j-name" list="j-titles" required value="${esc(j.name || "")}" placeholder="e.g. Tri Carragh Ardmore 2009 12 Year" autocomplete="off"><datalist id="j-titles">${titles}</datalist></label>
+      <label>ABV (%)<input type="number" id="j-abv" min="20" max="80" step="0.1" inputmode="decimal" value="${esc(j.abv || "")}" placeholder="e.g. 56.2"></label>
       <label>Score (out of 100)<div class="scorerow"><input type="range" id="j-range" min="50" max="100" step="1" value="${esc(j.score || 85)}"><input type="number" id="j-score" min="0" max="100" step="0.5" required value="${esc(j.score || 85)}" inputmode="decimal"></div></label>
       <div class="two"><label>Date<input type="date" id="j-date" value="${esc(j.date || today())}"></label><label>Where / bought at<input type="text" id="j-where" value="${esc(j.where || "")}" placeholder="KWM, a sample, a bar…"></label></div>
       <label>Nose<textarea id="j-nose" rows="2">${esc(j.nose || "")}</textarea></label>
@@ -518,6 +519,10 @@ function openJournalForm(j) {
       <div class="status" id="j-status"></div>
     </form>`);
   el("j-range").oninput = e => el("j-score").value = e.target.value;
+  el("j-name").onchange = e => {
+    const c = state.catalog.find(x => x.t === e.target.value.trim());
+    if (c && c.v && !el("j-abv").value) el("j-abv").value = c.v;
+  };
   el("j-score").oninput = e => el("j-range").value = e.target.value;
   el("j-cancel").onclick = closeSheet;
   const status = (msg, cls = "") => { const s = el("j-status"); s.className = "status " + cls; s.textContent = msg; };
@@ -526,8 +531,9 @@ function openJournalForm(j) {
     const entry = { ...j, id: j.id || uid(), name: el("j-name").value.trim(), score: Number(el("j-score").value), date: el("j-date").value,
       where: el("j-where").value.trim(), nose: el("j-nose").value.trim(), palate: el("j-palate").value.trim(), finish: el("j-finish").value.trim(),
       notes: el("j-notes").value.trim(), price: el("j-price").value ? Number(el("j-price").value) : null, format: el("j-format").value,
+      abv: el("j-abv").value ? Number(el("j-abv").value) : null,
       key: j.key || null, url: j.url || null };
-    Object.keys(entry).forEach(k => (entry[k] === "" || entry[k] === null) && delete entry[k]);
+    Object.keys(entry).forEach(k => (entry[k] === "" || entry[k] === null || Number.isNaN(entry[k])) && delete entry[k]);
     if (!entry.name || isNaN(entry.score)) { status("Add a name and a score.", "err"); return; }
     el("j-save").disabled = true; status("Saving to GitHub…");
     try {

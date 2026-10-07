@@ -249,6 +249,11 @@ def load_profile(path: str | Path) -> TasteProfile | None:
             continue
         text = entry_text(raw)
         p = parse(name, str(raw.get("description") or ""))
+        if p.abv is None and raw.get("abv"):
+            try:
+                p.abv = float(raw["abv"])  # typed into the app's ABV box
+            except (TypeError, ValueError):
+                pass
         entries.append(Entry(str(raw.get("id") or name), name, score, text, p, features(p), flavour_words(text)))
     return TasteProfile(entries)
 
