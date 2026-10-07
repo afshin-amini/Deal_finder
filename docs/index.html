@@ -377,7 +377,7 @@ function viewJournal() {
   const f = state.filters;
   const terms = f.jq.toLowerCase().split(/\s+/).filter(Boolean);
   const rows = state.journal.filter(j => !terms.length || terms.every(t => (j.name + " " + (j.nose || "") + " " + (j.palate || "") + " " + (j.finish || "") + " " + (j.notes || "")).toLowerCase().includes(t)))
-    .sort((a, b) => f.jsort === "score" ? b.score - a.score : (b.date || "").localeCompare(a.date || ""));
+    .sort((a, b) => f.jsort === "score" ? (b.score ?? -1) - (a.score ?? -1) : (b.date || "").localeCompare(a.date || ""));
   const canWrite = !!cfg.token;
   m.innerHTML = `
     ${canWrite ? "" : `<div class="banner">Journal is read-only on this device. <a href="#settings">Connect to GitHub</a> to add tastings.</div>`}
@@ -387,8 +387,8 @@ function viewJournal() {
       <select id="jsort" aria-label="Sort journal"><option value="date" ${f.jsort === "date" ? "selected" : ""}>Newest</option><option value="score" ${f.jsort === "score" ? "selected" : ""}>Highest score</option></select></div>
     <h2 class="section">Your tastings <small>${state.journal.length}${state.journal.length && state.journal.length < 8 ? " · " + (8 - state.journal.length) + " more to personalise" : ""}</small></h2>
     ${rows.length ? `<div class="list">${rows.map(j => `<button class="item" data-jid="${esc(j.id)}">
-        <div class="top"><span class="name">${esc(j.name)}</span><span class="score-badge">${esc(j.score)}</span></div>
-        <div class="meta">${j.date ? `<span>${esc(j.date)}</span>` : ""}${j.where ? `<span>${esc(j.where)}</span>` : ""}${j.price ? `<span>${money(j.price)}</span>` : ""}</div>
+        <div class="top"><span class="name">${esc(j.name)}</span><span class="score-badge">${j.score == null ? "–" : esc(j.score)}</span></div>
+        <div class="meta">${j.date ? `<span>${esc(j.date)}</span>` : ""}${j.abv ? `<span>${esc(j.abv)}%</span>` : ""}${j.format === "sample" ? "<span>sample</span>" : ""}${j.where ? `<span>${esc(j.where)}</span>` : ""}${j.price ? `<span>${money(j.price)}</span>` : ""}${j.verdict ? `<span class="tag ${/would buy/.test(j.verdict) ? "deal" : "shop"}">${esc(j.verdict)}</span>` : ""}</div>
         ${j.palate || j.nose || j.notes ? `<div class="hint" style="margin:0">${esc((j.palate || j.nose || j.notes).slice(0, 140))}</div>` : ""}</button>`).join("")}</div>`
       : `<p class="empty">${state.journal.length ? "No tastings match." : "No tastings yet. Add whiskies you've tried with a score out of 100. Your existing notes file can be imported in one go."}</p>`}
     <p style="text-align:center;margin-top:20px"><a href="#settings">Settings</a></p>`;
@@ -510,7 +510,7 @@ function openJournalForm(j) {
   const status = (msg, cls = "") => { const s = el("j-status"); s.className = "status " + cls; s.textContent = msg; };
   el("jform").onsubmit = async e => {
     e.preventDefault();
-    const entry = { id: j.id || uid(), name: el("j-name").value.trim(), score: Number(el("j-score").value), date: el("j-date").value,
+    const entry = { ...j, id: j.id || uid(), name: el("j-name").value.trim(), score: Number(el("j-score").value), date: el("j-date").value,
       where: el("j-where").value.trim(), nose: el("j-nose").value.trim(), palate: el("j-palate").value.trim(), finish: el("j-finish").value.trim(),
       notes: el("j-notes").value.trim(), price: el("j-price").value ? Number(el("j-price").value) : null, format: el("j-format").value,
       key: j.key || null, url: j.url || null };
