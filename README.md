@@ -41,7 +41,9 @@ Every bottle then gets a "you'd likely score it ~88" prediction, and is matched 
 1. Go to repo **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 2. Go to **Actions → publish app → Run workflow**. The app's address is then shown on the run page and under Settings → Pages: `https://<you>.github.io/Deal_finder/`.
 3. On your phone, open that address, then use Share → **Add to Home Screen**.
-4. To add tastings, create a **fine-grained personal access token**: only this repository, **Contents: Read and write**. Paste it into the app's Journal → Settings. The token stays on that device only.
+4. To add tastings and update prices from the app, create a **fine-grained personal access token** for this repository only. Give it **Contents: Read and write** (to save tastings) and **Actions: Read and write** (for the update button). Paste it into the app's Journal → Settings. The token stays on that device only.
+
+**Updating prices from the app:** tap ↻ in the top bar and choose Quick (BSW + Craft Cellars, ~5 min), KWM only (~15 min) or Everything (~25 min). This starts the same `daily whisky deals` workflow with `shops` and `quiet` inputs. Quiet means it only emails if something new turned up. The app shows that the update is running and reloads the data when it's published.
 
 Data flow: the daily run commits `docs/data/*.json` and republishes the app. The journal is saved to `docs/data/journal.json`, which is a public file in a public repo.
 

@@ -9,6 +9,14 @@ on:
         description: "Print alerts instead of sending"
         type: boolean
         default: false
+      shops:
+        description: "Shops to update, space-separated (blank = all): bsw kwm craft"
+        type: string
+        default: ""
+      quiet:
+        description: "Only email if there's something new"
+        type: boolean
+        default: false
 
 concurrency: dealfinder
 
@@ -42,7 +50,15 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}   # optional: phone push alerts too
           NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
-        run: python -m dealfinder run ${{ inputs.dry_run && '--dry-run' || '' }}
+          SHOPS: ${{ inputs.shops }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          QUIET: ${{ inputs.quiet }}
+        run: |
+          args=()
+          for s in $SHOPS; do args+=(--shop "$s"); done
+          [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
+          [ "$QUIET" = "true" ] && args+=(--no-empty-email)
+          python -m dealfinder run "${args[@]}"
 
       - name: Publish data for the app
         if: success()

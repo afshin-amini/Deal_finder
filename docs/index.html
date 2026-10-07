@@ -55,6 +55,15 @@ a { color: var(--accent); }
   border-bottom: 1px solid var(--line); display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .topbar h1 { font: 700 1.25rem/1.2 var(--font-display); margin: 0; }
 .topbar .sub { font: 0.75rem var(--font-data); color: var(--muted); text-align: right; }
+.iconbtn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; width: 34px; height: 34px; display: inline-grid; place-items: center; cursor: pointer; color: var(--accent); flex: none; }
+.iconbtn svg { width: 18px; height: 18px; }
+.iconbtn.busy svg { animation: spin 1.2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .iconbtn.busy svg { animation: none; } }
+.runbox { display: grid; gap: 8px; }
+.runopt { display: grid; gap: 2px; text-align: left; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); cursor: pointer; }
+.runopt b { font-size: 1rem; } .runopt span { font-size: 0.85rem; color: var(--muted); }
+.runopt:disabled { opacity: 0.5; cursor: default; }
 main { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 12px 0; }
 
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line);
@@ -145,13 +154,16 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .status { font-size: 0.88rem; min-height: 1.2em; }
 .status.err { color: var(--fruit); } .status.ok { color: var(--good); }
+.toast { position: fixed; left: 16px; right: 16px; bottom: calc(var(--tabbar) + env(safe-area-inset-bottom, 0px) + 12px); z-index: 40;
+  background: var(--fg); color: var(--bg); padding: 10px 14px; border-radius: 10px; font-size: 0.92rem; max-width: 600px; margin: 0 auto; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
 @media (prefers-reduced-motion: no-preference) { .sheet { animation: up 0.18s ease-out; } @keyframes up { from { transform: translateY(24px); opacity: 0.6; } } }
 </style>
 </head>
 <body>
 <header class="topbar">
   <h1 id="view-title">Deals</h1>
-  <div class="sub" id="updated"></div>
+  <div class="row" style="gap:8px;flex-wrap:nowrap"><div class="sub" id="updated"></div>
+    <button class="iconbtn" id="refresh" aria-label="Update prices now" title="Update prices now"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 4v5h-5"/></svg></button></div>
 </header>
 
 <main id="main"><p class="empty">Loading…</p></main>
@@ -212,10 +224,10 @@ async function loadLazy(name) {
 function b64decode(s) { const bin = atob(s.replace(/\n/g, "")); return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))); }
 function b64encode(str) { const bytes = new TextEncoder().encode(str); let bin = ""; bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin); }
 async function gh(path, opts = {}) {
-  const r = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}/${path}`, { ...opts,
+  const r = await fetch(`https://api.github.com/repos/${cfg.owner}/${cfg.repo}${path ? "/" + path : ""}`, { ...opts,
     headers: { "Accept": "application/vnd.github+json", "Authorization": "Bearer " + cfg.token, ...(opts.headers || {}) } });
   if (!r.ok) { const t = await r.text(); const err = new Error(`GitHub ${r.status}: ${t.slice(0, 160)}`); err.status = r.status; throw err; }
-  return r.json();
+  return r.status === 204 ? null : r.json();
 }
 async function loadJournal() {
   if (cfg.token) {
@@ -300,7 +312,8 @@ function bindMore(rerender) { const m = el("more"); if (m) m.onclick = () => { s
 /* ---------------- views ---------------- */
 function viewDeals() {
   const m = el("main");
-  const fresh = state.deals.filter(d => (Date.now() - new Date(d.at)) / 864e5 <= 14);
+  const fresh = state.deals.filter(d => (Date.now() - new Date(d.at)) / 864e5 <= 14 &&
+    (state.filters.shop === "all" || d.s === state.filters.shop));
   const below = applyFilters(state.catalog.filter(c => (c.ds || 0) >= 12 && fitScore(c) >= 45))
     .sort((a, b) => (b.ds + fitScore(b) / 4) - (a.ds + fitScore(a) / 4));
   const gen = state.meta.generated ? new Date(state.meta.generated) : new Date();
@@ -406,7 +419,7 @@ function viewSettings() {
     <ol class="hint">
       <li>On GitHub: Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token.</li>
       <li>Repository access: <b>Only select repositories</b> → ${esc(cfg.repo)}.</li>
-      <li>Permissions → Repository permissions → <b>Contents: Read and write</b>. Nothing else.</li>
+      <li>Permissions → Repository permissions → <b>Contents: Read and write</b> (to save tastings) and <b>Actions: Read and write</b> (for the update button). Nothing else.</li>
       <li>Generate, copy, and paste it below.</li>
     </ol>
     <form id="settings" class="journal">
@@ -534,6 +547,98 @@ function openJournalForm(j) {
   }
 }
 
+/* ---------------- update now (runs the daily workflow on demand) ---------------- */
+const WORKFLOW = "daily.yml";
+const RUN_OPTIONS = [
+  { shops: "bsw craft", title: "Quick: BSW + Craft Cellars", hint: "About 5 minutes. Prices and stock for both shops." },
+  { shops: "kwm", title: "KWM only", hint: "About 15 minutes. KWM asks for 20 seconds between pages." },
+  { shops: "", title: "Everything", hint: "About 25 minutes. All shops plus new KWM tasting notes." },
+];
+let watchTimer = null;
+function toast(msg) {
+  let t = el("toast");
+  if (!t) { t = document.createElement("div"); t.id = "toast"; t.className = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+  t.textContent = msg; t.hidden = false; clearTimeout(t._h); t._h = setTimeout(() => t.hidden = true, 5000);
+}
+async function latestRun() {
+  const r = await gh(`actions/workflows/${WORKFLOW}/runs?per_page=1`);
+  return (r.workflow_runs || [])[0] || null;
+}
+function runLabel(run) {
+  if (!run) return "No runs yet.";
+  const when = relTime(run.created_at), how = run.event === "schedule" ? "scheduled" : "manual";
+  if (run.status !== "completed") return `Updating now (${how}, started ${when})…`;
+  return run.conclusion === "success" ? `Last update finished ${relTime(run.updated_at)} (${how}).` : `Last update ${run.conclusion} ${when}.`;
+}
+async function openRefresh() {
+  if (!cfg.token) {
+    openSheet(`<h2>Update prices now</h2><p class="hint">Updating from the app starts the deal-finder run on GitHub. It needs your token with <b>Actions: Read and write</b> permission.</p>
+      <div class="actions"><a class="btn primary" href="#settings" id="go-settings">Open settings</a></div>`);
+    el("go-settings").onclick = closeSheet; return;
+  }
+  openSheet(`<h2>Update prices now</h2><p class="hint" id="run-status">Checking the last update…</p>
+    <div class="runbox">${RUN_OPTIONS.map((o, i) => `<button class="runopt" data-i="${i}" disabled><b>${esc(o.title)}</b><span>${esc(o.hint)}</span></button>`).join("")}</div>
+    <p class="hint" style="font-size:0.82rem">Alerts from a manual update are emailed only if there's something new. The 8:17am run still happens as usual.</p>
+    <div class="status" id="run-msg"></div>`);
+  let run = null;
+  try { run = await latestRun(); }
+  catch (e) { el("run-status").textContent = e.status === 403 || e.status === 404 ? "Your token can't see GitHub Actions. Add the Actions: Read and write permission to it." : e.message; return; }
+  if (!el("run-status")) return;
+  el("run-status").textContent = runLabel(run);
+  const busy = run && run.status !== "completed";
+  document.querySelectorAll(".runopt").forEach(b => {
+    b.disabled = busy;
+    b.onclick = () => startRun(RUN_OPTIONS[Number(b.dataset.i)]);
+  });
+  if (busy) el("run-msg").innerHTML = `<a href="${esc(run.html_url)}" target="_blank" rel="noopener">Watch it on GitHub</a>`;
+}
+async function startRun(opt) {
+  const msg = el("run-msg");
+  document.querySelectorAll(".runopt").forEach(b => b.disabled = true);
+  msg.className = "status"; msg.textContent = "Starting…";
+  try {
+    const repo = await gh("");
+    await gh(`actions/workflows/${WORKFLOW}/dispatches`, { method: "POST",
+      body: JSON.stringify({ ref: repo.default_branch, inputs: { shops: opt.shops, quiet: "true" } }) });
+    store("dl-run-started", String(Date.now()));
+    store("dl-run-before", state.meta.generated || "");
+    closeSheet(); toast(`Started: ${opt.title}. The app reloads when it's done.`);
+    watchRun();
+  } catch (e) {
+    msg.className = "status err";
+    msg.textContent = e.status === 403 ? "GitHub refused: the token needs Actions: Read and write." : "Couldn't start: " + e.message;
+    document.querySelectorAll(".runopt").forEach(b => b.disabled = false);
+  }
+}
+function watchRun() {
+  clearInterval(watchTimer);
+  const btn = el("refresh");
+  btn.classList.add("busy");
+  const started = Number(store("dl-run-started") || 0);
+  const before = store("dl-run-before") || "";
+  let runDone = false;
+  const tick = async () => {
+    try {
+      if (!runDone) {
+        const run = await latestRun();
+        if (run && new Date(run.created_at).getTime() >= started - 120000) {
+          if (run.status !== "completed") { el("updated").textContent = "Updating…"; return; }
+          if (run.conclusion !== "success") { stop(); toast(`Update ${run.conclusion}. Open GitHub Actions for details.`); return; }
+          runDone = true;
+        } else if (Date.now() - started > 5 * 60000) { stop(); toast("The update didn't start. Try again in a minute."); return; }
+      }
+      // the run has finished; wait for GitHub Pages to serve the new data
+      const meta = await getJSON("data/meta.json");
+      if (meta.generated && meta.generated !== before) {
+        stop(); await loadCore(); route(); toast("Prices updated.");
+      } else if (Date.now() - started > 60 * 60000) { stop(); }
+    } catch (e) { /* network blip; try again next tick */ }
+  };
+  function stop() { clearInterval(watchTimer); btn.classList.remove("busy"); store("dl-run-started", null);
+    if (state.meta.generated) el("updated").textContent = "Updated " + relTime(state.meta.generated); }
+  tick(); watchTimer = setInterval(tick, 30000);
+}
+
 /* ---------------- routing ---------------- */
 const VIEWS = { deals: ["Deals", viewDeals], foryou: ["For you", viewForYou], search: ["Search", viewSearch], journal: ["Journal", viewJournal], settings: ["Settings", viewSettings] };
 let current = null;
@@ -548,8 +653,13 @@ function route() {
 }
 window.addEventListener("hashchange", () => { closeSheet(); route(); });
 
+el("refresh").onclick = openRefresh;
 (async () => {
-  try { await Promise.all([loadCore(), loadJournal()]); route(); }
+  try {
+    await Promise.all([loadCore(), loadJournal()]); route();
+    const started = Number(store("dl-run-started") || 0);
+    if (cfg.token && started && Date.now() - started < 60 * 60000) watchRun();  // resume after closing the app
+  }
   catch (e) { el("main").innerHTML = `<p class="empty">Couldn't load the deal data (${esc(e.message)}). It appears after the first daily run publishes it.</p>`; }
 })();
 if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});

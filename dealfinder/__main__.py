@@ -90,6 +90,7 @@ def main(argv: list[str] | None = None) -> int:
     r = sub.add_parser("run")
     r.add_argument("--dry-run", action="store_true", help="print alerts instead of sending them")
     r.add_argument("--shop", action="append")
+    r.add_argument("--no-empty-email", action="store_true", help="skip the email when nothing new was found")
     pr = sub.add_parser("probe")
     pr.add_argument("--shop", action="append")
     t = sub.add_parser("top")
@@ -114,6 +115,8 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.cmd == "run":
         from .runner import run
+        if args.no_empty_email:
+            cfg.setdefault("email", {})["send_when_empty"] = False
         return run(cfg, args.shop, args.dry_run)
     if args.cmd == "report":
         from .report import run_report
