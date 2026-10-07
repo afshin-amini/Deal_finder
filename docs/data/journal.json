@@ -11,9 +11,21 @@
  ],
  "entries": [
   {
+   "id": "muyey4owtccie",
+   "name": "Decadent Drams Blair Athol 28 Year KWM",
+   "score": 89,
+   "date": "2026-10-07",
+   "where": "Sample",
+   "nose": "Light. Dusty, floral, waxy, some sweetness , i like it. Like very soft lemon tart",
+   "palate": "Sweet, juicy, creamy, honey. Very similar to nose",
+   "finish": "Floral and waxy",
+   "notes": "I like it, 360 at kwm. Maybe on sale. I liked the glenburgie 21 (G&M) more for 300",
+   "format": "sample"
+  },
+  {
    "name": "Loch Lomond inchmurrin 12",
-   "score": 82.0,
-   "abv": 46.0,
+   "score": 82,
+   "abv": 46,
    "nose": "Quiet, sweet, sour, new wood",
    "palate": "bitter, sweet, sharp",
    "notes": "82",
@@ -24,8 +36,8 @@
   },
   {
    "name": "Loch Lomond inchmoan 12",
-   "score": 84.0,
-   "abv": 46.0,
+   "score": 84,
+   "abv": 46,
    "nose": "unripe fruit, earthy, hay, very sweet note! too sweet.",
    "palate": "dirty, better that inchmurrin. earthy, soft smoke finish",
    "notes": "84",
@@ -36,8 +48,8 @@
   },
   {
    "name": "Loch Lomond inchmoan 18",
-   "score": 84.0,
-   "abv": 46.0,
+   "score": 84,
+   "abv": 46,
    "nose": "darker, reacher, aniseed, slight woodiness, sherry",
    "palate": "fruity, woody, sweet",
    "notes": "84",
@@ -48,7 +60,7 @@
   },
   {
    "name": "Loch Lomond 2011 KWM",
-   "score": 86.0,
+   "score": 86,
    "abv": 60.4,
    "nose": "sweet, deserty, not sharp, baking spice, baking sugar",
    "palate": "warm, fizzy, very sweeeet",
@@ -60,8 +72,8 @@
   },
   {
    "name": "Glen Scotia 10",
-   "score": 84.0,
-   "abv": 40.0,
+   "score": 84,
+   "abv": 40,
    "nose": "soft, sweet, tropical fruits, mango, salty, oak",
    "palate": "salty, sweet (mango...). a little salty",
    "notes": "84, thin",
@@ -72,8 +84,8 @@
   },
   {
    "name": "Glen Scotia 25",
-   "score": 88.0,
-   "abv": 48.0,
+   "score": 88,
+   "abv": 48,
    "nose": "salt, grass, wood, fruity - all mellow notes",
    "palate": "rich, tasty, malty, sweet, vanilla",
    "notes": "88 - very nice but not worth the price 900CAD",
@@ -85,7 +97,7 @@
   },
   {
    "name": "Glen Scotia victoriana",
-   "score": 88.0,
+   "score": 88,
    "abv": 54.2,
    "nose": "woodyy, rich, very nice, wood, fresh, fruity, sweet, vanilla",
    "palate": "warm, sweet, woody, rich",
@@ -97,7 +109,7 @@
   },
   {
    "name": "Glen Scotia kwm 22",
-   "score": 87.0,
+   "score": 87,
    "abv": 56.9,
    "nose": "nutty, vanilla, honey, grassy",
    "palate": "warm, very tasty, complex",
@@ -109,8 +121,8 @@
   },
   {
    "name": "Springbank 10",
-   "score": 88.0,
-   "abv": 46.0,
+   "score": 88,
+   "abv": 46,
    "nose": "farmy, little smoke, sweet, wood, salty, sherry notes as well. nice!",
    "palate": "briny, smoky, sweet, farmy, a little dirty",
    "notes": "Tasted 3/8/23. 88 similar to Ardnamurchan AD.01.21",
@@ -121,8 +133,8 @@
   },
   {
    "name": "Springbank 10 palo cortado",
-   "score": 88.0,
-   "abv": 53.0,
+   "score": 88,
+   "abv": 53,
    "nose": "library dust, dirt, very sweet, hey, jelly, less smoke but same sea salt",
    "palate": "salty, slight smoked meat, woody, tangy",
    "notes": "88 desert like (very sweet nose)",
@@ -133,8 +145,8 @@
   },
   {
    "name": "Hazelburn 10",
-   "score": 85.0,
-   "abv": 46.0,
+   "score": 85,
+   "abv": 46,
    "nose": "OK",
    "palate": "OK",
    "notes": "85",
@@ -145,7 +157,7 @@
   },
   {
    "name": "Cadenhead 30 YO blend",
-   "score": 85.0,
+   "score": 85,
    "abv": 48.2,
    "nose": "wood, damp grass, sherry notes",
    "palate": "tangy, bitter then sweet, sherry notes",
@@ -157,8 +169,8 @@
   },
   {
    "name": "Kilkerran 16",
-   "score": 90.0,
-   "abv": 46.0,
+   "score": 90,
+   "abv": 46,
    "nose": "grassy, sweet(sherry sweet), mint, tobaco, leafy 90-very good",
    "palate": "earthy, mineralic, honey, oily, disel, tobaco, citrus",
    "notes": "Tasted 1/5/23. 90",
@@ -169,7 +181,7 @@
   },
   {
    "name": "Kilkerran Heavily Peated batch 9",
-   "score": 90.0,
+   "score": 90,
    "abv": 59.9,
    "nose": "PEAT, salty, mineraly, leafy, tobaco, outdoorsy",
    "palate": "HOt, peaty, salty, there is a sweetenss (very nice)",
@@ -181,7 +193,7 @@
   },
   {
    "name": "Hazelburn 21",
-   "score": 88.0,
+   "score": 88,
    "abv": 43.2,
    "nose": "creamy, oily, there is this metalic nose that's very off putting, some salt, shy nose, mineral, hay-like,sherry, after 30 mins citrus comes",
    "palate": "sweet, brown sugar, dark fruits, sherry, citrus, some wood",
@@ -193,8 +205,8 @@
   },
   {
    "name": "Longrow 21",
-   "score": 90.0,
-   "abv": 46.0,
+   "score": 90,
+   "abv": 46,
    "nose": "earthy, woody, smoke, bacon, mineraly, honey and dark fruits,hey, grassy, tobaco",
    "palate": "wood bitterness, soft smoke and brine, ginger, with water it's a banger.",
    "notes": "90",
@@ -205,8 +217,8 @@
   },
   {
    "name": "Signatory Edradour-2012, 10yo",
-   "score": 83.0,
-   "abv": 46.0,
+   "score": 83,
+   "abv": 46,
    "nose": "sweet, dark fruits, coffee, chocolate, grassy, soft nose, nice!",
    "palate": "DAAARK fruits, dried red plums, some bitterness",
    "notes": "83",
@@ -217,8 +229,8 @@
   },
   {
    "name": "Signatory Benrinnes 2010 oloroso, 12yo",
-   "score": 84.0,
-   "abv": 46.0,
+   "score": 84,
+   "abv": 46,
    "nose": "grassy, vegital, sheeeery",
    "notes": "84 like edradure but more vegital notes. I like it better",
    "format": "sample",
@@ -228,7 +240,7 @@
   },
   {
    "name": "Signatory Benrinnes 1996, hogshead, 26YO",
-   "score": 89.0,
+   "score": 89,
    "abv": 53.5,
    "nose": "dust, sweet honey waxy creamy, vegital notes, very nice nose! some minerality",
    "palate": "woody, tangy, honey, ginger, with looong finish",
@@ -240,8 +252,8 @@
   },
   {
    "name": "Signatory Linkwood 2012, sherry butts",
-   "score": 84.0,
-   "abv": 46.0,
+   "score": 84,
+   "abv": 46,
    "nose": "soft, fruity, dark fruits, red grape, warm,nutty, wood",
    "palate": "normal sherry taste but soft",
    "notes": "84. wouldn't buy it for 150",
@@ -253,7 +265,7 @@
   },
   {
    "name": "Signatory Glenrothes 1996 hogshead - 26yo",
-   "score": 87.0,
+   "score": 87,
    "abv": 53.6,
    "nose": "grassy, creamy, wood, chocolate, cherry (nice nose)",
    "palate": "creamy, white chocolate, wood, vanilla",
@@ -266,7 +278,7 @@
   },
   {
    "name": "Signatory Dailuaine 1997 25yo",
-   "score": 87.0,
+   "score": 87,
    "abv": 48.2,
    "nose": "woody, grassy, green vegi, creamy",
    "palate": "bready, vanilla, ginger",
@@ -278,7 +290,7 @@
   },
   {
    "name": "Signatory unnamed Islay 1990",
-   "score": 92.0,
+   "score": 92,
    "abv": 51.9,
    "nose": "ASHY, very nice, vegital, soft ash and smoke, fire on beach, soft citrus, wood",
    "palate": "earthy, smoke, briny (all soft), bbq,sand",
@@ -291,8 +303,8 @@
   },
   {
    "name": "Old Pulteney 12",
-   "score": 83.0,
-   "abv": 40.0,
+   "score": 83,
+   "abv": 40,
    "nose": "briny, quiet, honey, soft ginger, very quiet nose, some minerality",
    "palate": "briny, honey, bready",
    "notes": "83 - not bad for the price, easy drinking",
@@ -303,8 +315,8 @@
   },
   {
    "name": "Old Pulteney 15",
-   "score": 84.0,
-   "abv": 46.0,
+   "score": 84,
+   "abv": 46,
    "nose": "salty, sherry, mineraly, woody",
    "palate": "woody, sherry, briny",
    "notes": "84 nice",
@@ -315,8 +327,8 @@
   },
   {
    "name": "Old Pulteney 18",
-   "score": 87.0,
-   "abv": 46.0,
+   "score": 87,
+   "abv": 46,
    "nose": "briny, buttery, coastal, sherry, cinammon, nutty (gentle), mossy",
    "palate": "salty, sherry,oak, gentle nuttiness very nice.",
    "notes": "87 Good! 150 now, maybe on sale! very taste, great nose.",
@@ -328,8 +340,8 @@
   },
   {
    "name": "Old Pulteney 25",
-   "score": 86.0,
-   "abv": 46.0,
+   "score": 86,
+   "abv": 46,
    "nose": "woody, mossy, nutty, but quiet",
    "palate": "yangy, woody, old",
    "notes": "86- I liked the 18 better",
@@ -340,8 +352,8 @@
   },
   {
    "name": "Old Pulteney Huddart",
-   "score": 80.0,
-   "abv": 46.0,
+   "score": 80,
+   "abv": 46,
    "nose": "salty, sulfuric, sweet, very quiet",
    "palate": "briny, bitter",
    "notes": "80",
@@ -362,7 +374,7 @@
   },
   {
    "name": "G&M Pulteney 1982",
-   "score": 86.0,
+   "score": 86,
    "abv": 57.1,
    "nose": "salty, nutty",
    "palate": "salty, meaty, minty (interesting, very distinctive), chocolate mint",
@@ -374,7 +386,7 @@
   },
   {
    "name": "Macbeth collection - Cambus 31",
-   "score": 87.0,
+   "score": 87,
    "abv": 46.2,
    "nose": "honey, vanilla, toffee, creamy",
    "palate": "classic bourbon tastes, honey, vanilla, it's obvious it's old, oily and creamy",
@@ -386,7 +398,7 @@
   },
   {
    "name": "Macbeth collection - Linkwood 31",
-   "score": 91.0,
+   "score": 91,
    "abv": 48.2,
    "nose": "WOW! sweet gummy, small candys, honey, FENNEL, very floral (great nose)",
    "palate": "fruity, sweet, slightly woody",
@@ -398,7 +410,7 @@
   },
   {
    "name": "Macbeth collection - BenRiach 31",
-   "score": 86.0,
+   "score": 86,
    "abv": 53.1,
    "nose": "fruity, jam, some sulfur! gone with time, honey, woody, floral",
    "palate": "dense, nice, dark fruits, a little dirty",
@@ -410,7 +422,7 @@
   },
   {
    "name": "Macbeth collection - Glen Garioch 31",
-   "score": 88.0,
+   "score": 88,
    "abv": 54.6,
    "nose": "woody, farmy, sweet",
    "palate": "sweet, sharbety, woody",
@@ -422,7 +434,7 @@
   },
   {
    "name": "Macbeth collection - Blair Athol 10 yo",
-   "score": 84.0,
+   "score": 84,
    "abv": 51.8,
    "nose": "fruity, tannins, honey, hint of vanilla and minerality",
    "palate": "vanilla, honey",
@@ -446,7 +458,7 @@
   },
   {
    "name": "Macbeth collection - Ledaig 18",
-   "score": 88.0,
+   "score": 88,
    "abv": 50.5,
    "nose": "soft peat, nice, not briny (mainland peaty) - soft lime, mango, minerally, vegetal but not iodin, olive oil, ashy",
    "palate": "citrus, soft peat, oily, orange peel, dirty and spicy",
@@ -459,7 +471,7 @@
   },
   {
    "name": "Macbeth collection - Ardbeg 19 - Pedro Ximenez Casks",
-   "score": 89.0,
+   "score": 89,
    "abv": 51.7,
    "nose": "tobacco, peat, sweet, salty",
    "palate": "soft peat, warm, dark chocolate, ashy",
@@ -472,8 +484,8 @@
   },
   {
    "name": "Benromach, Contrasts: peat smoke",
-   "score": 88.0,
-   "abv": 46.0,
+   "score": 88,
+   "abv": 46,
    "nose": "peaty, earthy, grassy, citrus, minerally - very nice, peat is not overwhelming",
    "palate": "classic peaty, honey, vanilla",
    "notes": "88 - easy buy",
@@ -485,8 +497,8 @@
   },
   {
    "name": "Benromach, Contrasts: peat smoke Sherry",
-   "score": 88.0,
-   "abv": 46.0,
+   "score": 88,
+   "abv": 46,
    "nose": "dense, leather, tobacco, waxy, creamy, damp grass, dark chocolate, much sweeter after some time, grape, caramelized nuts",
    "palate": "peat, dark fruits, oily, tobacco, ash",
    "notes": "88 - easy buy",
@@ -498,7 +510,7 @@
   },
   {
    "name": "Benromach 10 Cask Strength, vintage 2013 batch 1",
-   "score": 89.0,
+   "score": 89,
    "abv": 59.7,
    "nose": "it needs time, plum, smoke, wood, waxy, sweet (barley sugar), dark fruits, cinnamon",
    "palate": "tobacco, soft peat, oily, sweet",
@@ -511,7 +523,7 @@
   },
   {
    "name": "G&M Glentauchers 2006 - 16yo - Refill-ex-Bourbon",
-   "score": 86.0,
+   "score": 86,
    "abv": 58.8,
    "nose": "nutty, soft, vegetal, floral and fruity, oily",
    "palate": "Big, rich, nutty, tasted nuts, coconut, cinammon",
@@ -523,7 +535,7 @@
   },
   {
    "name": "G&M Glentauchers 2000 - 23yo - Sherry Hogshead",
-   "score": 86.0,
+   "score": 86,
    "abv": 55.8,
    "nose": "grassy, sweet, meaty",
    "palate": "dark fruit, nutty",
@@ -547,7 +559,7 @@
   },
   {
    "name": "G&M Caol Ila 2005 - 18yo - Refill Sherry Hogshead",
-   "score": 90.0,
+   "score": 90,
    "abv": 55.1,
    "nose": "peaty but not intense, very nice, vegetal, soft orange, briny, tobacco, soft citrus",
    "palate": "peat, dark fruit, sweet, very nice.",
@@ -559,7 +571,7 @@
   },
   {
    "name": "G&M Dailuaine 2009, 13yo - First Fill Sherry Hogshead",
-   "score": 86.0,
+   "score": 86,
    "abv": 57.7,
    "nose": "berries, nutty, dark fruits",
    "palate": "oily, sweet",
@@ -572,7 +584,7 @@
   },
   {
    "name": "G&M Tomatin 1988, 32yo Refill American Oak Hogshead",
-   "score": 90.0,
+   "score": 90,
    "abv": 56.6,
    "nose": "adams khersi :), blueberry pie, buttery, very nice",
    "palate": "woody, dusty, strawbrry, mango!",
@@ -584,7 +596,7 @@
   },
   {
    "name": "G&M Bunnahabhain 1998 - 24yo, Refill American Oak Hogshead",
-   "score": 88.0,
+   "score": 88,
    "abv": 48.3,
    "nose": "soft brine, oak, minty, eucalyptus",
    "palate": "briny, citrus",
@@ -596,7 +608,7 @@
   },
   {
    "name": "Coopers Choice Highland Park Heather Smoke, NAS",
-   "score": 83.0,
+   "score": 83,
    "abv": 55.5,
    "nose": "quiet nose, some sulfur, sweet, dust or very light ash? not good",
    "palate": "sweet and bitter, not bad",
@@ -608,7 +620,7 @@
   },
   {
    "name": "Coopers Choice Ardmore 2003, 17yo",
-   "score": 88.0,
+   "score": 88,
    "abv": 48.5,
    "nose": "bitter smoke, green apple, vanilla, ginger",
    "palate": "ashy, smoky, citrusy, long finish",
@@ -620,7 +632,7 @@
   },
   {
    "name": "Coopers Choice Caol Ila smoking blackberries",
-   "score": 84.0,
+   "score": 84,
    "abv": 44.5,
    "nose": "sour! soft smoke, fermented red grapes, medicine, hospital",
    "palate": "smoky! strong, red wine",
@@ -632,8 +644,8 @@
   },
   {
    "name": "Coopers Choice Caol Ila 14yo",
-   "score": 84.0,
-   "abv": 51.0,
+   "score": 84,
+   "abv": 51,
    "nose": "citrusy, smoky",
    "palate": "citrucy, smoky, sweet honey vanilla, little harsh",
    "notes": "84 not that great",
@@ -644,7 +656,7 @@
   },
   {
    "name": "Coopers Choice Aberfeldy 7",
-   "score": 83.0,
+   "score": 83,
    "abv": 54.5,
    "notes": "83",
    "format": "sample",
@@ -654,7 +666,7 @@
   },
   {
    "name": "Coopers Choice Strathclyde 1993",
-   "score": 83.0,
+   "score": 83,
    "nose": "buttery, popcorn, vanilla",
    "palate": "lots of Vanilla",
    "notes": "83 - nothing special",
@@ -665,8 +677,8 @@
   },
   {
    "name": "Coopers Choice Campbeltown blend",
-   "score": 82.0,
-   "abv": 53.0,
+   "score": 82,
+   "abv": 53,
    "nose": "sour, harsh, vanilla, vegetal, hint of smoke",
    "palate": "malty and vanilla",
    "notes": "82 - not interesting",
@@ -677,7 +689,7 @@
   },
   {
    "name": "Coopers Choice Bunnahabhain smoke sherry",
-   "score": 87.0,
+   "score": 87,
    "abv": 53.5,
    "nose": "smoke, briny, fire by sea, plum, minerally, wood on beach",
    "palate": "smoke, sweet, nice",
@@ -690,8 +702,8 @@
   },
   {
    "name": "Craigellachie 13",
-   "score": 84.0,
-   "abv": 46.0,
+   "score": 84,
+   "abv": 46,
    "nose": "vanilla, sherry? friendly",
    "palate": "dirty, vanilla, honey",
    "notes": "84",
@@ -702,7 +714,7 @@
   },
   {
    "name": "Craigellachie 17",
-   "score": 86.0,
+   "score": 86,
    "nose": "fruity, sweet, dirty, meaty, soft wood",
    "palate": "dirty, sweet, vanilla, honey",
    "notes": "86 for 200 no, 150 try",
@@ -713,7 +725,7 @@
   },
   {
    "name": "Craigellachie 20, 2002, G&M",
-   "score": 88.0,
+   "score": 88,
    "abv": 58.5,
    "nose": "Nutty, good!, dirty, meaty, vanilla, citrus, oil",
    "palate": "orange peel, dirty, oily, vanilla, honey",
@@ -726,8 +738,8 @@
   },
   {
    "name": "Decadent Drinks NAS blended malt 17yo",
-   "score": 87.0,
-   "abv": 53.0,
+   "score": 87,
+   "abv": 53,
    "nose": "nice sour yogurt, grassy, sweet and fruity, leather",
    "palate": "earthy, dusty, sweet berry, tobacco",
    "notes": "87 really good but not at 220.",
@@ -739,7 +751,7 @@
   },
   {
    "name": "Decadent Drinks Candlekitty 2010 - 12yo Clynelish",
-   "score": 85.0,
+   "score": 85,
    "abv": 57.1,
    "nose": "waxy, honey wax, barley, farmy",
    "palate": "rich, juicy and flowery",
@@ -751,8 +763,8 @@
   },
   {
    "name": "Decadent Drinks Glentauchers 18yo",
-   "score": 86.0,
-   "abv": 53.0,
+   "score": 86,
+   "abv": 53,
    "nose": "waxy, citrusy, nutty, pineapple, dark fruits, leather",
    "palate": "waxy, honey, sherry",
    "notes": "86",
@@ -763,7 +775,7 @@
   },
   {
    "name": "Decadent Drinks Mortlach 10yo",
-   "score": 84.0,
+   "score": 84,
    "abv": 58.5,
    "nose": "Thick, dense, oily, sherry, earthy, chocolate, peppery",
    "palate": "dense, sherry",
@@ -775,8 +787,8 @@
   },
   {
    "name": "Decadent Drinks old Orkney (highland park)13yo",
-   "score": 85.0,
-   "abv": 50.0,
+   "score": 85,
+   "abv": 50,
    "nose": "creamy, citrusy, herbal peat (heathery), touch of brininess, flowery",
    "palate": "some peat, oil, briny, coastal",
    "notes": "85",
@@ -787,7 +799,7 @@
   },
   {
    "name": "Decadent Drinks Bowmore 18yo",
-   "score": 89.0,
+   "score": 89,
    "abv": 55.3,
    "nose": "vegetal, briny, minerally, soft peat, light fruits",
    "palate": "briny, smoky, minerally, light sweetness, long finish",
@@ -800,8 +812,8 @@
   },
   {
    "name": "Decadent Drinks Ardbeg 14yo",
-   "score": 88.0,
-   "abv": 60.0,
+   "score": 88,
+   "abv": 60,
    "nose": "more vegetal and bacon - bbq sweetness, smoky, lime",
    "palate": "very ashy, sweet, peaty",
    "notes": "88",
@@ -812,7 +824,7 @@
   },
   {
    "name": "Single cask nation, Glen Elgin, 10 yo",
-   "score": 84.0,
+   "score": 84,
    "abv": 61.3,
    "nose": "creamy, spicy, sharp, rock dust, sweet, grain and cereal notes not fruity or floral",
    "palate": "barley sugar, vegetable oil",
@@ -824,7 +836,7 @@
   },
   {
    "name": "Single cask nation Linkwood 12 YO",
-   "score": 81.0,
+   "score": 81,
    "abv": 55.5,
    "nose": "sulfur, like glen elgin, cereal, rasiny",
    "palate": "like glen elgin but raisiny",
@@ -836,8 +848,8 @@
   },
   {
    "name": "AD Rattray Mannochmore 13 yo",
-   "score": 83.0,
-   "abv": 53.0,
+   "score": 83,
+   "abv": 53,
    "notes": "83 it's like the 2 above",
    "format": "sample",
    "description": "AD Rattary Mannochmore 13 yo, 53%",
@@ -846,7 +858,7 @@
   },
   {
    "name": "Adelphi Bunnahabhain 10",
-   "score": 85.0,
+   "score": 85,
    "abv": 58.9,
    "nose": "dusty, slight brininess, red fruits",
    "palate": "sherry and dusty",
@@ -858,7 +870,7 @@
   },
   {
    "name": "G&M Ardmore 24yo",
-   "score": 88.0,
+   "score": 88,
    "abv": 55.2,
    "nose": "dirty, garage oil and smoke, sweet, meaty",
    "notes": "88",
@@ -869,7 +881,7 @@
   },
   {
    "name": "SMWS 55.90 – Chocolate Crème Brûlée With Redcurrants (Royal Brackla 15)",
-   "score": 87.0,
+   "score": 87,
    "abv": 55.2,
    "nose": "dense, dry, brown sugar, zesty",
    "palate": "sweet hazelnut",
@@ -881,7 +893,7 @@
   },
   {
    "name": "SMWS 35.343 – Dramming At The Day Spa (Glen Moray 9)",
-   "score": 84.0,
+   "score": 84,
    "abv": 59.1,
    "nose": "quiet, zesty",
    "palate": "normal, nothing special but decent",
@@ -893,7 +905,7 @@
   },
   {
    "name": "SMWS 70.53 – Fragile Fruits And Floaty Flowers (14yo Balblair)",
-   "score": 84.0,
+   "score": 84,
    "abv": 57.3,
    "nose": "normal bourbon matured scotch",
    "notes": "84, nice but not special, 220???",
@@ -904,7 +916,7 @@
   },
   {
    "name": "SMWS 140.14 – Cowpuncher Rodeo Dram (Balcones 4yo)",
-   "score": 85.0,
+   "score": 85,
    "abv": 61.8,
    "nose": "rye? spicy, young, sweet,wood",
    "palate": "brown sugar, very woody I like it. spicy",
@@ -917,7 +929,7 @@
   },
   {
    "name": "SMWS 41.162 – Tasty Tapas And Flamenco Flair (Dailuaine 12)",
-   "score": 84.0,
+   "score": 84,
    "abv": 57.3,
    "nose": "sour nose",
    "palate": "sour, lime, meaty",
@@ -929,7 +941,7 @@
   },
   {
    "name": "SMWS 3.343, A welcome home hug (Bowmore, 18 yo)",
-   "score": 88.0,
+   "score": 88,
    "abv": 56.4,
    "nose": "soft, ashy, honey",
    "palate": "ash, smoke, soft, grassy, earthy, briny",
@@ -941,7 +953,7 @@
   },
   {
    "name": "SMWS 16.71 A soupcon of soot (Glenturret, 8 yo)",
-   "score": 85.0,
+   "score": 85,
    "abv": 64.4,
    "notes": "ok, 85",
    "format": "sample",
@@ -951,7 +963,7 @@
   },
   {
    "name": "Signatory 100 proof exceptional cask, Aultmore 17 yo, 1st fill oloroso sherry",
-   "score": 87.0,
+   "score": 87,
    "abv": 57.1,
    "nose": "dusty, woody, dark fruits, sweet jam",
    "palate": "pruins, nutty, dark chocolate",
@@ -964,7 +976,7 @@
   },
   {
    "name": "Signatory 100 proof exceptional cask, secret Orkney 14yo",
-   "score": 85.0,
+   "score": 85,
    "abv": 57.1,
    "nose": "kashk!, light smoke, sour note!",
    "palate": "orange, sweet, wood",
@@ -976,7 +988,7 @@
   },
   {
    "name": "Signatory 100 proof exceptional cask, Auchroisk 2010, oloroso",
-   "score": 83.0,
+   "score": 83,
    "notes": "typical sherry, 83",
    "format": "sample",
    "description": "Signatory 100 proof exceptional cask, Auchroisk 2010, oloroso",
@@ -1009,7 +1021,7 @@
   },
   {
    "name": "Signatory 100 proof exceptional cask, secret speyside 2010",
-   "score": 82.0,
+   "score": 82,
    "notes": "82",
    "format": "sample",
    "description": "Signatory 100 proof exceptional cask, secret speyside 2010",
@@ -1018,7 +1030,7 @@
   },
   {
    "name": "Signatory 100 proof exceptional cask, Macduff 2007, 16yo",
-   "score": 84.0,
+   "score": 84,
    "notes": "84",
    "format": "sample",
    "description": "Signatory 100 proof exceptional cask, macduff 2007, 16yo",
@@ -1027,8 +1039,8 @@
   },
   {
    "name": "Glen Garioch 12",
-   "score": 86.0,
-   "abv": 48.0,
+   "score": 86,
+   "abv": 48,
    "nose": "Sherry, wood, red fruits, sweet, stone fruits, chocolate orange",
    "palate": "classic sherry, spicy,oakiness",
    "notes": "86, nice for 60cad",
@@ -1039,7 +1051,7 @@
   },
   {
    "name": "Glen Garioch 17 (3rd chapter)",
-   "score": 87.0,
+   "score": 87,
    "abv": 50.8,
    "nose": "nice chocolaty viscus sweet nose, red fruits",
    "palate": "spicy, sour, sweet",
@@ -1052,7 +1064,7 @@
   },
   {
    "name": "Glen Garioch 18 (4th chapter)",
-   "score": 87.0,
+   "score": 87,
    "abv": 50.2,
    "nose": "yeast, wine mustiness, sherry, dirty",
    "palate": "sweet, sour, spicy",
@@ -1065,7 +1077,7 @@
   },
   {
    "name": "Whisky Sponge Glen Garioch 1991, 31yo",
-   "score": 90.0,
+   "score": 90,
    "abv": 41.4,
    "nose": "nuty, wood, soft, roasted sesame, old venigar in a good wat",
    "palate": "tobaco, walnut",
@@ -1077,7 +1089,7 @@
   },
   {
    "name": "SMWS 19.53, 18yo Glen Garioch",
-   "score": 87.0,
+   "score": 87,
    "abv": 59.2,
    "nose": "very nice, grassy, dusty, vanilla, berry?",
    "palate": "mango, mixed berries, fruity",
@@ -1090,8 +1102,8 @@
   },
   {
    "name": "Glen Garioch virgin oak 2nd release",
-   "score": 82.0,
-   "abv": 48.0,
+   "score": 82,
+   "abv": 48,
    "notes": "82",
    "format": "sample",
    "description": "Glen Garioch virgin oak 2nd release, 48%",
@@ -1100,7 +1112,7 @@
   },
   {
    "name": "Signatory Glenrothes 2011 12 YR",
-   "score": 82.0,
+   "score": 82,
    "nose": "sulfur!",
    "notes": "82",
    "format": "sample",
@@ -1110,7 +1122,7 @@
   },
   {
    "name": "Carn Mor, Glencadam 2011",
-   "score": 85.0,
+   "score": 85,
    "abv": 47.5,
    "nose": "soft, fruity, floral, honey, vanilla",
    "palate": "oily, sweet, cereal, honey, soft",
@@ -1122,7 +1134,7 @@
   },
   {
    "name": "Carn Mor, Ruadh Maor 2012",
-   "score": 82.0,
+   "score": 82,
    "abv": 47.5,
    "nose": "sour, smoky",
    "palate": "not bad but the nose is not good.",
@@ -1146,7 +1158,7 @@
   },
   {
    "name": "Two Brewers Release 30, peat",
-   "score": 87.0,
+   "score": 87,
    "nose": "soft peat, salty, earthy, citrusy",
    "palate": "a little thin on palate, but nice",
    "notes": "87",
@@ -1157,7 +1169,7 @@
   },
   {
    "name": "Two Brewers Release 31, classic",
-   "score": 85.0,
+   "score": 85,
    "nose": "honey, grassy, floral, some earthiness",
    "palate": "citrus, orchard, some dustiness",
    "notes": "86, second tasting 84",
@@ -1165,8 +1177,8 @@
    "description": "Tow Brewers Release 31, classic",
    "source": "imported 2026-10-07",
    "scores": [
-    86.0,
-    84.0
+    86,
+    84
    ],
    "id": "imp-e57a809903"
   },
@@ -1180,15 +1192,15 @@
    "description": "Tow Brewers Release 32, innovation",
    "source": "imported 2026-10-07",
    "scores": [
-    86.0,
-    85.0
+    86,
+    85
    ],
    "id": "imp-c2f793f260"
   },
   {
    "name": "Two Brewers Release 33 - Single cask",
    "score": 88.8,
-   "abv": 58.0,
+   "abv": 58,
    "nose": "earthy, dusty, leather, tobacco, sherry",
    "palate": "woody, dark fruits",
    "notes": "88-89 unfortunately sold out, second tasting: verrrry good 89",
@@ -1197,13 +1209,13 @@
    "source": "imported 2026-10-07",
    "scores": [
     88.5,
-    89.0
+    89
    ],
    "id": "imp-57a70d5390"
   },
   {
    "name": "Two Brewers Release 34 - Innovative whisky/maple",
-   "score": 75.0,
+   "score": 75,
    "nose": "sweeeet",
    "palate": "sweeeet",
    "notes": "75, not for me",
@@ -1214,7 +1226,7 @@
   },
   {
    "name": "Signatory 35th anniversary - Speyside (M) 2005 - 18yo",
-   "score": 84.0,
+   "score": 84,
    "abv": 57.9,
    "nose": "pure sherry, dark fruits, prune",
    "palate": "a little harsh, sherry, slight leather, cinnamon",
@@ -1251,7 +1263,7 @@
   },
   {
    "name": "Signatory 35th anniversary - Mortlach 1991, 32 yo",
-   "score": 87.0,
+   "score": 87,
    "abv": 54.1,
    "nose": "soft, rich, cool, sweet/sour, floral, dill",
    "palate": "like nose",
@@ -1263,7 +1275,7 @@
   },
   {
    "name": "Signatory 35th anniversary - Bunnahabhain 44, bourbon",
-   "score": 86.0,
+   "score": 86,
    "abv": 41.5,
    "palate": "dill!",
    "notes": "86",
@@ -1274,7 +1286,7 @@
   },
   {
    "name": "Signatory 35th anniversary - Bunnahabhain 45, dark sherry",
-   "score": 84.0,
+   "score": 84,
    "abv": 42.6,
    "nose": "old sherry dusty briny",
    "palate": "watery, vegetal, traces of sherry",
@@ -1286,7 +1298,7 @@
   },
   {
    "name": "Signatory 35th anniversary - Bunnahabhain 48",
-   "score": 88.0,
+   "score": 88,
    "abv": 50.2,
    "notes": "88",
    "format": "sample",
@@ -1296,8 +1308,8 @@
   },
   {
    "name": "Bowmore 12",
-   "score": 78.0,
-   "abv": 40.0,
+   "score": 78,
+   "abv": 40,
    "notes": "78, all versions: low abv, very diluted and quiet",
    "format": "sample",
    "description": "Bowmore 12, 40%: 78, all versions: low abv, very diluted and quiet",
@@ -1306,8 +1318,8 @@
   },
   {
    "name": "Bowmore 12",
-   "score": 78.0,
-   "abv": 40.0,
+   "score": 78,
+   "abv": 40,
    "notes": "78",
    "format": "sample",
    "description": "Bowmore 12, 40%: 78",
@@ -1316,8 +1328,8 @@
   },
   {
    "name": "Bowmore 15",
-   "score": 79.0,
-   "abv": 43.0,
+   "score": 79,
+   "abv": 43,
    "notes": "79",
    "format": "sample",
    "description": "Bowmore 15, 43%: 79",
@@ -1326,8 +1338,8 @@
   },
   {
    "name": "Bowmore 15",
-   "score": 82.0,
-   "abv": 43.0,
+   "score": 82,
+   "abv": 43,
    "notes": "82",
    "format": "sample",
    "description": "Bowmore 15, 43%: 82",
@@ -1336,8 +1348,8 @@
   },
   {
    "name": "Bowmore 18",
-   "score": 84.0,
-   "abv": 43.0,
+   "score": 84,
+   "abv": 43,
    "notes": "84",
    "format": "sample",
    "description": "Bowmore 18, 43%: 84",
@@ -1347,7 +1359,7 @@
   {
    "name": "Bowmore 18",
    "score": 85.5,
-   "abv": 43.0,
+   "abv": 43,
    "notes": "85 - 86 but not for 206CAD.",
    "format": "sample",
    "verdict": "not at that price",
@@ -1358,7 +1370,7 @@
   {
    "name": "Bowmore 25",
    "score": 86.5,
-   "abv": 43.0,
+   "abv": 43,
    "nose": "I can tell it's very good but the low abv is really hurting the delivery. ash, dunnage, dark fruits, grass, old wood. very good nose but quiet.",
    "palate": "watery, smoky, sherry",
    "notes": "86 - 87, 770CAD? NOOO, sale:460CAD? NOOOOO.",
@@ -1370,7 +1382,7 @@
   },
   {
    "name": "Bowmore 1997 KWM berry's",
-   "score": 88.0,
+   "score": 88,
    "abv": 46.1,
    "nose": "earthy, fruity, woody",
    "palate": "salty, earthy",
@@ -1395,8 +1407,8 @@
   },
   {
    "name": "Lum Reek 21 yo",
-   "score": 86.0,
-   "abv": 48.0,
+   "score": 86,
+   "abv": 48,
    "nose": "very quiet, sweet peat, tobacco, wood chips",
    "palate": "peat, sherry, sweet, short finish",
    "notes": "86, nice but not very special, 270? nope, 150-180 maybe",
@@ -1408,8 +1420,8 @@
   },
   {
    "name": "GlenAllachie 21 Year Old White Heather",
-   "score": 86.0,
-   "abv": 48.0,
+   "score": 86,
+   "abv": 48,
    "nose": "Sherry forward, some tobacco, dunnage, vanilla",
    "palate": "very sherry forward, slight dunnage and tobacco",
    "notes": "86, 250? Nope",
@@ -1421,7 +1433,7 @@
   },
   {
    "name": "LMDW Compass Box Pentology: Confidence",
-   "score": 85.0,
+   "score": 85,
    "abv": 53.3,
    "nose": "dusty, oily, sweet, vanilla",
    "palate": "similar to nose",
@@ -1434,7 +1446,7 @@
   },
   {
    "name": "LMDW Compass Box Pentology: Fortitude",
-   "score": 83.0,
+   "score": 83,
    "abv": 52.5,
    "notes": "less special than confidence, 83",
    "format": "sample",
@@ -1444,7 +1456,7 @@
   },
   {
    "name": "LMDW Compass Box Pentology: Generosity",
-   "score": 86.0,
+   "score": 86,
    "abv": 51.9,
    "nose": "bright, dusty vegetal, sweet",
    "palate": "very nice taste, thick, oily, dusty, vegetal",
@@ -1457,7 +1469,7 @@
   },
   {
    "name": "LMDW Compass Box Pentology: wisdom",
-   "score": 86.0,
+   "score": 86,
    "abv": 50.1,
    "notes": "more sherry influence but very nice, 86",
    "format": "sample",
@@ -1467,7 +1479,7 @@
   },
   {
    "name": "Compass Box flaming heart 2022",
-   "score": 87.0,
+   "score": 87,
    "abv": 48.9,
    "nose": "nice nose! ashy, briny, woody, some zestiness (Caol Ila), not a peat monster which is verrrrrry goood",
    "palate": "peat, lemon, laphroaig",
@@ -1479,7 +1491,7 @@
   },
   {
    "name": "Ardbeg Heavy vapours",
-   "score": 84.0,
+   "score": 84,
    "abv": 50.2,
    "nose": "Ashy, citrusy, briny, bbq notes, kind of a closed nose, cinnamon",
    "palate": "Ashy, peaty, citrusy, oily",
@@ -1491,8 +1503,8 @@
   },
   {
    "name": "Ardbeg Spectacular, port wine cask matured",
-   "score": 85.0,
-   "abv": 46.0,
+   "score": 85,
+   "abv": 46,
    "nose": "sweeeet, less smokey, flowery, grape juice, bready, yeasty",
    "palate": "ashy, coastal, soft wood",
    "notes": "ok, 85",
@@ -1503,7 +1515,7 @@
   },
   {
    "name": "Ardbeg Anamorphic, bourbon",
-   "score": 86.0,
+   "score": 86,
    "abv": 48.2,
    "nose": "husky, slight grassiness, soft smoke, honey, briny, coastal, woody, earthy",
    "palate": "malty, soft smoke, briny",
@@ -1516,7 +1528,7 @@
   {
    "name": "Ardbeg anthology 14yo, Madeira and Bourbon",
    "score": 87.5,
-   "abv": 46.0,
+   "abv": 46,
    "nose": "dark and sweet nose, meaty, burnt tire, briny, dusty, sour tobacco!",
    "palate": "woody, dusty, ash",
    "notes": "nice, 87-88",
@@ -1527,8 +1539,8 @@
   },
   {
    "name": "Ardbeg 17",
-   "score": 83.0,
-   "abv": 40.0,
+   "score": 83,
+   "abv": 40,
    "nose": "soft, sweet, earthy",
    "palate": "watery, briny, smoky",
    "notes": "83",
@@ -1551,8 +1563,8 @@
   },
   {
    "name": "Ardbeg y2k 23yo",
-   "score": 88.0,
-   "abv": 46.0,
+   "score": 88,
+   "abv": 46,
    "nose": "sweet earthy nose, vegetal, some wood, shows age but with a punch.",
    "palate": "smokey, earthy",
    "notes": "heavy on peat, 88, not worth the price, 700 euros!!!",
@@ -1564,7 +1576,7 @@
   },
   {
    "name": "Berry's Glen Moray 1991 30 yo",
-   "score": 84.0,
+   "score": 84,
    "abv": 55.7,
    "nose": "meat broth, oily, sweet, creamy, floral, baked apples",
    "palate": "oily, dill, vegetal, vanilla and honey",
@@ -1576,8 +1588,8 @@
   },
   {
    "name": "Berry's Tormore 1995 25 yo",
-   "score": 85.0,
-   "abv": 50.0,
+   "score": 85,
+   "abv": 50,
    "nose": "dusty, citrusy, soft honey and vanilla, woody, creamy",
    "palate": "honey, little grassy and dusty",
    "notes": "ok, 85",
@@ -1588,7 +1600,7 @@
   },
   {
    "name": "Berry's blended malt 1979 44yo",
-   "score": 87.0,
+   "score": 87,
    "abv": 52.6,
    "nose": "old floral smell, close nose to miltonduff, nutty",
    "palate": "very close to miltonduff but with an older feeling",
@@ -1600,7 +1612,7 @@
   },
   {
    "name": "Berry's Miltonduff 1990 32 yo",
-   "score": 87.0,
+   "score": 87,
    "abv": 53.2,
    "nose": "spicy, sweet, floral, dissert, stewed spiced apples",
    "palate": "sweet, warm, floral, warm spices, brown sugar, vanilla",
@@ -1624,8 +1636,8 @@
   },
   {
    "name": "Old malt cask 25th anniversary, Miltonduff 13yo",
-   "score": 84.0,
-   "abv": 50.0,
+   "score": 84,
+   "abv": 50,
    "nose": "typical sherry, sweet, dark fruits",
    "palate": "typical sherry",
    "notes": "ok, 84",
@@ -1636,8 +1648,8 @@
   },
   {
    "name": "Old malt cask 25th anniversary, Inchgower 15yo",
-   "score": 85.0,
-   "abv": 50.0,
+   "score": 85,
+   "abv": 50,
    "nose": "sweet, honey, floral, nutty, sour",
    "palate": "similar to nose",
    "notes": "85, nice",
@@ -1648,8 +1660,8 @@
   },
   {
    "name": "Old malt cask 25th anniversary, Speyburn 17yo",
-   "score": 85.0,
-   "abv": 50.0,
+   "score": 85,
+   "abv": 50,
    "nose": "vanilla, milk chocolate, fruity",
    "palate": "similar",
    "notes": "85",
@@ -1660,8 +1672,8 @@
   },
   {
    "name": "Old malt cask 25th anniversary, Fettercairn 15yo",
-   "score": 83.0,
-   "abv": 50.0,
+   "score": 83,
+   "abv": 50,
    "nose": "sour, yogurt, vanilla, green apple",
    "notes": "83",
    "format": "sample",
@@ -1671,8 +1683,8 @@
   },
   {
    "name": "Old malt cask 25th anniversary, Blair Athol 18yo",
-   "score": 86.0,
-   "abv": 50.0,
+   "score": 86,
+   "abv": 50,
    "nose": "sweet, nutty, dusty, dunnage",
    "palate": "same as nose",
    "notes": "nice, 86",
@@ -1684,7 +1696,7 @@
   {
    "name": "Old malt cask 25th anniversary, Caol Ila 12yo",
    "score": 85.5,
-   "abv": 50.0,
+   "abv": 50,
    "notes": "85-86",
    "format": "sample",
    "description": "Old malt cask 25th anniversary, Caol ila 12yo, 50%",
@@ -1693,8 +1705,8 @@
   },
   {
    "name": "Old malt cask 25th anniversary, Tomintoul 17yo",
-   "score": 85.0,
-   "abv": 50.0,
+   "score": 85,
+   "abv": 50,
    "nose": "sherry, slight dust & dunnage, red fruits",
    "notes": "85",
    "format": "sample",
@@ -1715,13 +1727,13 @@
    "source": "imported 2026-10-07",
    "scores": [
     82.5,
-    83.0
+    83
    ],
    "id": "imp-08629c4087"
   },
   {
    "name": "Claxton Warehouse No. 1, Dumbarton 2000, 21 yo",
-   "score": 85.0,
+   "score": 85,
    "abv": 58.6,
    "nose": "chemical, wood varnish, brown sugar, nice nose. 2nd: nail polish, sulphur, some sweetness",
    "palate": "dirty, vanilla, sharp, sweet berry, diserty, 2nd: nice palet",
@@ -1730,14 +1742,14 @@
    "description": "Claxton Warehouse No. 1, Dumbarton 2000, 21 yo, 58.6%",
    "source": "imported 2026-10-07",
    "scores": [
-    85.0,
-    85.0
+    85,
+    85
    ],
    "id": "imp-293a9d4f61"
   },
   {
    "name": "Berry Bros & Rudd, North British 1996, 26yo",
-   "score": 84.0,
+   "score": 84,
    "abv": 52.2,
    "nose": "sweet, creamy, orange, floral, soft oak",
    "palate": "bread! cereal, soft",
@@ -1747,14 +1759,14 @@
    "description": "Berry Bros & Rudd, North British 1996, 26yo, 52.2",
    "source": "imported 2026-10-07",
    "scores": [
-    84.0,
-    84.0
+    84,
+    84
    ],
    "id": "imp-7bd6aeb050"
   },
   {
    "name": "TBWC, Cameronbridge batch 3, 27yo",
-   "score": 84.0,
+   "score": 84,
    "abv": 48.9,
    "nose": "same as taste",
    "palate": "sweet, creamy, cereal, bready, vanilla, sugar, adasi :)",
@@ -1766,7 +1778,7 @@
   },
   {
    "name": "The Whisky trail Haiku, Invergordon 28yo",
-   "score": 86.0,
+   "score": 86,
    "abv": 50.2,
    "nose": "sweet and creamy, floral, deserty, nice nose",
    "palate": "sweet, deserty, floral",
@@ -1776,8 +1788,8 @@
    "description": "The Whisky trail Haiku, Invergordon 28yo, 50.2%",
    "source": "imported 2026-10-07",
    "scores": [
-    86.0,
-    86.0
+    86,
+    86
    ],
    "id": "imp-161da2056f"
   },
@@ -1808,8 +1820,8 @@
   },
   {
    "name": "Kilkerran 10yo - Bourbon",
-   "score": 87.0,
-   "abv": 46.0,
+   "score": 87,
+   "abv": 46,
    "nose": "Dirty, bourbon sweetness, funky",
    "palate": "Dirty, soft citrus and vanilla, malty, long finish",
    "notes": "87",
@@ -1820,8 +1832,8 @@
   },
   {
    "name": "Kilkerran 10yo - Oloroso",
-   "score": 88.0,
-   "abv": 46.0,
+   "score": 88,
+   "abv": 46,
    "nose": "dark, some sulfur, some peat",
    "palate": "sweet, dirty, very nice",
    "notes": "88",
@@ -1832,8 +1844,8 @@
   },
   {
    "name": "Kilkerran 10yo - Madeira",
-   "score": 85.0,
-   "abv": 46.0,
+   "score": 85,
+   "abv": 46,
    "nose": "sulphur, match stick, dirty, nice sweet and soft peat, but it's covered by match stick nose",
    "notes": "85",
    "format": "sample",
@@ -1843,8 +1855,8 @@
   },
   {
    "name": "Kilkerran 10yo - Fino",
-   "score": 85.0,
-   "abv": 46.0,
+   "score": 85,
+   "abv": 46,
    "nose": "cheesy, some grassiness, less sweet than madeira",
    "notes": "85",
    "format": "sample",
@@ -1854,8 +1866,8 @@
   },
   {
    "name": "Kilkerran 10yo - port",
-   "score": 87.0,
-   "abv": 46.0,
+   "score": 87,
+   "abv": 46,
    "notes": "87",
    "format": "sample",
    "description": "10yo - port, 46%",
@@ -1864,8 +1876,8 @@
   },
   {
    "name": "Kilkerran 10yo - rum",
-   "score": 86.0,
-   "abv": 46.0,
+   "score": 86,
+   "abv": 46,
    "notes": "86",
    "format": "sample",
    "description": "10yo - rum, 46%",
@@ -1874,8 +1886,8 @@
   },
   {
    "name": "Kilkerran 16yo",
-   "score": 86.0,
-   "abv": 46.0,
+   "score": 86,
+   "abv": 46,
    "notes": "86",
    "format": "sample",
    "description": "16yo - 46%",
@@ -1884,7 +1896,7 @@
   },
   {
    "name": "Kilkerran 15yo",
-   "score": 90.0,
+   "score": 90,
    "abv": 57.6,
    "nose": "dense, vegetal, malty",
    "notes": "89 - 90- 91 veeeery nice",
@@ -1896,7 +1908,7 @@
   {
    "name": "Edradour 12yo Caledonia",
    "score": 85.5,
-   "abv": 46.0,
+   "abv": 46,
    "nose": "date, raisin, sweet, oily",
    "palate": "sherry, dark red fruits, sweet, fig",
    "notes": "good sherry but not special for me. 85-86",
@@ -1908,7 +1920,7 @@
   {
    "name": "Ballechin SFTC Bourbon 12yo",
    "score": 85.5,
-   "abv": 53.0,
+   "abv": 53,
    "nose": "like KKHP, ashy, peat, vegetal",
    "palate": "ash, vegetal, short finish, pepper, spicy",
    "notes": "good but I have similar bottles, 85-86",
@@ -1931,7 +1943,7 @@
   },
   {
    "name": "Edradour 25yo",
-   "score": 85.0,
+   "score": 85,
    "abv": 55.6,
    "nose": "sweet, syrupy, cherry",
    "palate": "same as nose",
@@ -1943,8 +1955,8 @@
   },
   {
    "name": "Ballechin 19yo Manzanilla",
-   "score": 89.0,
-   "abv": 55.0,
+   "score": 89,
+   "abv": 55,
    "nose": "wet sweet ash, smoke, tobacco, creamy, oily",
    "notes": "89, 350? nope",
    "format": "sample",
@@ -1955,7 +1967,7 @@
   },
   {
    "name": "Ballechin 20yo First Fill Bourbon",
-   "score": 89.0,
+   "score": 89,
    "abv": 52.8,
    "nose": "coconut, dill, mustard, ash, smoke",
    "notes": "89- 350? nope.",
@@ -1967,7 +1979,7 @@
   },
   {
    "name": "Bruichladdich 18",
-   "score": 90.0,
+   "score": 90,
    "nose": "fresh, sweet, yogurt, hey, lovely",
    "palate": "sweet, oily",
    "notes": "90, 200? maybe (very close to yes)",
@@ -1979,7 +1991,7 @@
   },
   {
    "name": "Rest & Be Thankful Bruichladdich 18",
-   "score": 88.0,
+   "score": 88,
    "nose": "very similar but less sweet, dusty",
    "palate": "bitter, harsh, I like original better",
    "notes": "88, 390? needs time in glass, Hell No",
@@ -1991,7 +2003,7 @@
   },
   {
    "name": "Octomore 14.1",
-   "score": 87.0,
+   "score": 87,
    "nose": "clean, smoky and ashy, citrus, salty",
    "palate": "salty, smoky",
    "notes": "87",
@@ -2002,7 +2014,7 @@
   },
   {
    "name": "Octomore 15.1",
-   "score": 87.0,
+   "score": 87,
    "nose": "sweeter",
    "palate": "sweeter",
    "notes": "87",
@@ -2042,8 +2054,8 @@
   },
   {
    "name": "Ardnamurchan 10 Yo",
-   "score": 87.0,
-   "abv": 50.0,
+   "score": 87,
+   "abv": 50,
    "nose": "malty, sweet, see shell, soft briny, apricot",
    "palate": "malty, sweet, nice",
    "notes": "87, nice sipper, I'd by for 90",
@@ -2055,8 +2067,8 @@
   },
   {
    "name": "Ardnamurchan Madeira",
-   "score": 87.0,
-   "abv": 52.0,
+   "score": 87,
+   "abv": 52,
    "nose": "sweet match stick, slight good sulphur, old wood, some salinity, sweet dark chocolate",
    "palate": "bitter",
    "notes": "87, doesn't show the wood and sulphur on taste. I really like the nose with match stich, old wood dunnage notes",
@@ -2067,8 +2079,8 @@
   },
   {
    "name": "Ardnamurchan Sherry",
-   "score": 87.0,
-   "abv": 50.0,
+   "score": 87,
+   "abv": 50,
    "nose": "dark fruit sweet, minerality, some light peat, wet tobacco",
    "palate": "some peat, light sherry, not a sherry bomb",
    "notes": "87",
@@ -2092,8 +2104,8 @@
   },
   {
    "name": "Ardnamurchan Adelphi 2018, 5 yo",
-   "score": 85.0,
-   "abv": 58.0,
+   "score": 85,
+   "abv": 58,
    "nose": "dark fruits, cheesy, sweet, some grassiness",
    "palate": "high alcohol, sweet sherry, some minerality and smoke",
    "notes": "85, I liked the cheesy nose but not for 170-180",
@@ -2105,8 +2117,8 @@
   },
   {
    "name": "Ardnamurchan Sauternes",
-   "score": 85.0,
-   "abv": 50.0,
+   "score": 85,
+   "abv": 50,
    "nose": "dry, very sweet, no peat",
    "palate": "stone fruits like apricot",
    "notes": "85, reminds me of balmenach 11 SCN! don't need a bottle though",
@@ -2119,7 +2131,7 @@
   {
    "name": "Ardnamurchan Rum cask",
    "score": 86.5,
-   "abv": 55.0,
+   "abv": 55,
    "nose": "soft sweet, yellow fruits, some smoke",
    "notes": "nice, 86-87",
    "format": "sample",
@@ -2129,7 +2141,7 @@
   },
   {
    "name": "Ardnamurchan Paul Launois release",
-   "score": 88.0,
+   "score": 88,
    "abv": 57.3,
    "nose": "not peated, sweet, thick, malty",
    "notes": "88",
@@ -2140,7 +2152,7 @@
   },
   {
    "name": "Berry's Teaninich 2010, 13yo",
-   "score": 86.0,
+   "score": 86,
    "abv": 54.1,
    "nose": "sweet dusty lemon, light fruits, also fresh floral waxy, boozy and some farminess",
    "palate": "like nose",
@@ -2153,7 +2165,7 @@
   },
   {
    "name": "Berry's Linkwood 2011, 12yo",
-   "score": 86.0,
+   "score": 86,
    "abv": 56.5,
    "nose": "clean ,vanilla, soft, creamy floral, beady.",
    "palate": "creamy, sweet",
@@ -2166,7 +2178,7 @@
   },
   {
    "name": "Berry's Dailuaine 2010",
-   "score": 82.0,
+   "score": 82,
    "abv": 54.9,
    "nose": "don't like it. boozy wet cardboard, bitter nose, vinegar, bad sulphur",
    "notes": "82",
@@ -2177,7 +2189,7 @@
   },
   {
    "name": "Berry's Blair Athol 2009, 14yo",
-   "score": 86.0,
+   "score": 86,
    "abv": 59.1,
    "nose": "very soft sweet nose, some faint sherry sweetness, dark honey, red juicy sweet fruits, some cheesiness",
    "notes": "very nice, 86, 140, on sale yessss",
@@ -2189,8 +2201,8 @@
   },
   {
    "name": "Berry's KWM blended 1999, 25yo",
-   "score": 89.0,
-   "abv": 48.0,
+   "score": 89,
+   "abv": 48,
    "nose": "WOw, dusty, soft meat, dark sweetness, gun powder, old wood, charcoal, dark chocolate",
    "palate": "nice!",
    "notes": "89, 275, on sale definitely (maybe two!)",
@@ -2202,7 +2214,7 @@
   },
   {
    "name": "Berry's Bowmore 1997",
-   "score": 92.0,
+   "score": 92,
    "nose": "this is sooooo good, sweet soft vegetal smoke, sweet, velvety",
    "palate": "awesome!!!!!!!!",
    "notes": "92!!!!!! but too expensive. 6-7 hundred",
@@ -2214,7 +2226,7 @@
   },
   {
    "name": "Berry's Inchgower 2009",
-   "score": 88.0,
+   "score": 88,
    "abv": 54.2,
    "nose": "touch of smoke, salty, tobacco, coastal",
    "palate": "very nice taste, soft smoked fish",
@@ -2227,7 +2239,7 @@
   },
   {
    "name": "Springbank 8 local barley 8yo",
-   "score": 89.0,
+   "score": 89,
    "abv": 58.1,
    "nose": "burnt hey!!! barley, dense,dirty, grassy",
    "notes": "89",
@@ -2238,7 +2250,7 @@
   },
   {
    "name": "Springbank 12 CS",
-   "score": 89.0,
+   "score": 89,
    "abv": 56.2,
    "nose": "sweet, barley, soft smoke, no burnt hey, some tropical, mush sweeter than 8",
    "notes": "89",
@@ -2249,8 +2261,8 @@
   },
   {
    "name": "Springbank 10 Amontilado",
-   "score": 86.0,
-   "abv": 55.0,
+   "score": 86,
+   "abv": 55,
    "nose": "very sweet, dark sweet, jammy, hey, some smoke, more intense than 15 (abv?), red grape",
    "notes": "86, very sweet with less smoke so not particularly for me.",
    "format": "sample",
@@ -2260,8 +2272,8 @@
   },
   {
    "name": "Springbank 15",
-   "score": 88.0,
-   "abv": 46.0,
+   "score": 88,
+   "abv": 46,
    "nose": "hey, prune, soft smoke,dusty",
    "notes": "88, for 147? heck yeah!",
    "format": "sample",
@@ -2272,8 +2284,8 @@
   },
   {
    "name": "Springbank 18",
-   "score": 88.0,
-   "abv": 46.0,
+   "score": 88,
+   "abv": 46,
    "nose": "soft smoke briny, sweet barley, dusty, saw dust",
    "notes": "88",
    "format": "sample",
@@ -2283,8 +2295,8 @@
   },
   {
    "name": "Springbank 30",
-   "score": 90.0,
-   "abv": 46.0,
+   "score": 90,
+   "abv": 46,
    "nose": "sweet pickle (floral), dust, tropical sweetness, soft soft soft smoke",
    "notes": "90, woooow! 2.1k? NOOOOOO",
    "format": "sample",
@@ -2307,7 +2319,7 @@
   },
   {
    "name": "Kilkerran 8 sherry",
-   "score": 87.0,
+   "score": 87,
    "abv": 55.6,
    "nose": "cool grass, smoke, wet tobacco, very raw nose",
    "notes": "87",
@@ -2318,8 +2330,8 @@
   },
   {
    "name": "Kilchoman Machir Bay",
-   "score": 85.0,
-   "abv": 46.0,
+   "score": 85,
+   "abv": 46,
    "nose": "fresh, ashy, citrus, sea side, after minutes some sweetness, honey, vanilla",
    "palate": "ashy, farm, honey",
    "notes": "85, nice basic peated bourbon matured whisky",
@@ -2330,8 +2342,8 @@
   },
   {
    "name": "Kilchoman 13 yo",
-   "score": 89.0,
-   "abv": 50.0,
+   "score": 89,
+   "abv": 50,
    "nose": "wow! malty, sweet, thick , apple, barley, soft ash",
    "palate": "ashy, sweet, malty, toasty",
    "notes": "89",
@@ -2343,7 +2355,7 @@
   {
    "name": "Kilchoman 100 Islay 14th edition",
    "score": 86.5,
-   "abv": 50.0,
+   "abv": 50,
    "nose": "ash, salt, yogurt, sweet, vegetal",
    "notes": "86-87, very nice but the 13 is something special",
    "format": "sample",
@@ -2407,7 +2419,7 @@
   },
   {
    "name": "Benromach 2003 cask 34",
-   "score": 89.0,
+   "score": 89,
    "notes": "tropical, soft smoke, honey, grassy, floral, reminds me of highlandpark SCN, 89",
    "format": "sample",
    "description": "Benromach 2003 cask 34: tropical, soft smoke, honey, grassy, floral, reminds me of highlandpark SCN, 89",
@@ -2416,8 +2428,8 @@
   },
   {
    "name": "Two Brewers, Release 43 peated",
-   "score": 86.0,
-   "abv": 50.0,
+   "score": 86,
+   "abv": 50,
    "nose": "sweet, soft peat, sea side but not briny, soft vegetal note",
    "palate": "soft peat, honey, some oakiness and maltiness",
    "notes": "not a peat monster at all, you can spend time with it, 86",
@@ -2428,8 +2440,8 @@
   },
   {
    "name": "Ledaig 10",
-   "score": 85.0,
-   "abv": 46.0,
+   "score": 85,
+   "abv": 46,
    "nose": "peaty vegetal, more expressive than TB43, bbq sauce , briny",
    "palate": "peaty, seas shells",
    "notes": "more peat forward, if you want a peat monster then this is it, less complex than TB43. 85",
@@ -2440,7 +2452,7 @@
   },
   {
    "name": "Cadenheads Ardmore 11",
-   "abv": 46.0,
+   "abv": 46,
    "format": "bottle",
    "description": "Cadenheads Ardmore 11, 46% abv",
    "source": "imported 2026-10-07",
