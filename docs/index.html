@@ -107,7 +107,7 @@ textarea { width: 100%; min-height: 64px; resize: vertical; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tag.drop, :root:not([data-theme="light"]) .tag.deal { background: #1d3226; } }
 :root[data-theme="dark"] .tag.drop, :root[data-theme="dark"] .tag.deal { background: #1d3226; }
 .fit { font: 600 0.78rem var(--font-body); }
-.fit.peat { color: var(--peat); } .fit.fruit { color: var(--fruit); }
+.fit.peat { color: var(--peat); } .fit.fruit { color: var(--fruit); } .fit.mine { color: var(--amber); }
 .reason { font-size: 0.82rem; color: var(--good); }
 .empty { padding: 32px 0; text-align: center; color: var(--muted); }
 .more { margin: 14px auto; display: block; }
@@ -272,8 +272,27 @@ function facts(c) {
     c.pk && c.pk !== "none" && c.pk !== "unknown" ? `<span>peat: ${esc(c.pk)}</span>` : "",
     c.sh && c.sh !== "none" ? `<span>sherry: ${esc(c.sh)}</span>` : ""].join("");
 }
+/* Match journal names to shop titles: "Kilkerran 16" == "Kilkerran 16 Year Old - 46% abv / 700mL" */
+function normName(n) {
+  return String(n || "").toLowerCase().replace(/&amp;/g, "&").replace(/\d{2}(?:\.\d+)?\s*%.*$/, "")
+    .replace(/\b(\d+)\s*(?:years?|yrs?|y\.?o\.?)\b/g, "$1")
+    .replace(/\b(the|old|single|malt|scotch|whisky|whiskey|abv|ml|cl|\d{3,4}\s*ml)\b/g, " ")
+    .replace(/[^a-z0-9&]+/g, " ").trim().replace(/\s+/g, " ");
+}
+let tastedIdx = null, tastedFor_journal = null;
+function tastedFor(c) {
+  if (tastedFor_journal !== state.journal) {   // rebuild when the journal changes
+    tastedIdx = new Map();
+    state.journal.forEach(j => { if (j.score == null) return;
+      [j.key, "n:" + normName(j.name)].forEach(k => k && tastedIdx.set(k, [...(tastedIdx.get(k) || []), j])); });
+    tastedFor_journal = state.journal;
+  }
+  return tastedIdx.get(c.k) || tastedIdx.get("n:" + normName(c.t)) || [];
+}
 function fitLabel(c) {
-  if (c.me != null) return `<span class="fit ${c.tr === "peat_earth" ? "peat" : "fruit"}">You: ~${Math.round(c.me)}</span>`;
+  const mine = tastedFor(c);
+  if (mine.length) return `<span class="fit mine">You scored ${mine.map(j => j.score).join(" / ")}</span>`;
+  if (c.me != null) return `<span class="fit ${c.tr === "peat_earth" ? "peat" : "fruit"}">Predicted ~${Math.round(c.me)}</span>`;
   const t = c.tr === "peat_earth" ? ["peat", "Peaty"] : ["fruit", "Fruit"];
   return `<span class="fit ${t[0]}">${t[1]} ${Math.max(c.pe || 0, c.fe || 0)}</span>`;
 }
@@ -312,14 +331,19 @@ function bindMore(rerender) { const m = el("more"); if (m) m.onclick = () => { s
 /* ---------------- views ---------------- */
 function viewDeals() {
   const m = el("main");
-  const fresh = state.deals.filter(d => (Date.now() - new Date(d.at)) / 864e5 <= 14 &&
-    (state.filters.shop === "all" || d.s === state.filters.shop));
-  const below = applyFilters(state.catalog.filter(c => (c.ds || 0) >= 12 && fitScore(c) >= 45))
+  const shopOk = s => state.filters.shop === "all" || s === state.filters.shop;
+  // One line per bottle (its latest alert). "Deal" alerts only while the bottle still has a real price signal.
+  const seen = new Set();
+  const fresh = state.deals.filter(d => {
+    if ((Date.now() - new Date(d.at)) / 864e5 > 14 || !shopOk(d.s) || seen.has(d.k)) return false;
+    if (d.kind === "deal" && !(state.byKey.get(d.k) || {}).ds) return false;
+    seen.add(d.k); return true;
+  });
+  const sales = applyFilters(state.catalog.filter(c => (c.ds || 0) >= 10 && fitScore(c) >= 45))
     .sort((a, b) => (b.ds + fitScore(b) / 4) - (a.ds + fitScore(a) / 4));
   const gen = state.meta.generated ? new Date(state.meta.generated) : new Date();
-  const newest = applyFilters(state.catalog.filter(c => (gen - new Date(c.fs)) / 864e5 <= 7 && fitScore(c) >= 50))
+  const newest = applyFilters(state.catalog.filter(c => c.nw && (gen - new Date(c.fs)) / 864e5 <= 7 && fitScore(c) >= 50))
     .sort((a, b) => fitScore(b) - fitScore(a));
-  const firstWeek = !state.deals.length && !newest.length;
   m.innerHTML = `
     ${shopChips()}
     <h2 class="section">Latest alerts <small>last 14 days</small></h2>
@@ -327,11 +351,12 @@ function viewDeals() {
         const c = state.byKey.get(d.k) || { k: d.k, t: d.t, s: d.s, p: d.p, u: d.u, pal: 0 };
         return itemHtml({ ...c, p: d.p ?? c.p }, `<span class="tag ${d.kind}">${KIND[d.kind] || d.kind} · ${esc(d.at.slice(5))}</span>`);
       }).join("")}</div>`
-      : `<p class="hint">${firstWeek ? "Alerts start after the second daily run, once there are earlier prices to compare against." : "No new alerts in the last two weeks."}</p>`}
-    <h2 class="section">New this week <small>${newest.length}</small></h2>
-    ${newest.length ? `<div class="list">${newest.slice(0, 12).map(c => itemHtml(c, '<span class="tag new">New</span>')).join("")}</div>` : `<p class="hint">Nothing new that fits your palate this week.</p>`}
-    <h2 class="section">Good value right now <small>${below.length}</small></h2>
-    ${below.length ? listWithMore(below, c => itemHtml(c, '<span class="tag deal">Value</span>')) : `<p class="hint">No standout prices today.</p>`}`;
+      : `<p class="hint">No price drops, restocks or new bottles for your palate in the last two weeks.</p>`}
+    <h2 class="section">New arrivals this week <small>${newest.length}</small></h2>
+    ${newest.length ? `<div class="list">${newest.slice(0, 12).map(c => itemHtml(c, '<span class="tag new">New</span>')).join("")}</div>` : `<p class="hint">No new bottles that fit your palate this week.</p>`}
+    <h2 class="section">Price drops &amp; sales <small>${sales.length}</small></h2>
+    <p class="hint" style="margin-top:0">Bottles whose price fell, sit below their usual price, or are on sale at the shop.</p>
+    ${sales.length ? listWithMore(sales, c => itemHtml(c, '<span class="tag deal">Sale</span>')) : `<p class="hint">No price drops or sales right now.</p>`}`;
   bindChips("shops", "shop", viewDeals); bindItems(m); bindMore(viewDeals);
 }
 
@@ -476,12 +501,12 @@ function notesHtml(notes) {
 async function openBottle(key) {
   const c = state.byKey.get(key) || state.deals.find(d => d.k === key);
   if (!c) return;
-  const tasted = state.journal.filter(j => j.key === key || j.name.toLowerCase() === c.t.toLowerCase());
+  const tasted = tastedFor(c);
   openSheet(`<h2>${esc(c.t)}</h2>
     <div class="row" style="justify-content:space-between"><span class="bigprice">${money(c.p)}</span><span class="tag shop">${esc(SHOP_NAME[c.s] || c.s)}</span></div>
     <div class="meta" style="margin-top:6px">${facts(c)}${c.d ? `<span>${esc(c.d)}</span>` : ""}</div>
     <div class="tags" style="margin-top:6px">${(c.w || []).map(w => `<span class="tag">${esc(w)}</span>`).join("")}${(c.c || []).filter(x => CASK[x]).map(x => `<span class="tag cask">${esc(CASK[x])}</span>`).join("")}</div>
-    ${c.me != null ? `<div class="card"><h3>You'd likely score it ~${Math.round(c.me)}</h3>${(c.mr || []).map(r => `<div class="hint" style="margin:2px 0">${esc(r)}</div>`).join("")}
+    ${c.me != null ? `<div class="card"><h3>Predicted score for you: ~${Math.round(c.me)}</h3><div class="hint" style="margin:0 0 4px;font-size:0.8rem">An estimate from your journal, not a score you gave.</div>${(c.mr || []).map(r => `<div class="hint" style="margin:2px 0">${esc(r)}</div>`).join("")}
       ${c.sim ? `<div class="reason" style="margin-top:4px">Closest to your ${esc(c.sim.name)} (${c.sim.score})${c.sim.shared && c.sim.shared.length ? ": " + esc(c.sim.shared.join(", ")) : ""}</div>` : ""}</div>` : ""}
     ${tasted.length ? `<div class="banner">You've tasted this: ${tasted.map(t => `${esc(t.score)} on ${esc(t.date || "?")}`).join(", ")}</div>` : ""}
     <div class="meters">
@@ -489,6 +514,7 @@ async function openBottle(key) {
       <div class="meter fruit"><div class="lbl"><span>Fruit / red fruit</span><span>${c.fe || 0}</span></div><div class="bar"><div class="fill" style="width:${c.fe || 0}%"></div></div></div>
     </div>
     ${c.dr && c.dr.length ? `<div class="reason">${c.dr.map(esc).join(" · ")}</div>` : ""}
+    ${c.val ? `<p class="hint" style="font-size:0.82rem;margin:4px 0">Price check: ${esc(c.val)}</p>` : ""}
     ${c.why && c.why.length ? `<p class="hint" style="font-size:0.8rem">${c.why.map(esc).join(" · ")}</p>` : ""}
     <div id="b-history"></div><div id="b-notes"></div>
     <div class="actions"><a class="btn primary" href="${esc(c.u)}" target="_blank" rel="noopener">Open at ${esc(SHOP_NAME[c.s] || c.s)}</a>

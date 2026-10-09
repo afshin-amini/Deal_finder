@@ -182,14 +182,16 @@ def palate_score(parsed: Parsed, text: str, watchlist: dict[str, list[str]], has
 
 @dataclass
 class Deal:
+    """Real price signals only (drop, below usual, shop sale). `value` is a softer, separate hint."""
     score: float = 0.0
     reasons: list[str] = field(default_factory=list)
     drop_pct: float | None = None
     vs_median_pct: float | None = None
+    value: str | None = None  # "good value for 12yo (~20% under typical)": shown, never a deal on its own
 
     def to_dict(self) -> dict:
         return {"score": round(self.score, 1), "reasons": self.reasons, "drop_pct": self.drop_pct,
-                "vs_median_pct": self.vs_median_pct}
+                "vs_median_pct": self.vs_median_pct, "value": self.value}
 
 
 def expected_price(parsed: Parsed, cfg: dict) -> float | None:
@@ -222,16 +224,18 @@ def deal_score(price: float | None, history: list[float], prev_price: float | No
             d.vs_median_pct = round(100 * (med - price) / med, 1)
             d.score += min(25, d.vs_median_pct)
             d.reasons.append(f"{d.vs_median_pct}% under usual ${med:.2f}")
-        if price <= min(history):
+        # Only a real low: the price has been higher before. A price that never moved isn't news.
+        if price <= min(history) and max(history) > price + 0.01:
             d.score += 5
-            d.reasons.append("lowest price seen")
+            d.reasons.append(f"lowest price seen (was up to ${max(history):.2f})")
     if compare_at and compare_at > price:
         pct = round(100 * (compare_at - price) / compare_at, 1)
-        d.score += min(20, pct)
-        d.reasons.append(f"shop sale {pct}% off ${compare_at:.2f}")
+        if pct >= 10:  # small "compare at" gaps are list-price noise
+            d.score += min(20, pct)
+            d.reasons.append(f"shop sale {pct}% off ${compare_at:.2f}")
     exp = expected_price(parsed, value_cfg)
     if exp and norm < exp:
         pct = round(100 * (exp - norm) / exp, 1)
-        d.score += min(15, pct / 2)
-        d.reasons.append(f"good value for {parsed.age}yo (~{pct:.0f}% under typical)")
+        if pct >= 15:
+            d.value = f"good value for {parsed.age}yo (~{pct:.0f}% under typical)"
     return d

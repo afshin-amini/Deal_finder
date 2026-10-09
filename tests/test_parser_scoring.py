@@ -124,3 +124,16 @@ def test_abv_ignores_shares_and_glued_numbers():
     assert parse("Kilkerran 12", "70% bourbon and 30% sherry casks").abv is None
     assert parse("Ardnahoe CS", "bottled at 60.9%, has landed in Canada").abv == 60.9
     assert parse("Benromach 15 43% abv").abv == 43.0
+
+
+def test_unchanged_price_is_not_a_deal():
+    p = parse("Kilkerran 12 Year Old 46%")
+    d = deal_score(74.99, [74.99, 74.99, 74.99, 74.99], 74.99, None, p, {})
+    assert d.score == 0 and d.reasons == []
+    d2 = deal_score(64.99, [74.99, 74.99, 64.99], 74.99, None, p, {})
+    assert any(r.startswith("lowest price seen") for r in d2.reasons) and d2.drop_pct
+
+
+def test_age_value_is_a_hint_not_a_deal():
+    d = deal_score(50.0, [], None, None, parse("Glen Scotia 15 Year 46%"), {})
+    assert d.score == 0 and d.value and "good value" in d.value

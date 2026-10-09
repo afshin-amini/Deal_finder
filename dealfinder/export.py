@@ -38,6 +38,8 @@ def _cut(iso: str, days: int) -> str:
 
 def catalog_rows(db: DB) -> list[dict]:
     latest = {r["shop"]: r["m"] for r in db.conn.execute("SELECT shop, MAX(last_seen) m FROM listings GROUP BY shop")}
+    # A shop's first scan is its baseline: those bottles were already there, not new arrivals.
+    baseline = {r["shop"]: r["m"][:10] for r in db.conn.execute("SELECT shop, MIN(first_seen) m FROM listings GROUP BY shop")}
     out = []
     for r in db.conn.execute("SELECT * FROM listings WHERE last_in_stock IS NOT 0 AND last_price IS NOT NULL"):
         if r["last_seen"] < _cut(latest[r["shop"]], FRESH_DAYS):
@@ -56,10 +58,12 @@ def catalog_rows(db: DB) -> list[dict]:
             "b": p.get("bottlers") or [], "c": p.get("casks") or [], "pk": p.get("peat"), "sh": p.get("sherry_level"),
             "sc": p.get("single_cask") or None, "cs": p.get("cask_strength") or None,
             "fs": r["first_seen"][:10],
+            "nw": 1 if r["first_seen"][:10] > baseline[r["shop"]] else None,
+            "val": deal.get("value"),
         }
-        if deal.get("score"):
+        if deal.get("score") and deal.get("reasons"):
             row["ds"] = deal["score"]
-            row["dr"] = deal.get("reasons") or []
+            row["dr"] = deal["reasons"]
         if personal:
             row["me"] = personal.get("predicted")
             row["mr"] = personal.get("reasons") or []
