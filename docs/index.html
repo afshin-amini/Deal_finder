@@ -292,9 +292,10 @@ function tastedFor(c) {
 function fitLabel(c) {
   const mine = tastedFor(c);
   if (mine.length) return `<span class="fit mine">You scored ${mine.map(j => j.score).join(" / ")}</span>`;
-  if (c.me != null) return `<span class="fit ${c.tr === "peat_earth" ? "peat" : "fruit"}">Predicted ~${Math.round(c.me)}</span>`;
-  const t = c.tr === "peat_earth" ? ["peat", "Peaty"] : ["fruit", "Fruit"];
-  return `<span class="fit ${t[0]}">${t[1]} ${Math.max(c.pe || 0, c.fe || 0)}</span>`;
+  // Untasted bottles get a style word only; numbers are reserved for scores you gave.
+  if (!(c.pe || c.fe)) return "";
+  const t = c.tr === "peat_earth" ? ["peat", "Peaty"] : ["fruit", "Fruity"];
+  return `<span class="fit ${t[0]}">${t[1]}</span>`;
 }
 function itemHtml(c, extraTags = "") {
   const sim = c.sim ? `<div class="reason">Like your ${esc(c.sim.name)} (${c.sim.score})</div>` : "";
@@ -506,12 +507,12 @@ async function openBottle(key) {
     <div class="row" style="justify-content:space-between"><span class="bigprice">${money(c.p)}</span><span class="tag shop">${esc(SHOP_NAME[c.s] || c.s)}</span></div>
     <div class="meta" style="margin-top:6px">${facts(c)}${c.d ? `<span>${esc(c.d)}</span>` : ""}</div>
     <div class="tags" style="margin-top:6px">${(c.w || []).map(w => `<span class="tag">${esc(w)}</span>`).join("")}${(c.c || []).filter(x => CASK[x]).map(x => `<span class="tag cask">${esc(CASK[x])}</span>`).join("")}</div>
-    ${c.me != null ? `<div class="card"><h3>Predicted score for you: ~${Math.round(c.me)}</h3><div class="hint" style="margin:0 0 4px;font-size:0.8rem">An estimate from your journal, not a score you gave.</div>${(c.mr || []).map(r => `<div class="hint" style="margin:2px 0">${esc(r)}</div>`).join("")}
+    ${(c.mr && c.mr.length) || c.sim ? `<div class="card"><h3>Why it may suit you</h3>${(c.mr || []).map(r => `<div class="hint" style="margin:2px 0">${esc(r)}</div>`).join("")}
       ${c.sim ? `<div class="reason" style="margin-top:4px">Closest to your ${esc(c.sim.name)} (${c.sim.score})${c.sim.shared && c.sim.shared.length ? ": " + esc(c.sim.shared.join(", ")) : ""}</div>` : ""}</div>` : ""}
     ${tasted.length ? `<div class="banner">You've tasted this: ${tasted.map(t => `${esc(t.score)} on ${esc(t.date || "?")}`).join(", ")}</div>` : ""}
     <div class="meters">
-      <div class="meter peat"><div class="lbl"><span>Peaty / earthy</span><span>${c.pe || 0}</span></div><div class="bar"><div class="fill" style="width:${c.pe || 0}%"></div></div></div>
-      <div class="meter fruit"><div class="lbl"><span>Fruit / red fruit</span><span>${c.fe || 0}</span></div><div class="bar"><div class="fill" style="width:${c.fe || 0}%"></div></div></div>
+      <div class="meter peat"><div class="lbl"><span>Peaty / earthy</span></div><div class="bar"><div class="fill" style="width:${c.pe || 0}%"></div></div></div>
+      <div class="meter fruit"><div class="lbl"><span>Fruit / red fruit</span></div><div class="bar"><div class="fill" style="width:${c.fe || 0}%"></div></div></div>
     </div>
     ${c.dr && c.dr.length ? `<div class="reason">${c.dr.map(esc).join(" · ")}</div>` : ""}
     ${c.val ? `<p class="hint" style="font-size:0.82rem;margin:4px 0">Price check: ${esc(c.val)}</p>` : ""}
