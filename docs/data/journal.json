@@ -2664,11 +2664,10 @@
   {
    "id": "sug-372f2575",
    "name": "Berry's Inchgower 2009",
-   "target": null,
+   "target": 100,
    "note": "From your notes (88): 88, i like it, good sale!",
    "why": "no price in your notes",
    "source": "imp-17cc034100",
-   "suggested": true,
    "keys": []
   }
  ],
