@@ -25,6 +25,20 @@
    "abv": 48
   },
   {
+   "name": "Old Pulteney 18",
+   "score": 87,
+   "abv": 46,
+   "nose": "briny, buttery, coastal, sherry, cinammon, nutty (gentle), mossy",
+   "palate": "salty, sherry,oak, gentle nuttiness very nice.",
+   "notes": "87 Good! 150 now, maybe on sale! very good taste, great nose.",
+   "format": "sample",
+   "verdict": "maybe on sale",
+   "description": "Old Pultenet 18, 46%",
+   "source": "imported 2026-10-07",
+   "id": "imp-acf9e886ef",
+   "date": "2026-10-10"
+  },
+  {
    "id": "muyey4owtccie",
    "name": "Decadent Drams Blair Athol 28 Year KWM",
    "score": 89,
@@ -363,19 +377,6 @@
    "description": "Old Pultenet 15, 46%",
    "source": "imported 2026-10-07",
    "id": "imp-4db4d533fd"
-  },
-  {
-   "name": "Old Pulteney 18",
-   "score": 87,
-   "abv": 46,
-   "nose": "briny, buttery, coastal, sherry, cinammon, nutty (gentle), mossy",
-   "palate": "salty, sherry,oak, gentle nuttiness very nice.",
-   "notes": "87 Good! 150 now, maybe on sale! very taste, great nose.",
-   "format": "sample",
-   "verdict": "maybe on sale",
-   "description": "Old Pultenet 18, 46%",
-   "source": "imported 2026-10-07",
-   "id": "imp-acf9e886ef"
   },
   {
    "name": "Old Pulteney 25",
