@@ -21,6 +21,7 @@ from email.message import EmailMessage
 log = logging.getLogger(__name__)
 
 SECTION_TITLES = {
+    "watch": "Watchlist hits",
     "drop": "Price drops",
     "new": "New arrivals",
     "restock": "Back in stock",
@@ -88,7 +89,7 @@ def render_digest(alerts: list, notes_snippet, seed_notes: list[str], failures: 
 
     h = ['<div style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;max-width:680px;color:#222">']
     t = []
-    for kind in ("drop", "new", "restock", "deal"):
+    for kind in ("watch", "drop", "new", "restock", "deal"):
         items = by_kind.get(kind)
         if not items:
             continue

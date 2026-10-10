@@ -67,7 +67,7 @@ a { color: var(--accent); }
 main { max-width: 760px; margin: 0 auto; padding-inline: 16px; padding-block: 12px 0; }
 
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line);
-  display: grid; grid-template-columns: repeat(4, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  display: grid; grid-template-columns: repeat(5, 1fr); padding-bottom: env(safe-area-inset-bottom, 0px); }
 .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; height: var(--tabbar);
   text-decoration: none; color: var(--muted); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.02em; }
 .tabbar a svg { width: 22px; height: 22px; }
@@ -102,6 +102,8 @@ textarea { width: 100%; min-height: 64px; resize: vertical; }
 .tag.drop, .tag.deal { background: #e3f1e8; color: var(--good); }
 .tag.new { background: var(--amber-soft); color: var(--amber); }
 .tag.restock { background: var(--peat-soft); color: var(--peat); }
+.tag.watch { background: var(--amber-soft); color: var(--amber); }
+.tag.own { background: var(--peat-soft); color: var(--peat); }
 .tag.shop { background: transparent; border: 1px solid var(--line); color: var(--muted); text-transform: uppercase; }
 .tag.cask { background: transparent; border: 1px solid var(--line); color: var(--muted); font-weight: 400; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tag.drop, :root:not([data-theme="light"]) .tag.deal { background: #1d3226; } }
@@ -154,6 +156,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .status { font-size: 0.88rem; min-height: 1.2em; }
 .status.err { color: var(--fruit); } .status.ok { color: var(--good); }
+.seg { display: flex; gap: 6px; margin: 8px 0; }
+.wrow { display: grid; gap: 4px; padding: 12px 0; border-bottom: 1px solid var(--line); text-align: left; width: 100%; background: none; border-left: 0; border-right: 0; border-top: 0; cursor: pointer; }
+.status-chip { font: 600 0.75rem var(--font-body); padding: 2px 8px; border-radius: 999px; }
+.status-chip.hit { background: #e3f1e8; color: var(--good); } .status-chip.wait { background: var(--accent-soft); color: var(--accent); } .status-chip.none { background: var(--line); color: var(--muted); }
+.pick { display: grid; gap: 6px; }
+.pick label { display: flex; gap: 8px; align-items: flex-start; font-size: 0.9rem; font-weight: 400; color: var(--fg); padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.pick input { margin-top: 3px; }
+.sugg { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin: 8px 0; background: var(--surface); display: grid; gap: 8px; }
+
 .toast { position: fixed; left: 16px; right: 16px; bottom: calc(var(--tabbar) + env(safe-area-inset-bottom, 0px) + 12px); z-index: 40;
   background: var(--fg); color: var(--bg); padding: 10px 14px; border-radius: 10px; font-size: 0.92rem; max-width: 600px; margin: 0 auto; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
 @media (prefers-reduced-motion: no-preference) { .sheet { animation: up 0.18s ease-out; } @keyframes up { from { transform: translateY(24px); opacity: 0.6; } } }
@@ -172,6 +183,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
   <a href="#deals" data-tab="deals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8Z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>Deals</a>
   <a href="#foryou" data-tab="foryou"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2h8l-1 6a5 5 0 0 1-6 0Z"/><path d="M12 13v7"/><path d="M8 21h8"/></svg>For you</a>
   <a href="#search" data-tab="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search</a>
+  <a href="#cellar" data-tab="cellar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4v4l2 3v12a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V9l2-3Z"/><path d="M8 13h8"/></svg>Cellar</a>
   <a href="#journal" data-tab="journal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4Z"/><path d="M8 9h8M8 13h6"/></svg>Journal</a>
 </nav>
 
@@ -181,7 +193,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 "use strict";
 /* ---------------- config & storage ---------------- */
 const SHOP_NAME = { bsw: "BSW", kwm: "KWM", craft: "Craft Cellars", crown: "Crown Cellars" };
-const KIND = { drop: "Price drop", new: "New", restock: "Back in stock", deal: "Deal" };
+const KIND = { drop: "Price drop", new: "New", restock: "Back in stock", deal: "Deal", watch: "Watchlist" };
 const CASK = { first_fill_bourbon: "1st-fill bourbon", refill_bourbon: "refill bourbon", bourbon: "bourbon", hogshead: "hogshead",
   first_fill_sherry: "1st-fill sherry", refill_sherry: "refill sherry", sherry_hogshead: "sherry hogshead", sherry_butt: "sherry butt",
   px: "PX", oloroso: "oloroso", fino: "fino", sherry: "sherry", port: "port", red_wine: "wine", rum: "rum", virgin_oak: "virgin oak" };
@@ -201,7 +213,7 @@ const cfg = {
 const JOURNAL_PATH = "docs/data/journal.json";
 
 /* ---------------- data ---------------- */
-const state = { catalog: [], byKey: new Map(), deals: [], meta: {}, journal: [], journalSha: null, history: null, notes: null,
+const state = { catalog: [], byKey: new Map(), deals: [], meta: {}, journal: [], watch: [], shelf: [], journalSha: null, history: null, notes: null,
   filters: { shop: "all", style: "all", max: 0, q: "", jq: "", jsort: "date" }, shown: PAGE };
 
 async function getJSON(url) {
@@ -233,24 +245,29 @@ async function loadJournal() {
   if (cfg.token) {
     try {
       const f = await gh("contents/" + JOURNAL_PATH);
-      state.journalSha = f.sha; state.journal = JSON.parse(b64decode(f.content)).entries || []; return;
+      state.journalSha = f.sha; useDoc(JSON.parse(b64decode(f.content))); return;
     } catch (e) { state.journalError = e.message; }
   }
-  try { state.journal = (await getJSON("data/journal.json")).entries || []; } catch (e) { state.journal = []; }
+  try { useDoc(await getJSON("data/journal.json")); } catch (e) { useDoc({}); }
 }
-async function saveJournal(mutate, message) {
+function useDoc(doc) {
+  state.journal = doc.entries || []; state.watch = doc.watch || []; state.shelf = doc.shelf || [];
+}
+async function saveDoc(mutate, message) {
   for (let attempt = 0; attempt < 2; attempt++) {
     const f = await gh("contents/" + JOURNAL_PATH);
-    const doc = JSON.parse(b64decode(f.content)); doc.entries = doc.entries || [];
-    mutate(doc.entries);
+    const doc = JSON.parse(b64decode(f.content));
+    doc.entries = doc.entries || []; doc.watch = doc.watch || []; doc.shelf = doc.shelf || [];
+    mutate(doc);
     doc.entries.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
     try {
       const res = await gh("contents/" + JOURNAL_PATH, { method: "PUT", body: JSON.stringify({ message, sha: f.sha,
         content: b64encode(JSON.stringify(doc, null, 1) + "\n") }) });
-      state.journal = doc.entries; state.journalSha = res.content.sha; return;
+      useDoc(doc); state.journalSha = res.content.sha; return;
     } catch (e) { if (e.status !== 409 || attempt) throw e; }  // someone else wrote; re-read and retry once
   }
 }
+const saveJournal = (mutate, message) => saveDoc(doc => mutate(doc.entries), message);
 
 /* ---------------- helpers ---------------- */
 const el = id => document.getElementById(id);
@@ -279,12 +296,64 @@ function normName(n) {
     .replace(/\b(the|old|single|malt|scotch|whisky|whiskey|abv|ml|cl|\d{3,4}\s*ml)\b/g, " ")
     .replace(/[^a-z0-9&]+/g, " ").trim().replace(/\s+/g, " ");
 }
+const STOP = new Set(["the", "old", "single", "malt", "scotch", "whisky", "whiskey", "abv", "ml", "cl", "year", "years", "yo", "yr", "yrs"]);
+function tokens(name) {
+  return String(name || "").toLowerCase().replace(/&amp;/g, "&").replace(/\d{2}(?:\.\d+)?\s*%.*$/, "")
+    .replace(/\b(\d+)\s*(?:years?|yrs?|y\.?o\.?)\b/g, "$1").split(/[^a-z0-9&]+/).filter(t => t && !STOP.has(t));
+}
+function nameMatches(name, title) {
+  const want = tokens(name), have = new Set(tokens(title));
+  return want.length >= 2 && want.every(t => have.has(t));
+}
+/* How well `title` fits `name` as the same bottle (0..1).
+   - An age or vintage rules a listing out only if the listing shows a different one
+     ("Kilkerran 16" is not "Kilkerran 12"; "Teaninich 2010, 13yo" can be "Teaninich 2010 KWM Cask").
+   - An independent bottler in the listing must also be in the name (Decadent Drams Ardnamurchan 10
+     is not Ardnamurchan 10).
+   - At least half of the name's words must appear. */
+const BOTTLER_WORDS = ["decadent", "berry", "berrys", "g&m", "gordon", "signatory", "cadenhead", "cadenheads", "smws", "sponge",
+  "adelphi", "thompson", "smos", "macbeth", "coopers", "laing", "douglas", "boutique", "tbwc", "maltbarn", "agency", "dumangin", "omc", "rattray", "carn", "whiskyland"];
+const GENERIC_WORDS = new Set(["kwm", "cask", "casks", "sherry", "bourbon", "blended", "blend", "malt", "edition", "editions", "release",
+  "batch", "chapter", "reserve", "series", "collection", "strength", "proof", "port", "and", "vintage", "exceptional",
+  "anniversary", "special", "select", "selection", "first", "fill", "refill", "hogshead", "butt", "barrel", "finish"]);
+function sameBottleScore(name, title) {
+  const want = tokens(name), haveList = tokens(title), have = new Set(haveList);
+  const words = want.filter(t => !/^\d+$/.test(t));
+  if (!words.length) return 0;
+  const isYear = n => n.length === 4, nums = list => list.filter(t => /^\d+$/.test(t));
+  let missing = false;
+  for (const n of nums(want)) {
+    if (have.has(n)) continue;
+    if (nums(haveList).some(h => isYear(h) === isYear(n) && (isYear(n) || +h <= 60))) return 0;  // conflicting age/vintage
+    missing = true;
+  }
+  if (BOTTLER_WORDS.some(b => have.has(b) && !want.includes(b))) return 0;
+  // The distinctive words (distillery, expression) must be there; bottler and cask words don't count.
+  let key = words.filter(w => w.length >= 3 && !GENERIC_WORDS.has(w) && !BOTTLER_WORDS.includes(w));
+  if (!key.length) key = words;
+  const hit = key.filter(t => have.has(t)).length / key.length;
+  return hit >= 0.75 ? hit * (missing ? 0.6 : 1) : 0;
+}
+/* Shop listings that look like the same bottle as `name`, best first (for "link" pickers). */
+function candidates(name, limit = 6) {
+  return state.catalog.map(c => ({ c, s: sameBottleScore(name, c.t) })).filter(x => x.s > 0)
+    .sort((a, b) => b.s - a.s || a.c.p - b.c.p).slice(0, limit).map(x => x.c);
+}
+function watchFor(c) {
+  return state.watch.filter(w => !w.suggested && ((w.keys && w.keys.length) ? w.keys.includes(c.k) : nameMatches(w.name, c.t)));
+}
+function ownedFor(c) {
+  return state.shelf.filter(b => b.level !== "finished" && (b.key ? b.key === c.k : nameMatches(b.name, c.t)));
+}
+function watchListings(w) {
+  return state.catalog.filter(c => (w.keys && w.keys.length) ? w.keys.includes(c.k) : nameMatches(w.name, c.t)).sort((a, b) => a.p - b.p);
+}
 let tastedIdx = null, tastedFor_journal = null;
 function tastedFor(c) {
   if (tastedFor_journal !== state.journal) {   // rebuild when the journal changes
     tastedIdx = new Map();
     state.journal.forEach(j => { if (j.score == null) return;
-      [j.key, "n:" + normName(j.name)].forEach(k => k && tastedIdx.set(k, [...(tastedIdx.get(k) || []), j])); });
+      [j.key, ...(j.links || []), "n:" + normName(j.name)].forEach(k => k && tastedIdx.set(k, [...(tastedIdx.get(k) || []), j])); });
     tastedFor_journal = state.journal;
   }
   return tastedIdx.get(c.k) || tastedIdx.get("n:" + normName(c.t)) || [];
@@ -303,7 +372,7 @@ function itemHtml(c, extraTags = "") {
   return `<button class="item" data-key="${esc(c.k)}">
     <div class="top"><span class="name">${esc(c.t)}</span><span class="price">${money(c.p)}</span></div>
     <div class="meta">${fitLabel(c)}${facts(c)}</div>
-    <div class="tags"><span class="tag shop">${esc(SHOP_NAME[c.s] || c.s)}</span>${extraTags}${(c.w || []).map(w => `<span class="tag">${esc(w)}</span>`).join("")}</div>
+    <div class="tags"><span class="tag shop">${esc(SHOP_NAME[c.s] || c.s)}</span>${extraTags}${watchFor(c).length ? '<span class="tag watch">Watching</span>' : ""}${ownedFor(c).length ? '<span class="tag own">Own</span>' : ""}${(c.w || []).map(w => `<span class="tag">${esc(w)}</span>`).join("")}</div>
     ${sim || deal}</button>`;
 }
 function bindItems(root) { root.querySelectorAll(".item[data-key]").forEach(b => b.onclick = () => openBottle(b.dataset.key)); }
@@ -343,10 +412,14 @@ function viewDeals() {
   const sales = applyFilters(state.catalog.filter(c => (c.ds || 0) >= 10 && fitScore(c) >= 45))
     .sort((a, b) => (b.ds + fitScore(b) / 4) - (a.ds + fitScore(a) / 4));
   const gen = state.meta.generated ? new Date(state.meta.generated) : new Date();
-  const newest = applyFilters(state.catalog.filter(c => c.nw && (gen - new Date(c.fs)) / 864e5 <= 7 && fitScore(c) >= 50))
+  const newest = applyFilters(state.catalog.filter(c => c.nw && (gen - new Date(c.fs)) / 864e5 <= 7 && fitScore(c) >= 50 && !ownedFor(c).length))
     .sort((a, b) => fitScore(b) - fitScore(a));
   m.innerHTML = `
     ${shopChips()}
+    ${(() => { const hits = state.watch.filter(w => !w.suggested && w.target != null).map(w => ({ w, best: watchListings(w)[0] }))
+        .filter(x => x.best && x.best.p <= x.w.target && shopOk(x.best.s));
+      return hits.length ? `<h2 class="section">Your watchlist <small>at or under target</small></h2><div class="list">${hits.map(({ w, best }) =>
+        itemHtml(best, `<span class="tag watch">Target ${money(w.target)}</span>`)).join("")}</div>` : ""; })()}
     <h2 class="section">Latest alerts <small>last 14 days</small></h2>
     ${fresh.length ? `<div class="list">${fresh.slice(0, 30).map(d => {
         const c = state.byKey.get(d.k) || { k: d.k, t: d.t, s: d.s, p: d.p, u: d.u, pal: 0 };
@@ -374,7 +447,7 @@ function profileCard() {
 }
 function viewForYou() {
   const m = el("main");
-  const rows = applyFilters(state.catalog.filter(c => !/\b(mini|sample|gift set)\b/i.test(c.t) && !(c.ml && c.ml < 300)))
+  const rows = applyFilters(state.catalog.filter(c => !/\b(mini|sample|gift set)\b/i.test(c.t) && !(c.ml && c.ml < 300) && !ownedFor(c).length))
     .sort((a, b) => fitScore(b) - fitScore(a) || a.p - b.p);
   const f = state.filters;
   m.innerHTML = `${profileCard()}
@@ -509,7 +582,9 @@ async function openBottle(key) {
     <div class="tags" style="margin-top:6px">${(c.w || []).map(w => `<span class="tag">${esc(w)}</span>`).join("")}${(c.c || []).filter(x => CASK[x]).map(x => `<span class="tag cask">${esc(CASK[x])}</span>`).join("")}</div>
     ${(c.mr && c.mr.length) || c.sim ? `<div class="card"><h3>Why it may suit you</h3>${(c.mr || []).map(r => `<div class="hint" style="margin:2px 0">${esc(r)}</div>`).join("")}
       ${c.sim ? `<div class="reason" style="margin-top:4px">Closest to your ${esc(c.sim.name)} (${c.sim.score})${c.sim.shared && c.sim.shared.length ? ": " + esc(c.sim.shared.join(", ")) : ""}</div>` : ""}</div>` : ""}
-    ${tasted.length ? `<div class="banner">You've tasted this: ${tasted.map(t => `${esc(t.score)} on ${esc(t.date || "?")}`).join(", ")}</div>` : ""}
+    ${tasted.length ? `<div class="banner">You've tasted this: ${tasted.map(t => `${esc(t.score)}${t.date ? " on " + esc(t.date) : ""}`).join(", ")}</div>` : ""}
+    ${watchFor(c).map(w => `<div class="banner">Watching${w.target != null ? ` for ${money(w.target)} or less` : ""}${w.target != null && c.p <= w.target ? ". <b>At your target now.</b>" : ""}</div>`).join("")}
+    ${ownedFor(c).map(b => `<div class="banner">On your shelf: ${esc(levelName(b.level))}${b.price ? `, paid ${money(b.price)}` : ""}</div>`).join("")}
     <div class="meters">
       <div class="meter peat"><div class="lbl"><span>Peaty / earthy</span></div><div class="bar"><div class="fill" style="width:${c.pe || 0}%"></div></div></div>
       <div class="meter fruit"><div class="lbl"><span>Fruit / red fruit</span></div><div class="bar"><div class="fill" style="width:${c.fe || 0}%"></div></div></div>
@@ -519,12 +594,32 @@ async function openBottle(key) {
     ${c.why && c.why.length ? `<p class="hint" style="font-size:0.8rem">${c.why.map(esc).join(" · ")}</p>` : ""}
     <div id="b-history"></div><div id="b-notes"></div>
     <div class="actions"><a class="btn primary" href="${esc(c.u)}" target="_blank" rel="noopener">Open at ${esc(SHOP_NAME[c.s] || c.s)}</a>
-      <button class="btn" id="b-taste" ${cfg.token ? "" : "disabled"}>I've tasted this</button></div>`);
+      <button class="btn" id="b-taste" ${cfg.token ? "" : "disabled"}>I've tasted this</button>
+      <button class="btn" id="b-link" ${cfg.token ? "" : "disabled"}>Link my tasting</button>
+      <button class="btn" id="b-watch" ${cfg.token ? "" : "disabled"}>${watchFor(c).length ? "Edit watch" : "Watch price"}</button>
+      <button class="btn" id="b-own" ${cfg.token ? "" : "disabled"}>${ownedFor(c).length ? "My bottle" : "I own this"}</button></div>`);
   el("b-taste").onclick = () => openJournalForm({ name: c.t, key: c.k, where: SHOP_NAME[c.s] || c.s, price: c.p, url: c.u, abv: c.v });
+  el("b-watch").onclick = () => openWatchForm(watchFor(c)[0] || { name: c.t, keys: [c.k], target: Math.round(c.p * 0.9) });
+  el("b-own").onclick = () => openShelfForm(ownedFor(c)[0] || { name: c.t, key: c.k, price: c.p, where: SHOP_NAME[c.s] || c.s });
+  el("b-link").onclick = () => openLinkTasting(c);
   const [hist, notes] = await Promise.all([loadLazy("history"), loadLazy("notes")]);
   if (!el("b-history")) return;
   if (hist[key]) el("b-history").innerHTML = `<h2 class="section" style="font-size:0.95rem">Price history</h2>${chart(hist[key])}`;
   if (notes[key]) el("b-notes").innerHTML = `<h2 class="section" style="font-size:0.95rem">KWM tasting notes</h2><div class="notes">${notesHtml(notes[key])}</div>`;
+}
+
+function openLinkTasting(c) {
+  const ranked = state.journal.filter(j => j.score != null).map(j => ({ j, s: sameBottleScore(j.name, c.t) }))
+    .filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 8);
+  openSheet(`<h2>Link my tasting</h2><p class="hint">Which of your tastings is <b>${esc(c.t)}</b>? Linked bottles show your score in the shop lists.</p>
+    ${ranked.length ? `<div class="list">${ranked.map(({ j }) => `<button class="wrow" data-jid="${esc(j.id)}"><div class="top"><span class="name">${esc(j.name)}</span><span class="score-badge">${esc(j.score)}</span></div>
+      <div class="meta">${(j.links || []).includes(c.k) ? "<span>already linked</span>" : ""}${j.date ? `<span>${esc(j.date)}</span>` : ""}</div></button>`).join("")}</div>`
+      : `<p class="empty">No tasting with a similar name. Use “I've tasted this” to add one.</p>`}`);
+  document.querySelectorAll("[data-jid]").forEach(b => b.onclick = async () => {
+    try { await saveJournal(list => { const e = list.find(x => x.id === b.dataset.jid); if (!e) return;
+      e.links = [...new Set([...(e.links || []), c.k])]; }, `Link tasting to ${c.t}`); closeSheet(); route(); toast("Linked."); }
+    catch (err) { toast("Couldn't save: " + err.message); }
+  });
 }
 
 /* ---------------- journal form ---------------- */
@@ -541,6 +636,7 @@ function openJournalForm(j) {
       <label>Palate<textarea id="j-palate" rows="2">${esc(j.palate || "")}</textarea></label>
       <label>Finish<textarea id="j-finish" rows="2">${esc(j.finish || "")}</textarea></label>
       <label>Comments<textarea id="j-notes" rows="2">${esc(j.notes || "")}</textarea></label>
+      <div><div class="hint" style="margin:0 0 4px">Same bottle in the shops (tick to link)</div><div id="j-pick-wrap">${linkPicker("j-pick", j.name || "", [...new Set([...(j.links || []), ...(j.key ? [j.key] : [])])])}</div></div>
       <div class="two"><label>Price paid<input type="number" id="j-price" step="0.01" inputmode="decimal" value="${esc(j.price || "")}"></label><label>Bottle or sample<select id="j-format"><option value="bottle">Bottle</option><option value="sample" ${j.format === "sample" ? "selected" : ""}>Sample / dram</option></select></label></div>
       <div class="row"><button class="btn primary" type="submit" id="j-save">Save</button>${isNew ? "" : `<button class="btn danger" type="button" id="j-del">Delete</button>`}<button class="btn" type="button" id="j-cancel">Cancel</button></div>
       <div class="status" id="j-status"></div>
@@ -559,7 +655,8 @@ function openJournalForm(j) {
       where: el("j-where").value.trim(), nose: el("j-nose").value.trim(), palate: el("j-palate").value.trim(), finish: el("j-finish").value.trim(),
       notes: el("j-notes").value.trim(), price: el("j-price").value ? Number(el("j-price").value) : null, format: el("j-format").value,
       abv: el("j-abv").value ? Number(el("j-abv").value) : null,
-      key: j.key || null, url: j.url || null };
+      key: j.key || null, url: j.url || null, links: document.getElementById("j-pick") ? pickedKeys("j-pick") : (j.links || []) };
+    if (!entry.links.length) delete entry.links;
     Object.keys(entry).forEach(k => (entry[k] === "" || entry[k] === null || Number.isNaN(entry[k])) && delete entry[k]);
     if (!entry.name || isNaN(entry.score)) { status("Add a name and a score.", "err"); return; }
     el("j-save").disabled = true; status("Saving to GitHub…");
@@ -578,6 +675,150 @@ function openJournalForm(j) {
       catch (err) { status("Couldn't delete: " + err.message, "err"); }
     };
   }
+}
+
+
+/* ---------------- cellar: watchlist + my bottles ---------------- */
+const LEVELS = [["sealed", "Sealed"], ["full", "Open · full"], ["3q", "Open · ~¾"], ["half", "Open · ~½"], ["1q", "Open · ~¼"], ["finished", "Finished"]];
+const levelName = v => (LEVELS.find(l => l[0] === v) || [, "Sealed"])[1];
+function watchStatus(w) {
+  const hits = watchListings(w), best = hits[0];
+  if (!best) return { cls: "none", text: "Not on a shelf right now", best };
+  if (w.target == null) return { cls: "wait", text: `${money(best.p)} at ${SHOP_NAME[best.s] || best.s}`, best };
+  return best.p <= w.target ? { cls: "hit", text: `${money(best.p)} at ${SHOP_NAME[best.s] || best.s}, at your target`, best }
+    : { cls: "wait", text: `${money(best.p)} at ${SHOP_NAME[best.s] || best.s}, ${money(best.p - w.target)} above target`, best };
+}
+function linkPicker(id, name, keys = []) {
+  const cand = candidates(name, 6);
+  const linked = keys.map(k => state.byKey.get(k)).filter(Boolean);
+  const all = [...linked, ...cand.filter(c => !keys.includes(c.k))];
+  if (!all.length) return `<p class="hint" id="${id}" data-empty="1">No matching bottles on the shelves right now. It will match by name when one appears.</p>`;
+  return `<div class="pick" id="${id}">${all.map(c => `<label><input type="checkbox" value="${esc(c.k)}" ${keys.includes(c.k) ? "checked" : ""}>
+    <span>${esc(c.t)}<br><span class="hint" style="margin:0">${money(c.p)} · ${esc(SHOP_NAME[c.s] || c.s)}</span></span></label>`).join("")}</div>`;
+}
+const pickedKeys = id => [...document.querySelectorAll(`#${id} input:checked`)].map(i => i.value);
+
+function viewCellar() {
+  const m = el("main"), f = state.filters;
+  f.cellar = f.cellar || "watch";
+  const canWrite = !!cfg.token;
+  const sugg = state.watch.filter(w => w.suggested);
+  const active = state.watch.filter(w => !w.suggested).map(w => ({ w, st: watchStatus(w) }))
+    .sort((a, b) => ({ hit: 0, wait: 1, none: 2 }[a.st.cls] - { hit: 0, wait: 1, none: 2 }[b.st.cls]) || a.w.name.localeCompare(b.w.name));
+  const bottles = [...state.shelf].sort((a, b) => (a.level === "finished") - (b.level === "finished") || (b.opened || b.bought || "").localeCompare(a.opened || a.bought || ""));
+  m.innerHTML = `
+    ${canWrite ? "" : `<div class="banner">Read-only on this device. <a href="#settings">Connect to GitHub</a> to edit.</div>`}
+    <div class="seg chips" id="cellar-seg">${[["watch", `Watching (${active.length})`], ["bottles", `My bottles (${bottles.filter(b => b.level !== "finished").length})`]].map(([v, l]) =>
+      `<button class="chip" data-v="${v}" aria-pressed="${f.cellar === v}">${l}</button>`).join("")}</div>
+    ${f.cellar === "watch" ? `
+      ${sugg.length ? `<h2 class="section">Suggested from your notes <small>${sugg.length}</small></h2>
+        <p class="hint" style="margin-top:0">Bottles you noted you'd buy. Tick the matching shop listing (if any), adjust the target price, then accept.</p>
+        ${sugg.map(w => `<div class="sugg" data-id="${esc(w.id)}"><b>${esc(w.name)}</b><span class="hint" style="margin:0">${esc(w.note || "")}</span>
+          <label class="hint" style="margin:0">Alert at or under $ <input type="number" class="s-target" value="${esc(w.target ?? "")}" inputmode="decimal" style="width:110px" placeholder="any price"> <small>${esc(w.why || "")}</small></label>
+          ${linkPicker("pick-" + w.id, w.name, w.keys || [])}
+          <div class="row"><button class="btn primary s-accept" ${canWrite ? "" : "disabled"}>Watch it</button><button class="btn s-dismiss" ${canWrite ? "" : "disabled"}>Dismiss</button></div></div>`).join("")}` : ""}
+      <h2 class="section">Watching <small>${active.length}</small></h2>
+      ${active.length ? `<div class="list">${active.map(({ w, st }) => `<button class="wrow" data-wid="${esc(w.id)}">
+          <div class="top"><span class="name">${esc(w.name)}</span><span class="price">${w.target != null ? "≤ " + money(w.target) : "any price"}</span></div>
+          <div><span class="status-chip ${st.cls}">${esc(st.text)}</span></div></button>`).join("")}</div>`
+        : `<p class="hint">Nothing watched yet. Open any bottle and tap <b>Watch price</b>, or accept a suggestion above.</p>`}
+      <div class="actions"><button class="btn" id="w-add" ${canWrite ? "" : "disabled"}>+ Watch a bottle by name</button></div>`
+    : `
+      <div class="actions" style="margin-top:4px"><button class="btn primary" id="b-add" ${canWrite ? "" : "disabled"}>+ Add a bottle</button></div>
+      ${bottles.length ? `<div class="list">${bottles.map(b => `<button class="wrow" data-bid="${esc(b.id)}">
+          <div class="top"><span class="name">${esc(b.name)}</span><span class="price">${b.price ? money(b.price) : ""}</span></div>
+          <div class="meta"><span class="status-chip ${b.level === "finished" ? "none" : b.level && b.level !== "sealed" ? "wait" : "hit"}">${esc(levelName(b.level))}</span>
+            ${b.where ? `<span>${esc(b.where)}</span>` : ""}${b.opened ? `<span>opened ${esc(b.opened)}</span>` : b.bought ? `<span>bought ${esc(b.bought)}</span>` : ""}</div></button>`).join("")}</div>`
+        : `<p class="hint">Add the bottles you own. The deal finder stops suggesting them, and you can track what's open.</p>`}`}`;
+  el("cellar-seg").onclick = e => { const c = e.target.closest(".chip"); if (c) { f.cellar = c.dataset.v; viewCellar(); } };
+  m.querySelectorAll(".sugg").forEach(box => {
+    const id = box.dataset.id;
+    box.querySelector(".s-accept").onclick = async () => {
+      const t = box.querySelector(".s-target").value, keys = pickedKeys("pick-" + id);
+      await guarded(box, () => saveDoc(doc => { const w = doc.watch.find(x => x.id === id); if (!w) return;
+        w.target = t ? Number(t) : null; w.keys = keys; delete w.suggested; }, `Watch: ${box.querySelector("b").textContent}`));
+    };
+    box.querySelector(".s-dismiss").onclick = async () => {
+      await guarded(box, () => saveDoc(doc => { doc.watch = doc.watch.filter(x => x.id !== id); }, "Dismiss watch suggestion"));
+    };
+  });
+  m.querySelectorAll("[data-wid]").forEach(b => b.onclick = () => openWatchForm(state.watch.find(w => w.id === b.dataset.wid)));
+  m.querySelectorAll("[data-bid]").forEach(b => b.onclick = () => openShelfForm(state.shelf.find(x => x.id === b.dataset.bid)));
+  if (el("w-add")) el("w-add").onclick = () => openWatchForm({});
+  if (el("b-add")) el("b-add").onclick = () => openShelfForm({});
+}
+async function guarded(box, fn) {
+  box.querySelectorAll("button").forEach(b => b.disabled = true);
+  try { await fn(); route(); }
+  catch (e) { toast("Couldn't save: " + e.message); box.querySelectorAll("button").forEach(b => b.disabled = false); }
+}
+
+function openWatchForm(w) {
+  const isNew = !w.id;
+  openSheet(`<h2>${isNew ? "Watch a bottle" : "Edit watch"}</h2>
+    <form class="journal" id="wform">
+      <label>Bottle<input type="text" id="w-name" required value="${esc(w.name || "")}" list="w-titles" placeholder="e.g. Springbank 15" autocomplete="off">
+        <datalist id="w-titles">${state.catalog.slice(0, 4000).map(c => `<option value="${esc(c.t)}">`).join("")}</datalist></label>
+      <label>Alert when at or under ($)<input type="number" id="w-target" step="1" inputmode="decimal" value="${esc(w.target ?? "")}" placeholder="leave empty for any drop or restock"></label>
+      <label>Note<input type="text" id="w-note" value="${esc(w.note || "")}"></label>
+      <div><div class="hint" style="margin:0 0 4px">Shop listings for this bottle</div><div id="w-pick-wrap">${linkPicker("w-pick", w.name || "", w.keys || [])}</div></div>
+      <div class="row"><button class="btn primary" type="submit">Save</button>${isNew ? "" : `<button class="btn danger" type="button" id="w-del">Stop watching</button>`}<button class="btn" type="button" id="w-cancel">Cancel</button></div>
+      <div class="status" id="w-status"></div></form>`);
+  el("w-name").onchange = e => { el("w-pick-wrap").innerHTML = linkPicker("w-pick", e.target.value, pickedKeys("w-pick")); };
+  el("w-cancel").onclick = closeSheet;
+  const status = (t, c = "") => { el("w-status").className = "status " + c; el("w-status").textContent = t; };
+  el("wform").onsubmit = async e => {
+    e.preventDefault();
+    const item = { ...w, id: w.id || uid(), name: el("w-name").value.trim(), target: el("w-target").value ? Number(el("w-target").value) : null,
+      note: el("w-note").value.trim(), keys: pickedKeys("w-pick") };
+    delete item.suggested;
+    if (!item.name) return status("Add the bottle name.", "err");
+    status("Saving…");
+    try { await saveDoc(doc => { const i = doc.watch.findIndex(x => x.id === item.id); if (i >= 0) doc.watch[i] = item; else doc.watch.push(item); },
+      `Watch: ${item.name}${item.target ? " ≤ $" + item.target : ""}`); closeSheet(); route(); toast("Watching " + item.name); }
+    catch (err) { status("Couldn't save: " + err.message, "err"); }
+  };
+  if (!isNew) el("w-del").onclick = async () => {
+    try { await saveDoc(doc => { doc.watch = doc.watch.filter(x => x.id !== w.id); }, `Stop watching: ${w.name}`); closeSheet(); route(); }
+    catch (err) { status("Couldn't save: " + err.message, "err"); }
+  };
+}
+
+function openShelfForm(b) {
+  const isNew = !b.id;
+  openSheet(`<h2>${isNew ? "Add a bottle" : "Edit bottle"}</h2>
+    <form class="journal" id="bform">
+      <label>Bottle<input type="text" id="bo-name" required value="${esc(b.name || "")}" list="bo-titles" autocomplete="off">
+        <datalist id="bo-titles">${state.catalog.slice(0, 4000).map(c => `<option value="${esc(c.t)}">`).join("")}</datalist></label>
+      <div class="two"><label>Price paid<input type="number" id="bo-price" step="0.01" inputmode="decimal" value="${esc(b.price ?? "")}"></label>
+        <label>Bought at<input type="text" id="bo-where" value="${esc(b.where || "")}" placeholder="KWM, BSW…"></label></div>
+      <div class="two"><label>Bought<input type="date" id="bo-bought" value="${esc(b.bought || (isNew ? today() : ""))}"></label>
+        <label>Opened<input type="date" id="bo-opened" value="${esc(b.opened || "")}"></label></div>
+      <label>Level<select id="bo-level">${LEVELS.map(([v, l]) => `<option value="${v}" ${(b.level || "sealed") === v ? "selected" : ""}>${l}</option>`).join("")}</select></label>
+      <label>Notes<textarea id="bo-notes" rows="2">${esc(b.notes || "")}</textarea></label>
+      <div class="row"><button class="btn primary" type="submit">Save</button>${isNew ? "" : `<button class="btn danger" type="button" id="bo-del">Remove</button>`}<button class="btn" type="button" id="bo-cancel">Cancel</button></div>
+      <div class="status" id="bo-status"></div></form>`);
+  el("bo-cancel").onclick = closeSheet;
+  el("bo-opened").onchange = e => { if (e.target.value && el("bo-level").value === "sealed") el("bo-level").value = "full"; };
+  const status = (t, c = "") => { el("bo-status").className = "status " + c; el("bo-status").textContent = t; };
+  el("bform").onsubmit = async e => {
+    e.preventDefault();
+    const name = el("bo-name").value.trim();
+    const match = state.catalog.find(c => c.t === name);
+    const item = { ...b, id: b.id || uid(), name, key: b.key || (match ? match.k : undefined),
+      price: el("bo-price").value ? Number(el("bo-price").value) : null, where: el("bo-where").value.trim(),
+      bought: el("bo-bought").value, opened: el("bo-opened").value, level: el("bo-level").value, notes: el("bo-notes").value.trim() };
+    Object.keys(item).forEach(k => (item[k] === "" || item[k] === null || item[k] === undefined) && delete item[k]);
+    if (!item.name) return status("Add the bottle name.", "err");
+    status("Saving…");
+    try { await saveDoc(doc => { const i = doc.shelf.findIndex(x => x.id === item.id); if (i >= 0) doc.shelf[i] = item; else doc.shelf.push(item); },
+      `${isNew ? "Add" : "Update"} bottle: ${item.name}`); closeSheet(); route(); }
+    catch (err) { status("Couldn't save: " + err.message, "err"); }
+  };
+  if (!isNew) el("bo-del").onclick = async () => {
+    try { await saveDoc(doc => { doc.shelf = doc.shelf.filter(x => x.id !== b.id); }, `Remove bottle: ${b.name}`); closeSheet(); route(); }
+    catch (err) { status("Couldn't save: " + err.message, "err"); }
+  };
 }
 
 /* ---------------- update now (runs the daily workflow on demand) ---------------- */
@@ -673,7 +914,7 @@ function watchRun() {
 }
 
 /* ---------------- routing ---------------- */
-const VIEWS = { deals: ["Deals", viewDeals], foryou: ["For you", viewForYou], search: ["Search", viewSearch], journal: ["Journal", viewJournal], settings: ["Settings", viewSettings] };
+const VIEWS = { deals: ["Deals", viewDeals], foryou: ["For you", viewForYou], search: ["Search", viewSearch], cellar: ["Cellar", viewCellar], journal: ["Journal", viewJournal], settings: ["Settings", viewSettings] };
 let current = null;
 function route() {
   const name = (location.hash || "#deals").slice(1);

@@ -45,6 +45,16 @@ Every bottle then gets a "you'd likely score it ~88" prediction, and is matched 
 
 **Updating prices from the app:** tap ↻ in the top bar and choose Quick (BSW + Craft Cellars, ~5 min), KWM only (~15 min) or Everything (~25 min). This starts the same `daily whisky deals` workflow with `shops` and `quiet` inputs. Quiet means it only emails if something new turned up. The app shows that the update is running and reloads the data when it's published.
 
+**Cellar tab:**
+- **Watching:** price targets. Tap **Watch price** on any bottle, or accept the suggestions made from your journal's "would buy" notes. You choose the matching shop listings and the target. When a watched bottle is in stock at or under your target, the daily run sends a **Watchlist** alert (email and app), and the Deals tab lists it at the top. A watch without a target alerts on any price drop or restock.
+- **My bottles:** what you own, with price paid, where, bought and opened dates, and how full it is. Owned bottles no longer show up in For you, new arrivals or deal alerts.
+- **Linking tastings to shop bottles:** use **Link my tasting** on a bottle, or tick listings in the journal form. Linked bottles show "You scored 88" in every list. Matching suggests candidates and you confirm them:
+  - an age or vintage must not conflict ("Kilkerran 16" never matches "Kilkerran 12")
+  - an independent bottler in the listing must also be in your name
+  - the distillery and expression words must match
+
+All of this is stored in `docs/data/journal.json` next to your tastings (`watch`, `shelf`, and `links` on entries).
+
 Data flow: the daily run commits `docs/data/*.json` and republishes the app. The journal is saved to `docs/data/journal.json`, which is a public file in a public repo.
 
 ## Daily email (GitHub Actions)

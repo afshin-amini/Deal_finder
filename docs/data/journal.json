@@ -2490,5 +2490,198 @@
    "description": "Benromach 2002 cask 969",
    "source": "imported 2026-10-07"
   }
- ]
+ ],
+ "watch": [
+  {
+   "id": "sug-e18cc7ae",
+   "name": "Macbeth collection - Ardmore 12",
+   "target": 130.0,
+   "note": "From your notes (84.5): 83 - not for me!, it get's better in time. 86 after long time. very challenging whisky,150? maybe with good sale.",
+   "why": "~15% under the $150 you noted",
+   "source": "imp-72dbcea724",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-efffeedb",
+   "name": "Benromach, Contrasts: peat smoke",
+   "target": null,
+   "note": "From your notes (88): 88 - easy buy",
+   "why": "no price in your notes",
+   "source": "imp-67bed05be3",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-9c6128be",
+   "name": "Benromach, Contrasts: peat smoke Sherry",
+   "target": null,
+   "note": "From your notes (88): 88 - easy buy",
+   "why": "no price in your notes",
+   "source": "imp-31e1cfe627",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-82bf1a5f",
+   "name": "Benromach 10 Cask Strength, vintage 2013 batch 1",
+   "target": null,
+   "note": "From your notes (89): 89 - easy buy",
+   "why": "no price in your notes",
+   "source": "imp-9fbee8e12c",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-24f8addb",
+   "name": "Craigellachie 20, 2002, G&M",
+   "target": 175.0,
+   "note": "From your notes (88): 88 very good for 175",
+   "why": "your price",
+   "source": "imp-786a1d57f5",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-9d930703",
+   "name": "Signatory 100 proof exceptional cask, Mannochmore 2012, 11yo",
+   "target": null,
+   "note": "From your notes (86.5): 86-87 very nice, definitely on sale",
+   "why": "no price in your notes",
+   "source": "imp-ed7f024891",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-1e914d4d",
+   "name": "Signatory 100 proof exceptional cask, Miltonduff 2011,12 yo",
+   "target": null,
+   "note": "From your notes (86.5): 86-87, definitely on sale",
+   "why": "no price in your notes",
+   "source": "imp-a28e26f094",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-65e01c07",
+   "name": "Glen Garioch 17 (3rd chapter)",
+   "target": 100.0,
+   "note": "From your notes (87): 87 very good for 100cad, needs time and water",
+   "why": "your price",
+   "source": "imp-d455092776",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-6cf0d07b",
+   "name": "Glen Garioch 18 (4th chapter)",
+   "target": 100.0,
+   "note": "From your notes (87): 87, not for 200 but 100 YES!",
+   "why": "your price",
+   "source": "imp-d3cd64e3ae",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-aeb7ac14",
+   "name": "Signatory vintage port Dundas 1995, 28yo",
+   "target": 225.0,
+   "note": "From your notes (87.5): 87-88, 265, maybe on a good sale, 15% off at 225 on kwm. maybe more? it needs time in glass",
+   "why": "~15% under the $265 you noted",
+   "source": "imp-4f71c0aeb7",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-9c26e9af",
+   "name": "Bruichladdich 18",
+   "target": 200.0,
+   "note": "From your notes (90): 90, 200? maybe (very close to yes)",
+   "why": "price you noted",
+   "source": "imp-ecdedc260c",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-8f98032b",
+   "name": "Ardnamurchan 10 Yo",
+   "target": 90.0,
+   "note": "From your notes (87): 87, nice sipper, I'd by for 90",
+   "why": "your price",
+   "source": "imp-3f71bb9996",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-2d0f4809",
+   "name": "Ardnamurchan KWM cask, 7 yo",
+   "target": null,
+   "note": "From your notes (87.5): 87-88, really nice, on sale definitely.",
+   "why": "no price in your notes",
+   "source": "imp-d64191dc4f",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-9d22b45b",
+   "name": "Berry's Teaninich 2010, 13yo",
+   "target": 110.0,
+   "note": "From your notes (86): 86, I like it, 130, definitely on sale, a little boozy not very very soft and smooth, sweaty. it's kind of dirty and I like it.",
+   "why": "~15% under the $130 you noted",
+   "source": "imp-440daf4465",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-780e3ca5",
+   "name": "Berry's Linkwood 2011, 12yo",
+   "target": 115.0,
+   "note": "From your notes (86): 86, 137. On sale? yesss.",
+   "why": "~15% under the $137 you noted",
+   "source": "imp-6b86770401",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-7adfe2ab",
+   "name": "Berry's Blair Athol 2009, 14yo",
+   "target": 120.0,
+   "note": "From your notes (86): very nice, 86, 140, on sale yessss",
+   "why": "~15% under the $140 you noted",
+   "source": "imp-9b27edc991",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-8966247c",
+   "name": "Berry's KWM blended 1999, 25yo",
+   "target": 235.0,
+   "note": "From your notes (89): 89, 275, on sale definitely (maybe two!)",
+   "why": "~15% under the $275 you noted",
+   "source": "imp-9e8efe3837",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-372f2575",
+   "name": "Berry's Inchgower 2009",
+   "target": null,
+   "note": "From your notes (88): 88, i like it, good sale!",
+   "why": "no price in your notes",
+   "source": "imp-17cc034100",
+   "suggested": true,
+   "keys": []
+  },
+  {
+   "id": "sug-1cf4eaf8",
+   "name": "Springbank 15",
+   "target": 147.0,
+   "note": "From your notes (88): 88, for 147? heck yeah!",
+   "why": "your price",
+   "source": "imp-49bb3fadbe",
+   "suggested": true,
+   "keys": []
+  }
+ ],
+ "shelf": []
 }

@@ -14,6 +14,7 @@ from .emailer import Emailer, render_digest
 from .notify import Ntfy
 from .parser import parse
 from .scoring import deal_score, palate_score
+from .collection import Collection, load_collection
 from .taste import TasteProfile, blend, load_profile
 
 log = logging.getLogger(__name__)
@@ -32,7 +33,8 @@ class Alert:
 
 
 def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool,
-             notes: str = "", profile: TasteProfile | None = None) -> tuple[dict, dict, dict, list[Alert]]:
+             notes: str = "", profile: TasteProfile | None = None,
+             coll: Collection | None = None) -> tuple[dict, dict, dict, list[Alert]]:
     if not shop_cfg.get("trust_compare_at", True):
         listing.compare_at_price = None  # shop shows a permanent "was" price; history is the real signal
     # Facts (cask, age, ABV) come from the listing; tasting notes only feed the flavour words below,
@@ -66,7 +68,22 @@ def evaluate(listing: Listing, shop_cfg: dict, cfg: dict, db: DB, seeded: bool,
         pr = palate + deal.score + (10 if watched else 0) + extra
         alerts.append(Alert(kind, listing, sd, deal.to_dict(), pr, notes=notes))
 
-    if seeded and in_stock and listing.price and not is_mini:
+    # Your watchlist: alert at or under your target (or, with no target, on any drop or restock).
+    w = coll.watching(listing.key, listing.title) if coll else None
+    if w and in_stock and listing.price:
+        hit_target = w.target is not None and listing.price <= w.target
+        hit_any = w.target is None and prev is not None and (deal.drop_pct or prev["last_in_stock"] == 0)
+        if hit_target or hit_any:
+            why = (f"at or under your target ${w.target:.0f}" if hit_target else "price drop or back in stock")
+            d = deal.to_dict()
+            d["reasons"] = [f"Watchlist: {why}"] + d["reasons"]
+            alerts.append(Alert("watch", listing, sd, d, 200 + palate, notes=notes))
+            sd["watch"] = {"id": w.id, "target": w.target}
+    owned = bool(coll and coll.owns(listing.key, listing.title))
+    if owned:
+        sd["owned"] = True
+
+    if seeded and in_stock and listing.price and not is_mini and not owned and not alerts:
         if prev is None:
             if palate >= a.get("new_min_palate", 55) or (watched and palate >= a.get("watch_min_palate", 35)):
                 add("new", 5)
@@ -92,7 +109,7 @@ def _try_notes(fetch_notes, http: PoliteSession, url: str) -> str:
 
 def format_alert(al: Alert) -> tuple[str, str]:
     l = al.listing
-    head = {"new": "New", "drop": "Price drop", "restock": "Back in stock", "deal": "Deal"}[al.kind]
+    head = {"new": "New", "drop": "Price drop", "restock": "Back in stock", "deal": "Deal", "watch": "Watchlist"}[al.kind]
     title = f"{head}: {l.title}"[:150]
     track = al.palate.get("track", "")
     lines = [
@@ -126,6 +143,8 @@ def run(cfg: dict, only: list[str] | None = None, dry_run: bool = False) -> int:
     )
     db = DB(cfg["db_path"])
     profile = load_profile(cfg.get("journal_path", "docs/data/journal.json"))
+    coll = load_collection(cfg.get("journal_path", "docs/data/journal.json"))
+    log.info("watchlist: %d items; bottles owned: %d", len(coll.watch), len(coll.owned_keys) + len(coll.owned_names))
     if profile is not None:
         log.info("taste profile: %d journal entries (%s)", len(profile.entries),
                  "active" if profile.active else f"needs {8 - len(profile.entries)} more to switch on")
@@ -161,7 +180,7 @@ def run(cfg: dict, only: list[str] | None = None, dry_run: bool = False) -> int:
                     new_notes_budget -= 1
                     notes = _try_notes(fetch_notes, http, listing.url)
                     db.set_notes(listing.key, notes)
-                parsed, score, deal, alerts = evaluate(listing, shop_cfg, cfg, db, seeded, notes, profile)
+                parsed, score, deal, alerts = evaluate(listing, shop_cfg, cfg, db, seeded, notes, profile, coll)
                 if not score:
                     continue  # not whisky; don't store
                 whisky += 1
