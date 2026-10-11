@@ -2571,5 +2571,16 @@
    ]
   }
  ],
- "shelf": []
+ "shelf": [
+  {
+   "id": "mv4a4hi4mdhxk",
+   "name": "SMOS Res Casks No.11 Ardmore 13 Year",
+   "key": "kwm:898784",
+   "price": 62.5,
+   "where": "KWM",
+   "bought": "2026-08-10",
+   "opened": "2026-09-25",
+   "level": "3q"
+  }
+ ]
 }
