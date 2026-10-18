@@ -24,7 +24,7 @@ python -m dealfinder run --dry-run
 
 A phone-friendly web app in `docs/`, hosted free on GitHub Pages:
 
-- **Deals:** the latest alerts, new arrivals this week, and bottles that are good value today.
+- **Deals:** your watchlist hits, then three separate lists: **On sale now** (price dropped, below its usual price, or on sale at the shop), **Back in stock** (last 14 days) and **New arrivals** (this week).
 - **For you:** every in-stock bottle ranked by how well it fits your palate.
 - **Search:** all in-stock whiskies across the shops.
 - **Journal:** your tastings with scores out of 100. Add or edit them from your phone.
