@@ -28,8 +28,8 @@ jobs:
         with:
           ref: ${{ github.ref_name }}   # latest commit, including data the daily run just pushed
       - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: docs
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
